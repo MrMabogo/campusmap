@@ -1,0 +1,1 @@
+web: gunicorn CS3240.wsgi
