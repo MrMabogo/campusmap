@@ -1,1 +1,1 @@
-web: gunicorn CS3240.wsgi
+web: gunicorn CampusMapB-06.wsgi
