@@ -81,7 +81,7 @@ DATABASES = {
         'USER': 'groupb06',
         'PASSWORD': 'groupb06password',
         'HOST': 'localhost',
-        'PORT': '8080',
+        'PORT': '8000',
     }
 }
 
