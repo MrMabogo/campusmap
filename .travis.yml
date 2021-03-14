@@ -6,7 +6,7 @@ services:
 install:
 - pip install -r requirements.txt
 before_script:
-- psql -c 'create database mapdb;' -p 8080 -U postgres
+- psql -c 'create database mapdb;' -U postgres
 - psql -c 'create role groupb06 with createdb;'
 script:
 - python manage.py test
