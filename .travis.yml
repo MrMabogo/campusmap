@@ -1,8 +1,12 @@
 language: python
 python:
 - '3.8'
+services:
+- postgresql
 install:
 - pip install -r requirements.txt
+before_script:
+- psql -c 'create role groupb06 with CREATEDB;' -p 8080 -U postgres
 script:
 - python manage.py test
 deploy:
