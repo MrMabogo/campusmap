@@ -77,11 +77,11 @@ WSGI_APPLICATION = 'CampusMapB-06.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'mapdb',
-        'USER': 'groupb06',
-        'PASSWORD': 'groupb06password',
+        'NAME': 'travis_ci_test',
+        'USER': 'postgres',
+        'PASSWORD': 'dbpassword',
         'HOST': 'localhost',
-        'PORT': '8000',
+        'PORT': '5432',
     }
 }
 
