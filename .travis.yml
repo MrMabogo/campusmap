@@ -1,0 +1,19 @@
+language: python
+python:
+- '3.8'
+services:
+- postgresql
+cache: pip
+install:
+- pip install -r requirements.txt
+before_script:
+- psql -c 'create database travis_ci_test;' -U postgres
+script:
+- python manage.py test
+deploy:
+  provider: heroku
+  api_key:
+    secure: woJNNxZOTwM5lW8kIcqDBWRYRC3A4QvWIUaQUsBmXWxhaUQem8QBABvUGYG9TBtTdefYrdHWRGnNxRYjC8AN//3yYYdeIml0r/FuM9JDa7aBV6yvysGj1bY+9/9j5Es0uVv4t50Nxm0af1D1Ro/vbCYc3O0gBrOGTKI+FT//U9pR2i8aki9BY/sp8y0tjo0n9gtjbPjKYF1+VYLUj4uONF92qJH++A/Xkuvzn028UtdXg+a40avhexpQJgUxC0/ZMqgeUy98yramPCNSVbnYdjYyKv4+z96TbNj4K84EHQ/a6C5aB+1sWKwUfHrxthKZRt5UmaQ4ABDlWO0n2a4YjT8AIKSqaZFeRgKggd6ncqQzfpvycm/otHphiiKWddy22m7wpLkIhQrbowl2u/kqnZWSDMv3bu1+6WZtN0hS7i69ugqhBkjRfWNQ6JJuS+/ikqtlntfHAZlhHi5gvArp6bnjRaPElTXiGOxkBm3OA59NpUmHO1vLBpmaHmFV1tUyeXuaTKfLu6O2vWcK6HAmc7rnfX7mZZcik/8ikdoo65DF92eK8EwnzOnJ4vctam4Wuew7cuQtnOYBt6yazfnq/+mMTvcLg7OOErcsZgLJIDuFDFgGSvw5V0ekDOU2/w+9B35zzoA9r1+go5fztn/6M1DFWe7Un2I2bbqNYGgLnkQ=
+  app: campusmap-b-06
+  on:
+    repo: uva-cs3240-s21/project-b-06
