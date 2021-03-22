@@ -22,5 +22,4 @@ urlpatterns = [
     path('maps/', include("maps.urls")),
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')), # <--
-    path('accounts/logout/', include('allauth.urls')),
 ]
