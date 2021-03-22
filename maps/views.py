@@ -1,5 +1,8 @@
 from django.shortcuts import render
 
+def index_view(request):
+    return render(request, 'maps/index.html')
+
 def default_map(request):
     mapbox_access_token = 'pk.my_mapbox_access_token'
     return render(request, 'maps/default.html',
