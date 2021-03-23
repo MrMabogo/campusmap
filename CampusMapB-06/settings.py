@@ -82,6 +82,7 @@ WSGI_APPLICATION = 'CampusMapB-06.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
+
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'travis_ci_test',
