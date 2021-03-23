@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../CampusMapB-06/.idea/CampusMapB-06.iml" filepath="$PROJECT_DIR$/../CampusMapB-06/.idea/CampusMapB-06.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../CS3240/.idea/CS3240.iml" filepath="$PROJECT_DIR$/../CS3240/.idea/CS3240.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/CampusMapB-06.iml" filepath="$PROJECT_DIR$/.idea/CampusMapB-06.iml" />
     </modules>
   </component>
 </project>
