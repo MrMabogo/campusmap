@@ -18,8 +18,9 @@ from django.urls import path, include # <--
 from django.views.generic import TemplateView # <--
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name='maps/index.html')), # <--
+    path('', TemplateView.as_view(template_name='maps/index.html'), name='index'), # <--
     path('maps/', include("maps.urls")),
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')), # <--
+    # path('accounts/logout/', include('allauth.account.views.LogoutView')),
 ]
