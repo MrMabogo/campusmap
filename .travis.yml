@@ -4,6 +4,14 @@ python:
 services:
 - postgresql
 cache: pip
+env:
+  global:
+    - DB_ENGINE=django.db.backends.postgresql
+    - DB_NAME=travis_ci_test
+    - DB_USER=postgres
+    - DB_PASSWORD=dbpassword
+    - DB_HOST=localhost
+    - DB_PORT=5432
 install:
 - pip install -r requirements.txt
 before_script:
