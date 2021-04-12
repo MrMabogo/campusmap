@@ -1,7 +1,8 @@
 {% extends 'maps/base.html' %}
+{% block homeactive %}nav-link active{% endblock %}
+{% block mapactive %}nav-link{% endblock %}
 {% load socialaccount %}
 {% block content %}
-
 {% if user.is_authenticated %}
     <p>Welcome, {{ user.username }} !</p>
 {% else %}
