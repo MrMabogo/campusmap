@@ -4,9 +4,6 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 
 import json
-import logging
-
-logger = logging.getLogger(__name__)
 
 # def index_view(request):
 #     return render(request, 'maps/index.html')
