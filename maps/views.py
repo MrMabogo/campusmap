@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import SavedRoute
+from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 
@@ -20,13 +21,39 @@ def get_eta(request):
     pass
 
 def persist_route(request):
-    pass
+    if request.user.is_authenticated:
+        try:
+            req_type = request.POST['persist_type']
+        except(KeyError):
+            return render(request, 'maps/index.html')
+        else:
+            if req_type == 'Save route':
+                return save_route(request)
+            else:
+                return load_route(request)
+    else:
+        return HttpResponseRedirect(reverse('maps:default'))
 
 def save_route(request):
-    pass
+    try:
+        map_user = User.objects.get(is_active=True, password=request.user.password)
+        new_route = SavedRoute(owner=map_user)
+        new_route.coordinates = json.loads(request.POST['coords'])
+    except(KeyError, SavedRoute.DoesNotExist):
+        pass
+    return HttpResponse("saved")
 
 def load_route(request):
-    pass
+    route = None
+    try:
+        map_user = User.objects.get(is_active=True, password=request.user.password)
+    except(KeyError):
+        pass
+    else:
+        route = json.load(list(SavedRoute.objects.get(owner=map_user))[0])
+
+    return HttpResponse(route)
+    
 
 def get_routes(request):
     pass
