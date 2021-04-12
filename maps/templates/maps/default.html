@@ -32,6 +32,11 @@
          });
 
          map.addControl(directions, 'top-left');
+
+         map.addSource('UVA', {
+             type: 'geojson',
+             data: 'https://jsonkeeper.com/b/0BK4'
+         });
      }
 
 </script>
