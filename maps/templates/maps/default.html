@@ -1,5 +1,7 @@
 {% extends 'maps/base.html' %}
 {% load socialaccount %}
+{% block homeactive %}nav-link {% endblock %}
+{% block mapactive %}nav-link active{% endblock %}
 {% block content %}
 <h1>Home Map</h1>
 <div id='map' width="100%" style='height:50em'></div>
