@@ -18,9 +18,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-env = environ.Env()
-environ.Env.read_env()
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
@@ -87,14 +84,19 @@ WSGI_APPLICATION = 'CampusMapB-06.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': env("DB_ENGINE"),
-        'NAME': env("DB_NAME")
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres'
     }
 }
 
 db_from_env = dj_database_url.config(conn_max_age=600)
 if db_from_env:
     DATABASES['default'].update(db_from_env)
+else:
+    env = environ.Env()
+    environ.Env.read_env()
+    DATABASES['default']['ENGINE'] = env('DB_ENGINE')
+    DATABASES['default']['NAME'] = env('DB_NAME')
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
