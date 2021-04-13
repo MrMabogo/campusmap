@@ -35,8 +35,9 @@
 
          map.addSource('UVA', {
              type: 'geojson',
-             data: 'https://jsonkeeper.com/b/0BK4'
+             data: 'https://gist.githubusercontent.com/hudsonburke/7ce0e2657f3c5e22244a10c2cc0e9c6f/raw/7a4e8eefbf0d1b10321e1b13ea254e868ec7ad22/geo_facilities.json' // 'https://jsonkeeper.com/b/0BK4'
          });
+         while(!map.isSourceLoaded('UVA')); // makes sure that the source finishes loading before moving on
      }
 
 </script>
