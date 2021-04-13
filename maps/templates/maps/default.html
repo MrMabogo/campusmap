@@ -1,8 +1,12 @@
 {% extends 'maps/base.html' %}
 {% block content %}
 <h1>Home Map</h1>
-<div id='map' width="100%" style='height:45em'></div>
+<div id='map' width="66.6%" style='height:45em'></div>
 <div id="instructions"></div>
+    <div class='heading'>
+        <h1>Our locations</h1>
+    </div>
+    <div id='listings' class='listings'></div>
 <script>
      mapboxgl.accessToken = 'pk.eyJ1IjoiYm1ib2dvIiwiYSI6ImNrbWUzaG9qNjJyazMyd29qMGxrbHZvd2sifQ.oG0-1XdG-OAeNRxL0Vwz6g';
 
@@ -16,7 +20,62 @@
         setupMap([-78.512, 38.036])
     }
 
-    function setupMap(center) {
+    // builds the list for
+    function buildLocationList(data) {
+         data.features.forEach(function(facility, i){
+             /**
+              * Create a shortcut for `facility.properties`,
+              * which will be used several times below.
+              **/
+             var prop = facility.properties;
+
+             /* Add a new listing section to the sidebar. */
+             var listings = document.getElementById('listings');
+             var listing = listings.appendChild(document.createElement('div'));
+             /* Assign a unique `id` to the listing. */
+             listing.id = "listing-" + data.features[i].properties.id;
+             /* Assign the `item` class to each listing for styling. */
+             listing.className = 'item';
+
+             /* Add the link to the individual listing created above. */
+             var link = listing.appendChild(document.createElement('a'));
+             link.href = '#';
+             link.className = 'title';
+             link.id = "link-" + prop.id;
+             link.innerHTML = prop.address;
+
+             /* Add details to the individual listing. */
+             var details = listing.appendChild(document.createElement('div'));
+             details.innerHTML = prop.name;
+             /* if (prop.phone) {
+                 details.innerHTML += ' · ' + prop.phoneFormatted;
+             }
+             if (prop.distance) {
+                 var roundedDistance = Math.round(prop.distance * 100) / 100;
+                 details.innerHTML +=
+                     '<p><strong>' + roundedDistance + ' miles away</strong></p>';
+             } */
+             link.addEventListener('click', function(e){
+                 for (var i = 0; i < data.features.length; i++) {
+                     if (this.id === "link-" + data.features[i].properties.id) {
+                         var clickedListing = data.features[i];
+                         map.flyTo({
+                             center: clickedListing.geometry.coordinates,
+                             zoom: 15
+                         });
+                         //createPopUp(clickedListing);
+                     }
+                 }
+                 var activeItem = document.getElementsByClassName('active');
+                 if (activeItem[0]) {
+                     activeItem[0].classList.remove('active');
+                 }
+                 this.parentNode.classList.add('active');
+             });
+         });
+     }
+
+     function setupMap(center) {
          var map = new mapboxgl.Map({
            container: 'map',
            center: center,
@@ -24,29 +83,147 @@
            style: 'mapbox://styles/mapbox/streets-v11'
          })
 
-         var nav = new mapboxgl.NavigationControl();
+        // zoom and compass stuff
+         var nav = new mapboxgl.NavigationControl(); // https://docs.mapbox.com/mapbox-gl-js/example/navigation/
          map.addControl(nav);
 
-         var geocoder = new MapboxGeocoder({ // https://docs.mapbox.com/help/tutorials/local-search-geocoding-api/#}
+         // geocoder that should bias search results to UVA area
+         let geocoder = new MapboxGeocoder({ // https://docs.mapbox.com/help/tutorials/local-search-geocoding-api/
                  accessToken: mapboxgl.accessToken,
                  mapboxgl: mapboxgl,
                  marker: false,
                  bbox: [-79, 37, -78, 39], // boundary box for Charlottesville
                  proximity: center // bias results to favor ones closer to location
-             })
+         });
 
-         var directions = new MapboxDirections({
+         // map.addControl(geocoder, 'bottom-right');
+
+
+         var directions = new MapboxDirections({ // https://github.com/mapbox/mapbox-gl-directions
              accessToken: mapboxgl.accessToken,
              geocoder: geocoder
          });
+         // puts the search boxes in the top left corner
          map.addControl(directions, 'top-left');
+         map.on('load', function (e){
+             map.addSource('UVA', {
+                type: 'geojson',
+                data: 'https://gist.githubusercontent.com/hudsonburke/7ce0e2657f3c5e22244a10c2cc0e9c6f/raw/7a4e8eefbf0d1b10321e1b13ea254e868ec7ad22/geo_facilities.json' // 'https://jsonkeeper.com/b/0BK4'
+             });
+             //while(!map.isSourceLoaded('UVA')){}; // makes sure that the source finishes loading before moving on
 
-         map.addSource('UVA', {
-             type: 'geojson',
-             data: 'https://gist.githubusercontent.com/hudsonburke/7ce0e2657f3c5e22244a10c2cc0e9c6f/raw/7a4e8eefbf0d1b10321e1b13ea254e868ec7ad22/geo_facilities.json' // 'https://jsonkeeper.com/b/0BK4'
-         });
-         while(!map.isSourceLoaded('UVA')); // makes sure that the source finishes loading before moving on
-     }
+             let facilities = {
+                "type": "FeatureCollection",
+                "features": [
+                    {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                                -78.5034,
+                                38.0356
+                            ]
+                        },
+                        "properties": {
+                            "name": "ROTUNDA",
+                            "address": "1826  University Ave",
+                            "category": "Office"
+                        }
+                    },
+                    {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                                -78.5099,
+                                38.0329
+                            ]
+                        },
+                        "properties": {
+                            "name": "THORNTON HALL",
+                            "address": "351  McCormick Rd",
+                            "category": "Office"
+                        }
+                    },
+                    {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                                null,
+                                null
+                            ]
+                        },
+                        "properties": {
+                            "name": "RICE HALL",
+                            "address": "85  Engineers Way",
+                            "category": "Research"
+                        }
+                    }
+                ]
+            }; // map.getSource('UVA');
+
+             // give each facility an id
+             facilities.features.forEach(function (facility, i){
+                 facility.properties.id = i;
+             });
+             // add them to the map
+             map.addLayer({
+                'id' : 'locations',
+                'type' : 'circle',
+                'source' : {
+                    'type' : 'geojson',
+                    'data' : facilities
+                }
+            });
+
+             buildLocationList(facilities);
+
+            /* For each feature in the GeoJSON object above: */
+             facilities.features.forEach(function (marker) {
+                 /* Create a div element for the marker. */
+                 var el = document.createElement('div');
+                 /* Assign a unique `id` to the marker. */
+                 el.id = 'marker-' + marker.properties.id;
+                 /* Assign the `marker` class to each marker for styling. */
+                 el.className = 'marker';
+
+                 /**
+                  * Create a marker using the div element
+                  * defined above and add it to the map.
+                  **/
+                 new mapboxgl.Marker(el, {offset: [0, -23]})
+                     .setLngLat(marker.geometry.coordinates)
+                     .addTo(map);
+
+                 /**
+                  * Listen to the element and when it is clicked, do three things:
+                  * 1. Fly to the point
+                  * 2. Close all other popups and display popup for clicked store
+                  * 3. Highlight listing in sidebar (and remove highlight for all other listings)
+                  **/
+                 el.addEventListener('click', function (e) {
+                     /* Fly to the point */
+                     map.flyTo({
+                         center: marker.geometry.coordinates,
+                         zoom: 15
+                     });
+                     /* Close all other popups and display popup for clicked store */
+                     // createPopUp(marker);
+                     /* Highlight listing in sidebar */
+                     var activeItem = document.getElementsByClassName('active');
+                     e.stopPropagation();
+                     if (activeItem[0]) {
+                         activeItem[0].classList.remove('active');
+                     }
+                     var listing = document.getElementById(
+                         'listing-' + marker.properties.id
+                     );
+                     listing.classList.add('active');
+                 });
+             });
+        });
+    }
 
 </script>
 {% endblock %}
