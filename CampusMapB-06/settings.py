@@ -12,17 +12,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 import django_heroku
 import dj_database_url
-from dotenv import load_dotenv
+import environ
 from pathlib import Path
-
-load_dotenv()
-
-DB_ENGINE = os.getenv("DB_ENGINE")
-DB_NAME = os.getenv("DB_NAME")
-DB_USER = os.getenv("DB_USER")
-DB_PASSWORD = os.getenv("DB_PASSWORD")
-DB_HOST = os.getenv("DB_HOST")
-DB_PORT = os.getenv("DB_PORT")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,7 +28,6 @@ SECRET_KEY = '##@4w2h-oec#fdf4rxky*jy80*tl2=xo+&#s56q^koiqx1132x'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -93,19 +83,20 @@ WSGI_APPLICATION = 'CampusMapB-06.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
-
     'default': {
-        'ENGINE': DB_ENGINE,
-        'NAME': DB_NAME,
-        'USER': DB_USER,
-        'PASSWORD': DB_PASSWORD,
-        'HOST': DB_HOST,
-        'PORT': DB_PORT,
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres'
     }
 }
 
 db_from_env = dj_database_url.config(conn_max_age=600)
-DATABASES['default'].update(db_from_env)
+if db_from_env:
+    DATABASES['default'].update(db_from_env)
+else:
+    env = environ.Env()
+    environ.Env.read_env()
+    DATABASES['default']['ENGINE'] = env('DB_ENGINE')
+    DATABASES['default']['NAME'] = env('DB_NAME')
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
