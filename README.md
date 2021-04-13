@@ -6,11 +6,6 @@ To remove the need of changing the database manually before/after every push/pul
 - Copy and paste the following environment variables into .env:
 > DB_ENGINE=django.db.backends.sqlite3<br/>
 > DB_NAME=db.sqlite3<br/>
-> DB_USER=<br/>
-> DB_PASSWORD=<br/>
-> DB_HOST=<br/>
-> DB_PORT=<br/>
-> DATABASE_URL=<br/>
 
 - Save.<br/>
 Done!
