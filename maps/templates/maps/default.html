@@ -1,40 +1,276 @@
 {% extends 'maps/base.html' %}
+{% load socialaccount %}
 {% block homeactive %}nav-link {% endblock %}
 {% block mapactive %}nav-link active{% endblock %}
 {% block content %}
 <h1>Home Map</h1>
-<div id='map' width="100%" style='height:45em'></div>
-<div id="instructions"></div>
-<script>
-     mapboxgl.accessToken = 'pk.eyJ1IjoiYm1ib2dvIiwiYSI6ImNrbWUzaG9qNjJyazMyd29qMGxrbHZvd2sifQ.oG0-1XdG-OAeNRxL0Vwz6g';
+<div id='map' width="100%" style='height:50em'></div>
+<script type="text/javascript">
+     mapboxgl.accessToken = '{{mapbox_access_token}}'; //renders django view variable
+     var map = new mapboxgl.Map({
+       container: 'map',
+       center: [-78.512, 38.036],
+       minZoom: 12,
+       style: 'mapbox://styles/mapbox/streets-v11'
+     });
 
-    navigator.geolocation.getCurrentPosition(successLocation, errorLocation, { enableHighAccuracy: true })
+     var SaveControl = L.Control.extend({
+        container: null,
+        saveBtn: null,
+        loadBtn: null,
+        originPlaceholder: "Choose a starting place",
+        destPlaceholder: "Choose destination",
+        route: null,
+        onAdd: function(map) {
+            this.container = L.DomUtil.create('div', 'save-control bg-white mt-1');
 
-    function successLocation(position) {
-        setupMap([position.coords.longitude, position.coords.latitude])
-    }
+            let btnGrp = L.DomUtil.create('div', 'button-group', this.container);
+            btnGrp.setAttribute('role', 'group')
+            this.saveBtn = L.DomUtil.create('button', 'btn bg-info text-white');
+            this.saveBtn.setAttribute('type', 'button');
+            this.saveBtn.innerHTML = 'Save route';
 
-    function errorLocation() {
-        setupMap([-78.512, 38.036])
-    }
+            this.loadBtn = L.DomUtil.create('button', 'btn bg-secondary text-white');
+            this.loadBtn.setAttribute('type', 'button');
+            this.loadBtn.innerHTML = 'Load route';
 
-    function setupMap(center) {
-         var map = new mapboxgl.Map({
-           container: 'map',
-           center: center,
-           zoom: 12,
-           style: 'mapbox://styles/mapbox/streets-v11'
-         })
+            btnGrp.appendChild(this.saveBtn);
+            btnGrp.appendChild(this.loadBtn);
 
-         var nav = new mapboxgl.NavigationControl();
-         map.addControl(nav);
+            return this.container;
+        },
 
-         var directions = new MapboxDirections({
+        onRemove: function() {
+            this.getContainer().parentNode.removeChild(getContainer());
+        },
+
+        getTextInput: function(head, placeholder) {
+            var ret = null;
+            var inputs = head.querySelectorAll("input");
+            for(let i = 0; i<inputs.length; i++)
+            {
+                if(inputs[i].placeholder == placeholder && inputs[i].type == "text") 
+                {
+                    ret = inputs[i];
+                    break;
+                }
+            }
+
+            return ret;
+        },
+
+        getRadioInput: function(head, name) {
+            let ret = null;
+            let inputs = head.querySelectorAll("input");
+            for(let i = 0; i<inputs.length; i++)
+            {
+                if(inputs[i].name == name && inputs[i].type == "radio" && inputs[i].checked) 
+                {
+                    ret = inputs[i];
+                    break;
+                }
+            }
+
+            return ret;
+        },
+
+        setup: function() {
+            this.container.parentNode.children[0].children[0].appendChild(this.container); //really ugly, sorry
+            let start = this.getTextInput(this.container.parentNode, this.originPlaceholder);
+            let end = this.getTextInput(this.container.parentNode, this.destPlaceholder);
+            let controller = this;
+            let dirProfile = controller.getRadioInput(controller.container.parentNode, "profile").value;
+
+            this.saveBtn.addEventListener('click', function(e) {
+                let startLatLn = start.value.split(',');
+                let endLatLn = end.value.split(',');
+                dirProfile = controller.getRadioInput(controller.container.parentNode, "profile").value;
+                console.log('clicked');
+                if(startLatLn.length > 1 && endLatLn.length > 1)
+                {
+                    var url = 'https://api.mapbox.com/directions/v5/'+dirProfile+'/' + startLatLn[0] + ',' + startLatLn[1] + ';' + endLatLn[0] +
+                        ',' + endLatLn[1] + '?steps=true&geometries=geojson&access_token=' + mapboxgl.accessToken;
+
+                    var req = new XMLHttpRequest();
+                    req.open('GET', url, true);
+                    req.onload = function() {
+                        var json = JSON.parse(req.response);
+                        var data = json.routes[0];
+                        controller.route = data;
+                        console.log("requested");
+
+                        /*This is supposed to send the route HTTP request to the django view 
+                        var formData = new FormData();
+                        let btnParent = controller.container;
+                        btnParent.innerHTML = '{% csrf_token %}' + btnParent.innerHTML;
+                        var csrf = btnParent.children[0];
+                        formData.append(csrf.name, csrf.value);
+                        formData.append('coords', JSON.stringify(data));
+                        formData.append('persist_type', 'Save route');
+                        fetch('{% url "maps:persist" %}', {
+                            method: 'POST',
+                            body: formData
+                        }).then(res => res.json).then(res => console.log(res));*/
+                    }
+                    req.send()
+                }
+            })
+
+            this.loadBtn.addEventListener('click', function(e) {
+                console.log('clicked2');
+                if(controller.route)
+                {
+                    /*This is supposed to send the route HTTP request to the django view
+                    var formData = new FormData();
+                    let btnParent = controller.container;
+                    btnParent.innerHTML = '{% csrf_token %}' + btnParent.innerHTML;
+                    var csrf = btnParent.children[0];
+                    formData.append(csrf.name, csrf.value);
+                    formData.append('persist_type', 'Load route');
+                    fetch('{% url "maps:persist" %}', {
+                        method: 'POST',
+                        body: formData
+                    }).then(res => res.json).then(res => console.log(res));*/
+                    getRoute(controller.route);
+
+                    let legs = controller.route.geometry.coordinates.length
+                    let startCoord = controller.route.geometry.coordinates[0]
+                    let endCoord = controller.route.geometry.coordinates[legs-1]
+                    var point1 = {
+                        type: 'FeatureCollection',
+                        features: [{
+                            type: 'Feature',
+                            properties: {},
+                            geometry: {
+                                type: 'Point',
+                                coordinates: startCoord
+                            }
+                        }
+                        ]
+                    };
+
+                    var point2 = {
+                        type: 'FeatureCollection',
+                        features: [{
+                            type: 'Feature',
+                            properties: {},
+                            geometry: {
+                                type: 'Point',
+                                coordinates: endCoord
+                            }
+                        }
+                        ]
+                    };
+
+                    if(map.getLayer('start-saved'))
+                    {
+                        map.getSource('start-saved').setData(point1);
+                    } else {
+                        map.addLayer({
+                            id: 'start-saved',
+                            type: 'circle',
+                            source: {
+                                type: 'geojson',
+                                data: {
+                                    type: 'FeatureCollection',
+                                    features: [{
+                                        type: 'Feature',
+                                        properties: {},
+                                        geometry: {
+                                            type: 'Point',
+                                            coordinates: startCoord
+                                        }
+                                    }
+                                    ]
+                                }
+                            },
+                            paint: {
+                                'circle-radius': 10,
+                                'circle-color': '#3887be'
+                            }
+                        });
+                    }
+
+                    if(map.getLayer('end-saved'))
+                    {
+                        map.getSource('end-saved').setData(point2);
+                    } else {
+                        map.addLayer({
+                            id: 'end-saved',
+                            type: 'circle',
+                            source: {
+                                type: 'geojson',
+                                data: {
+                                    type: 'FeatureCollection',
+                                    features: [{
+                                        type: 'Feature',
+                                        properties: {},
+                                        geometry: {
+                                            type: 'Point',
+                                            coordinates: endCoord
+                                        }
+                                    }
+                                    ]
+                                }
+                            },
+                            paint: {
+                                'circle-radius': 10,
+                                'circle-color': '#422244'
+                            }
+                        });
+                    }
+                }
+            })
+        }
+    });
+    var nav = new mapboxgl.NavigationControl();
+    map.addControl(nav);
+    var directions = new MapboxDirections({
             accessToken: mapboxgl.accessToken,
-         });
+    });
 
-         map.addControl(directions, 'top-left');
-     }
+    var saver = new SaveControl();
+    map.addControl(directions, 'top-left');
+    map.addControl(saver, 'top-left');
+    saver.setup();
+    function getRoute(saved) {
+        var geojson = {
+                type: 'Feature',
+                properties: {},
+                geometry: {
+                    type: 'LineString',
+                    coordinates: saved.geometry.coordinates
+                }
+        };
+        if (map.getSource('route')) {
+                map.getSource('route').setData(geojson);
+        } else {
+            map.addLayer({
+                id: 'route',
+                type: 'line',
+                source: {
+                    type: 'geojson',
+                    data: {
+                        type: 'Feature',
+                        properties: {},
+                        geometry: {
+                            type: 'LineString',
+                            coordinates: geojson
+                        }
+                    }
+                },
+                layout: {
+                    'line-join': 'round',
+                    'line-cap': 'round'
+                },
+                paint: {
+                    'line-color': '#429400',
+                    'line-width': 10,
+                    'line-opacity': 0.9
+                }
+            });
+        }
+    }
 
 </script>
 {% endblock %}
