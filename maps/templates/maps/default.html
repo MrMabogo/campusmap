@@ -42,8 +42,13 @@
         originPlaceholder: "Choose a starting place",
         destPlaceholder: "Choose destination",
         route: null,
+        myMap: null,
+
+        //>>Required mapbox functions start
         onAdd: function(map) {
             this.container = L.DomUtil.create('div', 'save-control bg-white mt-1');
+            console.log(this.getContainer());
+            this.myMap = map;
 
             let btnGrp = L.DomUtil.create('div', 'button-group', this.container);
             btnGrp.setAttribute('role', 'group')
@@ -58,13 +63,35 @@
             btnGrp.appendChild(this.saveBtn);
             btnGrp.appendChild(this.loadBtn);
 
-            return this.container;
+            return this.container; //according to Mapbox IControl specification
         },
 
         onRemove: function() {
             this.getContainer().parentNode.removeChild(getContainer());
+            this.myMap = null;
         },
 
+        getDefaultPosition: function() {
+            return 'top-left';
+        },
+        //>>Required mapbox functions end
+
+        getRoute: function(saved) {
+            var geojson = {
+                    type: 'Feature',
+                    properties: {},
+                    geometry: {
+                        type: 'LineString',
+                        coordinates: saved.geometry.coordinates
+                    }
+            };
+            if (this.myMap.getSource('route')) {
+                this.myMap.getSource('route').setData(geojson);
+            } else {
+                alert("Mapbox loaded incorrectly");
+            }
+
+        },
         getTextInput: function(head, placeholder) {
             var ret = null;
             var inputs = head.querySelectorAll("input");
@@ -91,10 +118,11 @@
                     break;
                 }
             }
+            return ret;
         },
 
         setup: function() {
-            this.container.parentNode.children[0].children[0].appendChild(this.container); //really ugly, sorry
+            this.container.parentNode.children[0].children[0].appendChild(this.container);
             let start = this.getTextInput(this.container.parentNode, this.originPlaceholder);
             let end = this.getTextInput(this.container.parentNode, this.destPlaceholder);
             let controller = this;
@@ -159,7 +187,6 @@
             })
 
             this.loadBtn.addEventListener('click', function(e) {
-                console.log('clicked2');
                 if(controller.route)
                 {
                     /*This is supposed to send the route HTTP request to the django view
@@ -173,9 +200,24 @@
                         method: 'POST',
                         body: formData
                     }).then(res => res.json).then(res => console.log(res));*/
-                    getRoute(controller.route);
+                    controller.getRoute(controller.route);
+                    var steps = controller.route.legs[0].steps;
+
+                    var dirDiv = controller.container.parentNode.parentNode.children[1];
+                    dirDiv.innerHTML = '';
+                    var loadDirDiv = L.DomUtil.create('div', 'directions-control mapbox-directions-instructions-wrapper directions-control-directions', dirDiv);
+                    var instructions = L.DomUtil.create('ol', 'mapbox-directions-steps', loadDirDiv);
+
+                    var tripInstructions = [];
+                    for (var i = 0; i < steps.length; i++) {
+                        var coord = steps[i].geometry.coordinates[0];
+                        tripInstructions.push('<br><li class="mapbox-directions-step" data-lat="'+coord[1]+'" data-lng="'+coord[0]+'">' + steps[i].maneuver.instruction) + '</li>';
+                    }
+
+                    instructions.innerHTML = '<br><div class="mapbox-directions-route-summary"> <h1>'+ 
+                        Math.floor(controller.route.distance/1609*100)/100+'mi </h1><span>' + 
+                            Math.floor(controller.route.duration / 60) + ' min </span></div>' + tripInstructions;
                     
-                    console.log(controller.route);
 
                     let legs = controller.route.geometry.coordinates.length
                     let startCoord = controller.route.geometry.coordinates[0]
@@ -206,11 +248,11 @@
                         ]
                     };
 
-                    if(map.getLayer('start-saved'))
+                    if(controller.myMap.getLayer('start-saved'))
                     {
-                        map.getSource('start-saved').setData(point1);
+                        controller.myMap.getSource('start-saved').setData(point1);
                     } else {
-                        map.addLayer({
+                        controller.myMap.addLayer({
                             id: 'start-saved',
                             type: 'circle',
                             source: {
@@ -235,11 +277,11 @@
                         });
                     }
 
-                    if(map.getLayer('end-saved'))
+                    if(controller.myMap.getLayer('end-saved'))
                     {
-                        map.getSource('end-saved').setData(point2);
+                        controller.myMap.getSource('end-saved').setData(point2);
                     } else {
-                        map.addLayer({
+                        controller.myMap.addLayer({
                             id: 'end-saved',
                             type: 'circle',
                             source: {
@@ -354,10 +396,9 @@
 
          // puts the search boxes and saves in the top left corner
          map.addControl(directions, 'top-left');
-         //map.addControl(saver, 'top-left');
-         //saver.setup();
+         map.addControl(saver, 'top-left');
+         saver.setup();
          map.on('load', function (e){  // https://docs.mapbox.com/help/tutorials/building-a-store-locator/
-            //map.resize(); //supposed to guarantee sizing according to div style
             //removes need to double-click to load route
             map.addLayer({
                     id: 'route',
@@ -501,23 +542,7 @@
                  });
              });
         });
-    }
-    function getRoute(saved) {
-        var geojson = {
-                type: 'Feature',
-                properties: {},
-                geometry: {
-                    type: 'LineString',
-                    coordinates: saved.geometry.coordinates
-                }
-        };
-        if (map.getSource('route')) {
-            map.getSource('route').setData(geojson);
-        } else {
-            alert("Mapbox loaded incorrectly");
-        }
-
-    }
+     }
 
 </script>
 {% endblock %}
