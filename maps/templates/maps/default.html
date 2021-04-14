@@ -3,23 +3,28 @@
 {% block homeactive %}nav-link {% endblock %}
 {% block mapactive %}nav-link active{% endblock %}
 {% block content %}
-<h1>Home Map</h1>
-<div id='map' width="100%" style='height:50em'></div>
-<div id="instructions"></div>
+
+<div id='map' style="width: 100%; height: 92%;"></div>
+    <div id="instructions"></div>
     <div class='heading'>
         <h1>Our locations</h1>
     </div>
     <div id='listings' class='listings'></div>
-<!--<script type="text/javascript"> -->
-<script>
-     mapboxgl.accessToken = 'pk.eyJ1IjoiYm1ib2dvIiwiYSI6ImNrbWUzaG9qNjJyazMyd29qMGxrbHZvd2sifQ.oG0-1XdG-OAeNRxL0Vwz6g'; // '{{mapbox_access_token}}'; //renders django view variable
-     var map = new mapboxgl.Map({
-       container: 'map',
-       center: [-78.512, 38.036],
-       minZoom: 12,
-       style: 'mapbox://styles/mapbox/streets-v11'
-     });
+<script type="text/javascript">
+     mapboxgl.accessToken = '{{mapbox_access_token}}'; //renders django view variable
+     geocodioApiKey = '{{geocodio_api_key}}';
 
+     function getCoordinates(origin, dest) {
+        let asArr = [origin, dest];
+        var coordPromise = fetch('https://api.geocod.io/v1.6/geocode?api_key='+geocodioApiKey, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify(asArr)
+        });
+        return coordPromise;
+    }
 
      var SaveControl = L.Control.extend({
         container: null,
@@ -77,6 +82,182 @@
                     break;
                 }
             }
+        },
+
+        setup: function() {
+            this.container.parentNode.children[0].children[0].appendChild(this.container); //really ugly, sorry
+            let start = this.getTextInput(this.container.parentNode, this.originPlaceholder);
+            let end = this.getTextInput(this.container.parentNode, this.destPlaceholder);
+            let controller = this;
+            let dirProfile = controller.getRadioInput(controller.container.parentNode, "profile").value;
+
+            this.saveBtn.addEventListener('click', function(e) {
+                let startLatLn = start.value.split(',');
+                let endLatLn = end.value.split(',');
+                let dirProfile = controller.getRadioInput(controller.container.parentNode, "profile").value;
+
+                if(startLatLn.length < 1 || endLatLn.length < 1){
+                    alert("Is origin/destination correct?");
+                } else if(startLatLn.length == 2 && endLatLn.length == 2) {
+                    var url = 'https://api.mapbox.com/directions/v5/'+dirProfile+'/' + startLatLn[0] + ',' + startLatLn[1] + ';' + endLatLn[0] +
+                        ',' + endLatLn[1] + '?steps=true&geometries=geojson&access_token=' + mapboxgl.accessToken;
+
+                    var req = new XMLHttpRequest();
+                    req.open('GET', url, true);
+                    req.onload = function() {
+                        var json = JSON.parse(req.response);
+                        var data = json.routes[0];
+                        controller.route = data;
+
+                        /*//This is supposed to send the route save HTTP request to the django view 
+                        var formData = new FormData();
+                        let btnParent = controller.container;
+                        btnParent.innerHTML = '{% csrf_token %}' + btnParent.innerHTML;
+                        var csrf = btnParent.children[0];
+                        formData.append(csrf.name, csrf.value);
+                        formData.append('coords', JSON.stringify(data));
+                        formData.append('persist_type', 'Save route');
+                        fetch('{% url "maps:persist" %}', {
+                            method: 'POST',
+                            body: formData
+                        }).then(res => res.json()).then(res => console.log(res));*/
+                    }
+                    req.send()
+                } else {
+                    getCoordinates(start.value, end.value).then(res => res.json().then(res => {
+                        //response to first address is at res['results'][0]
+                        let startRes = res['results'][0]['response']['results'][0];
+                        startLatLn = [startRes.location.lng, startRes.location.lat];
+
+                        //response to second address is at res.results[1]
+                        let endRes = res['results'][1]['response']['results'][0];
+                        endLatLn = [endRes.location.lng, endRes.location.lat];
+
+                        var url = 'https://api.mapbox.com/directions/v5/'+dirProfile+'/' + startLatLn[0] + ',' + startLatLn[1] + ';' + endLatLn[0] +
+                        ',' + endLatLn[1] + '?steps=true&geometries=geojson&access_token=' + mapboxgl.accessToken;
+
+                        var req = new XMLHttpRequest();
+                        req.open('GET', url, true);
+                        req.onload = function() {
+                            var json = JSON.parse(req.response);
+                            var data = json.routes[0];
+                            controller.route = data;
+                        }
+                        req.send()
+                    }));
+                }
+                
+            })
+
+            this.loadBtn.addEventListener('click', function(e) {
+                console.log('clicked2');
+                if(controller.route)
+                {
+                    /*This is supposed to send the route HTTP request to the django view
+                    var formData = new FormData();
+                    let btnParent = controller.container;
+                    btnParent.innerHTML = '{% csrf_token %}' + btnParent.innerHTML;
+                    var csrf = btnParent.children[0];
+                    formData.append(csrf.name, csrf.value);
+                    formData.append('persist_type', 'Load route');
+                    fetch('{% url "maps:persist" %}', {
+                        method: 'POST',
+                        body: formData
+                    }).then(res => res.json).then(res => console.log(res));*/
+                    getRoute(controller.route);
+                    
+                    console.log(controller.route);
+
+                    let legs = controller.route.geometry.coordinates.length
+                    let startCoord = controller.route.geometry.coordinates[0]
+                    let endCoord = controller.route.geometry.coordinates[legs-1]
+                    var point1 = {
+                        type: 'FeatureCollection',
+                        features: [{
+                            type: 'Feature',
+                            properties: {},
+                            geometry: {
+                                type: 'Point',
+                                coordinates: startCoord
+                            }
+                        }
+                        ]
+                    };
+
+                    var point2 = {
+                        type: 'FeatureCollection',
+                        features: [{
+                            type: 'Feature',
+                            properties: {},
+                            geometry: {
+                                type: 'Point',
+                                coordinates: endCoord
+                            }
+                        }
+                        ]
+                    };
+
+                    if(map.getLayer('start-saved'))
+                    {
+                        map.getSource('start-saved').setData(point1);
+                    } else {
+                        map.addLayer({
+                            id: 'start-saved',
+                            type: 'circle',
+                            source: {
+                                type: 'geojson',
+                                data: {
+                                    type: 'FeatureCollection',
+                                    features: [{
+                                        type: 'Feature',
+                                        properties: {},
+                                        geometry: {
+                                            type: 'Point',
+                                            coordinates: startCoord
+                                        }
+                                    }
+                                    ]
+                                }
+                            },
+                            paint: {
+                                'circle-radius': 10,
+                                'circle-color': '#3887be'
+                            }
+                        });
+                    }
+
+                    if(map.getLayer('end-saved'))
+                    {
+                        map.getSource('end-saved').setData(point2);
+                    } else {
+                        map.addLayer({
+                            id: 'end-saved',
+                            type: 'circle',
+                            source: {
+                                type: 'geojson',
+                                data: {
+                                    type: 'FeatureCollection',
+                                    features: [{
+                                        type: 'Feature',
+                                        properties: {},
+                                        geometry: {
+                                            type: 'Point',
+                                            coordinates: endCoord
+                                        }
+                                    }
+                                    ]
+                                }
+                            },
+                            paint: {
+                                'circle-radius': 10,
+                                'circle-color': '#422244'
+                            }
+                        });
+                    }
+                }
+            })
+        }
+    });
 
     function buildLocationList(data) {
          data.features.forEach(function(facility, i){
@@ -160,9 +341,40 @@
              accessToken: mapboxgl.accessToken,
              geocoder: geocoder
          });
-         // puts the search boxes in the top left corner
+         var saver = new SaveControl();
+
+         // puts the search boxes and saves in the top left corner
          map.addControl(directions, 'top-left');
+         map.addControl(saver, 'top-left');
+         saver.setup();
          map.on('load', function (e){  // https://docs.mapbox.com/help/tutorials/building-a-store-locator/
+            map.resize(); //supposed to guarantee sizing according to div style
+            //removes need to double-click to load route
+            map.addLayer({
+                    id: 'route',
+                    type: 'line',
+                    source: {
+                        type: 'geojson',
+                        data: {
+                            type: 'Feature',
+                            properties: {},
+                            geometry: {
+                                type: 'LineString',
+                                coordinates: {}
+                            }
+                        }
+                    },
+                    layout: {
+                        'line-join': 'round',
+                        'line-cap': 'round'
+                    },
+                    paint: {
+                        'line-color': '#429400',
+                        'line-width': 10,
+                        'line-opacity': 0.8
+                    }
+                });
+
              map.addSource('UVA', {
                 type: 'geojson',
                 data: 'https://gist.githubusercontent.com/hudsonburke/7ce0e2657f3c5e22244a10c2cc0e9c6f/raw/7a4e8eefbf0d1b10321e1b13ea254e868ec7ad22/geo_facilities.json' // 'https://jsonkeeper.com/b/0BK4'
@@ -282,165 +494,9 @@
         });
 
             return ret;
-        },
-
-        setup: function() {
-            this.container.parentNode.children[0].children[0].appendChild(this.container); //really ugly, sorry
-            let start = this.getTextInput(this.container.parentNode, this.originPlaceholder);
-            let end = this.getTextInput(this.container.parentNode, this.destPlaceholder);
-            let controller = this;
-            let dirProfile = controller.getRadioInput(controller.container.parentNode, "profile").value;
-
-            this.saveBtn.addEventListener('click', function(e) {
-                let startLatLn = start.value.split(',');
-                let endLatLn = end.value.split(',');
-                dirProfile = controller.getRadioInput(controller.container.parentNode, "profile").value;
-                console.log('clicked');
-                if(startLatLn.length > 1 && endLatLn.length > 1)
-                {
-                    var url = 'https://api.mapbox.com/directions/v5/'+dirProfile+'/' + startLatLn[0] + ',' + startLatLn[1] + ';' + endLatLn[0] +
-                        ',' + endLatLn[1] + '?steps=true&geometries=geojson&access_token=' + mapboxgl.accessToken;
-
-                    var req = new XMLHttpRequest();
-                    req.open('GET', url, true);
-                    req.onload = function() {
-                        var json = JSON.parse(req.response);
-                        var data = json.routes[0];
-                        controller.route = data;
-                        console.log("requested");
-
-                        /*This is supposed to send the route HTTP request to the django view 
-                        var formData = new FormData();
-                        let btnParent = controller.container;
-                        btnParent.innerHTML = '{% csrf_token %}' + btnParent.innerHTML;
-                        var csrf = btnParent.children[0];
-                        formData.append(csrf.name, csrf.value);
-                        formData.append('coords', JSON.stringify(data));
-                        formData.append('persist_type', 'Save route');
-                        fetch('{% url "maps:persist" %}', {
-                            method: 'POST',
-                            body: formData
-                        }).then(res => res.json).then(res => console.log(res));*/
-                    }
-                    req.send()
-                }
-            })
-
-            this.loadBtn.addEventListener('click', function(e) {
-                console.log('clicked2');
-                if(controller.route)
-                {
-                    /*This is supposed to send the route HTTP request to the django view
-                    var formData = new FormData();
-                    let btnParent = controller.container;
-                    btnParent.innerHTML = '{% csrf_token %}' + btnParent.innerHTML;
-                    var csrf = btnParent.children[0];
-                    formData.append(csrf.name, csrf.value);
-                    formData.append('persist_type', 'Load route');
-                    fetch('{% url "maps:persist" %}', {
-                        method: 'POST',
-                        body: formData
-                    }).then(res => res.json).then(res => console.log(res));*/
-                    getRoute(controller.route);
-
-                    let legs = controller.route.geometry.coordinates.length
-                    let startCoord = controller.route.geometry.coordinates[0]
-                    let endCoord = controller.route.geometry.coordinates[legs-1]
-                    var point1 = {
-                        type: 'FeatureCollection',
-                        features: [{
-                            type: 'Feature',
-                            properties: {},
-                            geometry: {
-                                type: 'Point',
-                                coordinates: startCoord
-                            }
-                        }
-                        ]
-                    };
-
-                    var point2 = {
-                        type: 'FeatureCollection',
-                        features: [{
-                            type: 'Feature',
-                            properties: {},
-                            geometry: {
-                                type: 'Point',
-                                coordinates: endCoord
-                            }
-                        }
-                        ]
-                    };
-
-                    if(map.getLayer('start-saved'))
-                    {
-                        map.getSource('start-saved').setData(point1);
-                    } else {
-                        map.addLayer({
-                            id: 'start-saved',
-                            type: 'circle',
-                            source: {
-                                type: 'geojson',
-                                data: {
-                                    type: 'FeatureCollection',
-                                    features: [{
-                                        type: 'Feature',
-                                        properties: {},
-                                        geometry: {
-                                            type: 'Point',
-                                            coordinates: startCoord
-                                        }
-                                    }
-                                    ]
-                                }
-                            },
-                            paint: {
-                                'circle-radius': 10,
-                                'circle-color': '#3887be'
-                            }
-                        });
-                    }
-
-                    if(map.getLayer('end-saved'))
-                    {
-                        map.getSource('end-saved').setData(point2);
-                    } else {
-                        map.addLayer({
-                            id: 'end-saved',
-                            type: 'circle',
-                            source: {
-                                type: 'geojson',
-                                data: {
-                                    type: 'FeatureCollection',
-                                    features: [{
-                                        type: 'Feature',
-                                        properties: {},
-                                        geometry: {
-                                            type: 'Point',
-                                            coordinates: endCoord
-                                        }
-                                    }
-                                    ]
-                                }
-                            },
-                            paint: {
-                                'circle-radius': 10,
-                                'circle-color': '#422244'
-                            }
-                        });
-                    }
-                }
-            })
         }
-    });
-    var nav = new mapboxgl.NavigationControl();
-    map.addControl(nav);
-    var directions = new MapboxDirections({
-            accessToken: mapboxgl.accessToken,
-    });
 
     var saver = new SaveControl();
-    map.addControl(directions, 'top-left');
     map.addControl(saver, 'top-left');
     saver.setup();
     function getRoute(saved) {
@@ -453,32 +509,9 @@
                 }
         };
         if (map.getSource('route')) {
-                map.getSource('route').setData(geojson);
+            map.getSource('route').setData(geojson);
         } else {
-            map.addLayer({
-                id: 'route',
-                type: 'line',
-                source: {
-                    type: 'geojson',
-                    data: {
-                        type: 'Feature',
-                        properties: {},
-                        geometry: {
-                            type: 'LineString',
-                            coordinates: geojson
-                        }
-                    }
-                },
-                layout: {
-                    'line-join': 'round',
-                    'line-cap': 'round'
-                },
-                paint: {
-                    'line-color': '#429400',
-                    'line-width': 10,
-                    'line-opacity': 0.9
-                }
-            });
+            alert("Mapbox loaded incorrectly");
         }
 
     }
