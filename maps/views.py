@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import SavedRoute
 from django.contrib.auth.models import User
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.urls import reverse
 
 import json
@@ -11,8 +11,10 @@ import json
 
 def default_map(request):
     mapbox_access_token = 'pk.eyJ1IjoiYm1ib2dvIiwiYSI6ImNrbWUzaG9qNjJyazMyd29qMGxrbHZvd2sifQ.oG0-1XdG-OAeNRxL0Vwz6g'
+    geocodio_api_key = 'c67160ed105dde990709bc077e16a76506c7956'
     return render(request, 'maps/default.html',
-                  { 'mapbox_access_token': mapbox_access_token })
+                  { 'mapbox_access_token': mapbox_access_token,
+                  'geocodio_api_key': geocodio_api_key })
 
 def map_search(request):
     pass
@@ -41,7 +43,7 @@ def save_route(request):
         new_route.coordinates = json.loads(request.POST['coords'])
     except(KeyError, SavedRoute.DoesNotExist):
         pass
-    return HttpResponse("saved")
+    return HttpResponse(JsonResponse(dict({'route_status': 'saved'})))
 
 def load_route(request):
     route = None
