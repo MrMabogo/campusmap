@@ -44,7 +44,7 @@ def save_route(request):
         if last_rt != None:
             routeNum = last_rt.routeNumber+1
         save_coords = request.POST['coords']
-        if save_coord != '':
+        if save_coords != '':
             new_route = SavedRoute(owner=map_user, coordinates=json.loads(request.POST['coords']), routeNumber=routeNum)
             print(routeNum)
             new_route.save()
