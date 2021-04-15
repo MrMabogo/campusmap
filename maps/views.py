@@ -34,27 +34,37 @@ def persist_route(request):
             else:
                 return load_route(request)
     else:
-        return HttpResponseRedirect(reverse('maps:default'))
+        return HttpResponse(JsonResponse({'route_status': 'failure'}))
 
 def save_route(request):
     try:
         map_user = User.objects.get(is_active=True, password=request.user.password)
-        new_route = SavedRoute(owner=map_user)
-        new_route.coordinates = json.loads(request.POST['coords'])
+        routeNum = 1
+        last_rt = SavedRoute.objects.filter(owner=map_user).last()
+        if last_rt != None:
+            routeNum = last_rt.routeNumber+1
+        save_coords = request.POST['coords']
+        if save_coord != '':
+            new_route = SavedRoute(owner=map_user, coordinates=json.loads(request.POST['coords']), routeNumber=routeNum)
+            print(routeNum)
+            new_route.save()
+        else:
+            return HttpResponse(JsonResponse({'route_status':'failure'}))
     except(KeyError, SavedRoute.DoesNotExist):
-        pass
-    return HttpResponse(JsonResponse(dict({'route_status': 'saved'})))
+        return HttpResponse(JsonResponse({'route_status':'failure'}))
+    return HttpResponse(JsonResponse({'route_status': 'saved'}))
 
 def load_route(request):
     route = None
     try:
-        map_user = User.objects.get(is_active=True, password=request.user.password)
-    except(KeyError):
-        pass
+        map_user = None
+        if request.user.is_authenticated:
+            map_user = request.user
+        route = SavedRoute.objects.filter(owner=map_user, routeNumber=request.POST['route_id']).get().coordinates
+    except(KeyError, SavedRoute.MultipleObjectsReturned, SavedRoute.DoesNotExist):
+        return HttpResponse(JsonResponse({'route_status': 'failure', 'route':[]}))
     else:
-        route = json.load(list(SavedRoute.objects.get(owner=map_user))[0])
-
-    return HttpResponse(route)
+        return HttpResponse(JsonResponse({'route_status': 'loaded', 'route':route}))
     
 
 def get_routes(request):

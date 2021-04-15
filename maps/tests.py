@@ -1,4 +1,10 @@
 from django.test import TestCase
+from django.http import HttpRequest, HttpResponse
+from django.urls import reverse
+from .models import SavedRoute
+from django.contrib.auth.models import User
+
+import json
 
 class NavigationTests(TestCase):
     def test_search_for_fake_location(self):
@@ -20,7 +26,12 @@ class NavigationTests(TestCase):
         '''
         Save route without specifying
         '''
-        self.assertIs(True, True) #placeholder
+        request = HttpRequest()
+        request.POST['persist_type'] = 'Save route'
+        request.POST['coords'] = ''
+        response = json.loads(self.client.get(reverse('maps:persist')).content)
+
+        self.assertEqual(response, {'route_status': 'failure'})
     def test_save_multiple_routes(self):
         '''
         Save multiple valid routes
