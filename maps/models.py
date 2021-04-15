@@ -3,4 +3,5 @@ from django.contrib.auth.models import User
 
 class SavedRoute(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    coordinates = models.JSONField()
+    routeNumber = models.IntegerField(default=0)
+    coordinates = models.JSONField(default=dict)
