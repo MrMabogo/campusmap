@@ -47,6 +47,7 @@
 
         function successLocation(position) {
             setupMap([position.coords.longitude, position.coords.latitude])
+            userLocation = [position.coords.longitude, position.coords.latitude] // automatically global variable for the user's location
         }
 
         function errorLocation() {
@@ -65,7 +66,7 @@
             return coordPromise;
         }
 
-        var SaveControl = L.Control.extend({
+        var SaveControl = L.Control.extend({ // I have no idea what this is doing
             container: null,
             saveBtn: null,
             loadBtn: null,
@@ -171,7 +172,7 @@
                 form.appendChild(this.container);
                 var start = this.getTextInput(inDiv, this.originPlaceholder);
                 var end = this.getTextInput(inDiv, this.destPlaceholder);
-                var dirProfile = this.getRadioInput(inDiv, "profile").value;
+                var dirProfile = this.getRadioInput(inDiv, "profile").value; // this is duplicated in the event listener
                 var controller = this;
 
                 this.saveBtn.addEventListener('click', function (e) {
@@ -388,10 +389,6 @@
 
         function buildLocationList(data) {
             data.features.forEach(function (facility, i) {
-                /**
-                 * Create a shortcut for `facility.properties`,
-                 * which will be used several times below.
-                 **/
                 var prop = facility.properties;
 
                 /* Add a new listing section to the sidebar. */
@@ -422,7 +419,65 @@
                                 zoom: 15
                             });
                             // pass link coordinates to directions API
-                            // prop.coordinates
+                            // used https://docs.mapbox.com/help/tutorials/getting-started-directions-api/?size=n_10_n
+                            var start = userLocation;
+                            var end = clickedListing.geometry.coordinates;
+                            var url = 'https://api.mapbox.com/directions/v5/walking/' + start[0] + ',' + start[1] + ';' + end[0] +
+                                ',' + end[1] + '?steps=true&geometries=geojson&access_token=' + mapboxgl.accessToken;
+                            // make an XHR request https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest
+                            var req = new XMLHttpRequest();
+                            req.open('GET', url, true);
+                            req.onload = function () {
+                                var json = JSON.parse(req.response);
+                                var data = json.routes[0];
+                                var route = data.geometry.coordinates;
+                                var geojson = {
+                                    type: 'Feature',
+                                    properties: {},
+                                    geometry: {
+                                        type: 'LineString',
+                                        coordinates: route
+                                    }
+                                };
+                                // if the route already exists on the map, reset it using setData
+                                if (map.getSource('route')) {
+                                    map.getSource('route').setData(geojson);
+                                } else { // otherwise, make a new request
+                                    map.addLayer({
+                                        id: 'route',
+                                        type: 'line',
+                                        source: {
+                                            type: 'geojson',
+                                            data: {
+                                                type: 'Feature',
+                                                properties: {},
+                                                geometry: {
+                                                    type: 'LineString',
+                                                    coordinates: geojson
+                                                }
+                                            }
+                                        },
+                                        layout: {
+                                            'line-join': 'round',
+                                            'line-cap': 'round'
+                                        },
+                                        paint: {
+                                            'line-color': '#3887be',
+                                            'line-width': 5,
+                                            'line-opacity': 0.75
+                                        }
+                                    });
+                                }
+                                // add turn instructions to the map
+                                var instructions = document.getElementById('instructions');
+                                var steps = data.legs[0].steps;
+                                var tripInstructions = [];
+                                for (var i = 0; i < steps.length; i++) {
+                                    var coord = steps[i].geometry.coordinates[0];
+                                    tripInstructions.push('<br><li class="mapbox-directions-step" data-lat="' + coord[1] + '" data-lng="' + coord[0] + '">' + steps[i].maneuver.instruction) + '</li>';
+                                }
+                            };
+                            req.send();
                         }
                     }
                     var activeItem = document.getElementsByClassName('active');
@@ -494,7 +549,7 @@
                 map.addSource('UVA', {
                     type: 'geojson',
                     data: 'https://gist.githubusercontent.com/hudsonburke/7ce0e2657f3c5e22244a10c2cc0e9c6f/raw/7a4e8eefbf0d1b10321e1b13ea254e868ec7ad22/geo_facilities.json' // 'https://jsonkeeper.com/b/0BK4'
-                });
+                }); // this doesn't currently work as it won't finish loading
                 //while(!map.isSourceLoaded('UVA')){}; // makes sure that the source finishes loading before moving on
 
                 let facilities = {
