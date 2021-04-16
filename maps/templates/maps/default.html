@@ -417,11 +417,12 @@
                     for (var i = 0; i < data.features.length; i++) {
                         if (this.id === "link-" + data.features[i].properties.id) {
                             var clickedListing = data.features[i];
-                            map.flyTo({
+                            map.flyTo({ // doesn't work because map is outside of the scope
                                 center: clickedListing.geometry.coordinates,
                                 zoom: 15
                             });
-
+                            // pass link coordinates to directions API
+                            // prop.coordinates
                         }
                     }
                     var activeItem = document.getElementsByClassName('active');
@@ -434,7 +435,7 @@
         }
 
         function setupMap(center) {
-            var map = new mapboxgl.Map({
+            map = new mapboxgl.Map({ // automatically global
                 container: 'map',
                 center: center,
                 zoom: 12,
