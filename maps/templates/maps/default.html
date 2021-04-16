@@ -46,12 +46,13 @@
         defaultDest = "Desired End Location";
 
         function successLocation(position) {
-            setupMap([position.coords.longitude, position.coords.latitude])
-            userLocation = [position.coords.longitude, position.coords.latitude] // automatically global variable for the user's location
+            setupMap([position.coords.longitude, position.coords.latitude]);
+            userLocation = [position.coords.longitude, position.coords.latitude]; // automatically global variable for the user's location
         }
 
         function errorLocation() {
-            setupMap([-78.512, 38.036])
+            setupMap([-78.512, 38.036]);
+            userLocation = [-78.512, 38.036];
         }
 
         function getCoordinates(origin, dest) {
@@ -411,6 +412,7 @@
                 details.innerHTML = prop.address;
 
                 link.addEventListener('click', function (e) {
+                    e.preventDefault();
                     for (var i = 0; i < data.features.length; i++) {
                         if (this.id === "link-" + data.features[i].properties.id) {
                             var clickedListing = data.features[i];
@@ -422,7 +424,7 @@
                             // used https://docs.mapbox.com/help/tutorials/getting-started-directions-api/?size=n_10_n
                             var start = userLocation;
                             var end = clickedListing.geometry.coordinates;
-                            var url = 'https://api.mapbox.com/directions/v5/walking/' + start[0] + ',' + start[1] + ';' + end[0] +
+                            var url = 'https://api.mapbox.com/directions/v5/mapbox/walking/' + start[0] + ',' + start[1] + ';' + end[0] +
                                 ',' + end[1] + '?steps=true&geometries=geojson&access_token=' + mapboxgl.accessToken;
                             // make an XHR request https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest
                             var req = new XMLHttpRequest();
