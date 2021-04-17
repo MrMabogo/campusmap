@@ -31,6 +31,8 @@ def persist_route(request):
         else:
             if req_type == 'Save route':
                 return save_route(request)
+            elif req_type == 'Delete route':
+                return delete_route(request)
             else:
                 return load_route(request)
     else:
@@ -46,13 +48,12 @@ def save_route(request):
         save_coords = request.POST['coords']
         if save_coords != '':
             new_route = SavedRoute(owner=map_user, coordinates=json.loads(request.POST['coords']), routeNumber=routeNum)
-            print(routeNum)
             new_route.save()
         else:
             return HttpResponse(JsonResponse({'route_status':'failure'}))
     except(KeyError, SavedRoute.DoesNotExist):
         return HttpResponse(JsonResponse({'route_status':'failure'}))
-    return HttpResponse(JsonResponse({'route_status': 'saved'}))
+    return HttpResponse(JsonResponse({'route_status': 'saved', 'message': f'saved with id {routeNum}'}))
 
 def load_route(request):
     route = None
@@ -62,10 +63,18 @@ def load_route(request):
             map_user = request.user
         route = SavedRoute.objects.filter(owner=map_user, routeNumber=request.POST['route_id']).get().coordinates
     except(KeyError, SavedRoute.MultipleObjectsReturned, SavedRoute.DoesNotExist):
-        return HttpResponse(JsonResponse({'route_status': 'failure', 'route':[]}))
+        return HttpResponse(JsonResponse({'route_status': 'failure'}))
     else:
         return HttpResponse(JsonResponse({'route_status': 'loaded', 'route':route}))
     
+def delete_route(request):
+    try:
+        map_user = request.user
+        num = SavedRoute.objects.filter(owner=map_user, routeNumber=request.POST['route_id']).delete()[0]
+    except(KeyError, SavedRoute.DoesNotExist):
+        return HttpResponse(JsonResponse({'route_status': 'failure'}))
+    else:
+        return HttpResponse(JsonResponse({'route_status': 'deleted', 'message': f'deleted {num} objects'}))
 
 def get_routes(request):
     pass

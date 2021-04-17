@@ -71,9 +71,11 @@
             container: null,
             saveBtn: null,
             loadBtn: null,
+            delBtn: null,
             originPlaceholder: defaultOrigin,
             destPlaceholder: defaultDest,
             route: null,
+            loaded: false, //whether the current route was loaded by the load button
             myMap: null,
             loadIn: null,
             myInDiv: null,
@@ -84,29 +86,52 @@
                 this.container = L.DomUtil.create('div', 'save-control bg-white mt-1');
                 this.myMap = map;
 
-                var btnGrp = L.DomUtil.create('div', 'button-group', this.container);
-                btnGrp.setAttribute('role', 'group')
-                this.saveBtn = L.DomUtil.create('input', 'btn bg-info text-white');
+                var btnGrp = L.DomUtil.create('div', 'btn-group', this.container);
+                btnGrp.setAttribute('role', 'group');
+                //basic setup
+                this.saveBtn = L.DomUtil.create('a', 'btn bg-info text-white form-control', btnGrp);
                 this.saveBtn.setAttribute('name', 'persist_type');
                 this.saveBtn.setAttribute('type', 'button');
-                this.saveBtn.setAttribute('value', 'Save route'); //innerHTML = 'Save route';
-
-                this.loadBtn = L.DomUtil.create('input', 'btn bg-secondary text-white');
+                this.saveBtn.setAttribute('value', 'Save route');
+                this.saveBtn.innerHTML = 'Save';
+                //popover setup
+                this.saveBtn.setAttribute('tabindex', '0');
+                this.saveBtn.setAttribute('data-container', 'body');
+                this.saveBtn.setAttribute('data-toggle', 'popover');
+                //this.saveBtn.setAttribute('data-trigger', 'focus');
+                this.saveBtn.setAttribute('title', 'Confirm Save');
+                this.saveBtn.setAttribute('data-content', 'Click again to confirm.');
+                
+                this.loadBtn = L.DomUtil.create('input', 'btn bg-secondary text-white form-control', btnGrp);
                 this.loadBtn.setAttribute('name', 'persist_type');
                 this.loadBtn.setAttribute('type', 'button');
                 this.loadBtn.setAttribute('value', 'Load route');
 
+                this.delBtn = L.DomUtil.create('input', 'btn bg-danger text-white form-control', btnGrp);
+                this.delBtn.setAttribute('name', 'persist_type');
+                this.delBtn.setAttribute('type', 'button');
+                this.delBtn.setAttribute('value', 'Delete route');
+                //popover setup
+                this.delBtn.setAttribute('data-container', 'body');
+                this.delBtn.setAttribute('data-toggle', 'popover');
+                this.delBtn.setAttribute('title', 'Confirm Delete');
+                this.delBtn.setAttribute('data-content', 'PERMANENTLY DELETE. Click again to confirm.');
+
                 var inGrp = L.DomUtil.create('div', 'input-group', this.container);
-                var inPre = L.DomUtil.create('div', 'input-group-append', inGrp);
-                var inPreTxt = L.DomUtil.create('span', 'input-group-text', inPre);
-                inPreTxt.innerHTML = 'ID(1+)';
                 this.loadIn = L.DomUtil.create('input', 'form-control', inGrp);
+                this.loadIn.setAttribute('placeholder', 'Route ID to load (1+)');
                 this.loadIn.setAttribute('name', 'route_id');
                 this.loadIn.setAttribute('type', 'number');
-                this.loadIn.setAttribute('value', '0');
 
-                btnGrp.appendChild(this.saveBtn);
-                btnGrp.appendChild(this.loadBtn);
+                //popovers must be manually initialized with jQuery
+                //https://getbootstrap.com/docs/4.6/components/popovers/
+                $(function () {
+                    $('[data-toggle="popover"]').popover()
+                });
+
+                /*$('.popover-dismiss').popover({
+                    trigger: 'manual'
+                });*/
 
                 return this.container; //according to Mapbox IControl specification
             },
@@ -122,7 +147,6 @@
             //>>Required mapbox functions end
 
             getRoute: function (saved) {
-                console.log(saved);
                 var geojson = {
                     type: 'Feature',
                     properties: {},
@@ -134,9 +158,15 @@
                 if (this.myMap.getSource('route')) {
                     this.myMap.getSource('route').setData(geojson);
                 } else {
-                    alert("Mapbox loaded incorrectly");
+                    //https://docs.mapbox.com/help/troubleshooting/mapbox-browser-support/
+                    alert("Mapbox loaded incorrectly. Allow hardware acceleration. Try refreshing the page.");
                 }
 
+            },
+
+            setRoute: function(route) {
+                this.route = route;
+                this.loaded = true;
             },
 
             getTextInput: function (head, placeholder) {
@@ -158,7 +188,6 @@
                 var inputs = head.querySelectorAll("input");
                 for (var i = 0; i < inputs.length; i++)
                     if (inputs[i].name == name && inputs[i].type == "radio" && inputs[i].checked) {
-                        //console.log(inputs[i]);
                         ret = inputs[i];
                         break;
                     }
@@ -167,6 +196,18 @@
 
             getDirProfile: function() {
                 return this.getRadioInput(this.myInDiv, "profile").value;
+            },
+
+            //to be stored in the database
+            createStorable: function(route) {
+                var storable = {
+                    'distance': route.distance,
+                    'duration': route.duration,
+                    'legs': route.legs,
+                    'geometry': route.geometry
+                }
+
+                return storable;
             },
 
             setup: function () {
@@ -185,62 +226,13 @@
 
                 this.saveBtn.addEventListener('click', function (e) {
                     e.preventDefault();
-                    var startLatLn = start.value.split(',');
-                    var endLatLn = end.value.split(',');
-                    var dirProfile = controller.getDirProfile(); //controller.getRadioInput(inDiv, "profile").value;
+                    var popID = $(this).attr('aria-describedby'); //indicates popover is active; https://stackoverflow.com/questions/13442749/how-to-check-whether-a-twitter-bootstrap-popover-is-visible-or-not
+                    if(popID) {
+                        var startLatLn = start.value.split(',');
+                        var endLatLn = end.value.split(',');
+                        var dirProfile = controller.getDirProfile();
 
-                    if (startLatLn.length == 2 && endLatLn.length == 2) {
-                        var url = 'https://api.mapbox.com/directions/v5/' + dirProfile + '/' + startLatLn[0] + ',' + startLatLn[1] + ';' + endLatLn[0] +
-                            ',' + endLatLn[1] + '?steps=true&geometries=geojson&access_token=' + mapboxgl.accessToken;
-
-                        var req = new XMLHttpRequest();
-                        req.open('GET', url, true);
-                        req.onload = function () {
-                            var json = JSON.parse(req.response);
-                            var data = json.routes[0];
-                            controller.route = data;
-
-                            //just to shrink it down a bit
-                            var storable = {
-                                'distance': data.distance,
-                                'duration': data.duration,
-                                'legs': data.legs,
-                                'geometry': data.geometry
-                            }
-
-                            //This is supposed to send the route save HTTP request to the django view
-                            var formData = new FormData();
-                            let btnParent = controller.container;
-                            formData.append(form.children[0].name, form.children[0].value); //csrf token
-                            formData.append('coords', JSON.stringify(storable));
-                            formData.append('persist_type', 'Save route');
-                            fetch('{% url "maps:persist" %}', {
-                                method: 'POST',
-                                body: formData
-                            }).then(res => res.json()).then(res => console.log(res.route_status));
-                        }
-                        req.send()
-                    } else {
-                        //try to make address nicer for geocodio
-                        if (startLatLn.length > 4) {
-                            start.value = startLatLn.slice(startLatLn.length - 4).join(',');
-                        }
-                        if (endLatLn.length > 4) {
-                            end.value = endLatLn.slice(endLatLn.length - 4).join(',');
-                        }
-
-                        getCoordinates(start.value, end.value).then(res => res.json().then(res => {
-                            //response to first address is at res['results'][0]
-                            if (res['results'][0]['query'] == '') {
-                                alert("Is origin/destination correct?");
-                            }
-                            let startRes = res['results'][0]['response']['results'][0];
-                            startLatLn = [startRes.location.lng, startRes.location.lat];
-
-                            //response to second address is at res.results[1]
-                            let endRes = res['results'][1]['response']['results'][0];
-                            endLatLn = [endRes.location.lng, endRes.location.lat];
-
+                        if (startLatLn.length == 2 && endLatLn.length == 2) {
                             var url = 'https://api.mapbox.com/directions/v5/' + dirProfile + '/' + startLatLn[0] + ',' + startLatLn[1] + ';' + endLatLn[0] +
                                 ',' + endLatLn[1] + '?steps=true&geometries=geojson&access_token=' + mapboxgl.accessToken;
 
@@ -252,12 +244,7 @@
                                 controller.route = data;
 
                                 //just to shrink it down a bit
-                                var storable = {
-                                    'distance': data.distance,
-                                    'duration': data.duration,
-                                    'legs': data.legs,
-                                    'geometry': data.geometry
-                                }
+                                var storable = controller.createStorable(data);
 
                                 //This is supposed to send the route save HTTP request to the django view
                                 var formData = new FormData();
@@ -268,13 +255,74 @@
                                 fetch('{% url "maps:persist" %}', {
                                     method: 'POST',
                                     body: formData
-                                }).then(res => res.json()).then(res => console.log(res.route_status));
+                                }).then(res => res.json()).then(res => console.log(res));
+                            }
+                            req.send()
+                        } else if(startLatLn.length > 2 || endLatLn.length > 2) {
+                            //try to make address nicer for geocodio
+                            if (startLatLn.length > 4) {
+                                start.value = startLatLn.slice(startLatLn.length - 4).join(',');
+                            }
+                            if (endLatLn.length > 4) {
+                                end.value = endLatLn.slice(endLatLn.length - 4).join(',');
                             }
 
-                            req.send()
-                        }));
-                    }
+                            getCoordinates(start.value, end.value).then(res => res.json().then(res => {
+                                //response to first address is at res['results'][0]
+                                if (res['results'][0]['query'] == '') {
+                                    alert("Is origin/destination correct?");
+                                }
+                                let startRes = res['results'][0]['response']['results'][0];
+                                startLatLn = [startRes.location.lng, startRes.location.lat];
 
+                                //response to second address is at res.results[1]
+                                let endRes = res['results'][1]['response']['results'][0];
+                                endLatLn = [endRes.location.lng, endRes.location.lat];
+
+                                var url = 'https://api.mapbox.com/directions/v5/' + dirProfile + '/' + startLatLn[0] + ',' + startLatLn[1] + ';' + endLatLn[0] +
+                                    ',' + endLatLn[1] + '?steps=true&geometries=geojson&access_token=' + mapboxgl.accessToken;
+
+                                var req = new XMLHttpRequest();
+                                req.open('GET', url, true);
+                                req.onload = function () {
+                                    var json = JSON.parse(req.response);
+                                    var data = json.routes[0];
+                                    controller.route = data;
+
+                                    //just to shrink it down a bit
+                                    var storable = controller.createStorable(data);
+
+                                    //This is supposed to send the route save HTTP request to the django view
+                                    var formData = new FormData();
+                                    let btnParent = controller.container;
+                                    formData.append(form.children[0].name, form.children[0].value); //csrf token
+                                    formData.append('coords', JSON.stringify(storable));
+                                    formData.append('persist_type', 'Save route');
+                                    fetch('{% url "maps:persist" %}', {
+                                        method: 'POST',
+                                        body: formData
+                                    }).then(res => res.json()).then(res => console.log(res));
+                                }
+
+                                req.send()
+                            }));
+                        } else if(controller.loaded){
+                            var storable = controller.createStorable(controller.route);
+
+                            //This is supposed to send the route save HTTP request to the django view
+                            var formData = new FormData();
+                            let btnParent = controller.container;
+                            formData.append(form.children[0].name, form.children[0].value); //csrf token
+                            formData.append('coords', JSON.stringify(storable));
+                            formData.append('persist_type', 'Save route');
+                            fetch('{% url "maps:persist" %}', {
+                                method: 'POST',
+                                body: formData
+                            }).then(res => res.json()).then(res => console.log(res));
+                        }
+
+                        //this.blur(); //remove focus from button
+                    }
                 })
 
                 this.loadBtn.addEventListener('click', function (e) {
@@ -290,9 +338,15 @@
                         body: formData
                     }).then(res => res.json()).then(res => {
                         if (res.route_status != 'failure') {
+                            controller.loaded = true;
                             var ldRoute = res.route;
                             controller.getRoute(ldRoute);
                             var steps = ldRoute.legs[0].steps;
+
+                            controller.myMap.flyTo({
+                                center: steps[steps.length-1].geometry.coordinates[0],
+                                zoom: 15
+                            });
 
                             var dirDiv = inDiv.parentNode.children[1];
                             dirDiv.innerHTML = '';
@@ -309,10 +363,9 @@
                                 Math.floor(ldRoute.distance / 1609 * 100) / 100 + 'mi </h1><span>' +
                                 Math.floor(ldRoute.duration / 60) + ' min </span></div>' + tripInstructions;
 
-
-                            var legs = ldRoute.geometry.coordinates.length
-                            var startCoord = ldRoute.geometry.coordinates[0]
-                            var endCoord = ldRoute.geometry.coordinates[legs - 1]
+                            var legs = ldRoute.geometry.coordinates.length;
+                            var startCoord = ldRoute.geometry.coordinates[0];
+                            var endCoord = ldRoute.geometry.coordinates[legs - 1];
                             var point1 = {
                                 type: 'FeatureCollection',
                                 features: [{
@@ -390,6 +443,27 @@
                             }
                         }
                     });
+                    
+                    this.blur(); //remove focus from button
+                })
+
+                this.delBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    var popID = $(this).attr('aria-describedby'); //indicates popover is active; https://stackoverflow.com/questions/13442749/how-to-check-whether-a-twitter-bootstrap-popover-is-visible-or-not
+                    if(popID) {
+                        //This is supposed to send the route HTTP request to the django view
+                        var formData = new FormData();
+                        var btnParent = controller.container;
+                        formData.append(form.children[0].name, form.children[0].value); //csrf token
+                        formData.append('persist_type', 'Delete route');
+                        formData.append('route_id', controller.loadIn.value);
+                        fetch('{% url "maps:persist" %}', {
+                            method: 'POST',
+                            body: formData
+                        }).then(res => res.json()).then(res => console.log(res))
+                        
+                        this.blur();
+                    }
                 })
             }
         });
@@ -422,7 +496,7 @@
                     for (var i = 0; i < data.features.length; i++) {
                         if (this.id === "link-" + data.features[i].properties.id) {
                             var clickedListing = data.features[i];
-                            map.flyTo({ // doesn't work because map is outside of the scope
+                            map.flyTo({
                                 center: clickedListing.geometry.coordinates,
                                 zoom: 15
                             });
@@ -438,6 +512,7 @@
                             req.onload = function () {
                                 var json = JSON.parse(req.response);
                                 var data = json.routes[0];
+                                saver.setRoute(data);
                                 var route = data.geometry.coordinates;
                                 var geojson = {
                                     type: 'Feature',
@@ -479,7 +554,8 @@
                                 // add turn instructions to the map
                                 // var instructions = document.getElementById('instructions');
                                 var steps = data.legs[0].steps;
-                                // need to create div to populate
+
+                                // copy-pasted from SaveControl
                                 var dirDiv = saver.myInDiv.parentNode.children[1];
                                 dirDiv.innerHTML = '';
                                 var loadDirDiv = L.DomUtil.create('div', 'directions-control mapbox-directions-instructions-wrapper directions-control-directions', dirDiv);
