@@ -76,6 +76,7 @@
             route: null,
             myMap: null,
             loadIn: null,
+            myInDiv: null,
 
             //>>Required mapbox functions start
             onAdd: function (map) {
@@ -166,6 +167,7 @@
             setup: function () {
                 this.container.parentNode.children[0].children[0].appendChild(this.container);
                 var inDiv = this.container.parentNode;
+                controller.myInDiv = inDiv;
                 var form = document.createElement('form');
                 form.innerHTML = '{% csrf_token %}';
                 form.method = 'POST';
