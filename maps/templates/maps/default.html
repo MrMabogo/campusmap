@@ -473,13 +473,19 @@
                                     });
                                 }
                                 // add turn instructions to the map
-                                var instructions = document.getElementById('instructions');
+                                // var instructions = document.getElementById('instructions');
                                 var steps = data.legs[0].steps;
+
+                                // need to create div to populate
                                 var tripInstructions = [];
                                 for (var i = 0; i < steps.length; i++) {
                                     var coord = steps[i].geometry.coordinates[0];
                                     tripInstructions.push('<br><li class="mapbox-directions-step" data-lat="' + coord[1] + '" data-lng="' + coord[0] + '">' + steps[i].maneuver.instruction) + '</li>';
                                 }
+                                console.log(tripInstructions);
+                                instructions.innerHTML = '<br><div class="mapbox-directions-route-summary"> <h1>' +
+                                    Math.floor(data.distance / 1609 * 100) / 100 + 'mi </h1><span>' +
+                                    Math.floor(data.duration / 60) + ' min </span></div>' + tripInstructions;
                             };
                             req.send();
                         }
