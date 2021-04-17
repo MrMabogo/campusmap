@@ -86,32 +86,32 @@
                 this.container = L.DomUtil.create('div', 'save-control bg-white mt-1');
                 this.myMap = map;
 
-                var btnGrp = L.DomUtil.create('div', 'btn-group', this.container);
+                var btnGrp = L.DomUtil.create('div', 'btn-group d-flex', this.container);
                 btnGrp.setAttribute('role', 'group');
-                //basic setup
-                this.saveBtn = L.DomUtil.create('a', 'btn bg-info text-white form-control', btnGrp);
+
+                this.saveBtn = L.DomUtil.create('button', 'btn bg-info text-white form-control', btnGrp);
                 this.saveBtn.setAttribute('name', 'persist_type');
                 this.saveBtn.setAttribute('type', 'button');
                 this.saveBtn.setAttribute('value', 'Save route');
                 this.saveBtn.innerHTML = 'Save';
-                //popover setup
-                this.saveBtn.setAttribute('tabindex', '0');
+                //save popover setup
                 this.saveBtn.setAttribute('data-container', 'body');
                 this.saveBtn.setAttribute('data-toggle', 'popover');
-                //this.saveBtn.setAttribute('data-trigger', 'focus');
                 this.saveBtn.setAttribute('title', 'Confirm Save');
                 this.saveBtn.setAttribute('data-content', 'Click again to confirm.');
                 
-                this.loadBtn = L.DomUtil.create('input', 'btn bg-secondary text-white form-control', btnGrp);
+                this.loadBtn = L.DomUtil.create('button', 'btn bg-secondary text-white form-control', btnGrp);
                 this.loadBtn.setAttribute('name', 'persist_type');
                 this.loadBtn.setAttribute('type', 'button');
                 this.loadBtn.setAttribute('value', 'Load route');
+                this.loadBtn.innerHTML = 'Load';
 
-                this.delBtn = L.DomUtil.create('input', 'btn bg-danger text-white form-control', btnGrp);
+                this.delBtn = L.DomUtil.create('button', 'btn bg-danger text-white form-control', btnGrp);
                 this.delBtn.setAttribute('name', 'persist_type');
                 this.delBtn.setAttribute('type', 'button');
                 this.delBtn.setAttribute('value', 'Delete route');
-                //popover setup
+                this.delBtn.innerHTML = 'Delete';
+                //delete popover setup
                 this.delBtn.setAttribute('data-container', 'body');
                 this.delBtn.setAttribute('data-toggle', 'popover');
                 this.delBtn.setAttribute('title', 'Confirm Delete');
@@ -126,12 +126,16 @@
                 //popovers must be manually initialized with jQuery
                 //https://getbootstrap.com/docs/4.6/components/popovers/
                 $(function () {
-                    $('[data-toggle="popover"]').popover()
-                });
+                    $('[data-toggle="popover"]').popover();
 
-                /*$('.popover-dismiss').popover({
-                    trigger: 'manual'
-                });*/
+                    $('[data-toggle="popover"]').on('hidden.bs.popover', function(){
+                        $(this).parent().blur();
+                    });
+
+                    $('[data-toggle="popover"]').on('blur', function(){
+                        $(this).popover('hide');
+                    });
+                });
 
                 return this.container; //according to Mapbox IControl specification
             },
@@ -320,8 +324,6 @@
                                 body: formData
                             }).then(res => res.json()).then(res => console.log(res));
                         }
-
-                        //this.blur(); //remove focus from button
                     }
                 })
 
@@ -461,8 +463,6 @@
                             method: 'POST',
                             body: formData
                         }).then(res => res.json()).then(res => console.log(res))
-                        
-                        this.blur();
                     }
                 })
             }
