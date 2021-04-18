@@ -159,13 +159,103 @@
                         coordinates: saved.geometry.coordinates
                     }
                 };
-                if (this.myMap.getSource('route')) {
+
+                if (this.myMap.getSource('route')) { //if the route already exists, reset it
                     this.myMap.getSource('route').setData(geojson);
                 } else {
-                    //https://docs.mapbox.com/help/troubleshooting/mapbox-browser-support/
+                    //see setupMap and https://docs.mapbox.com/help/troubleshooting/mapbox-browser-support/
                     alert("Mapbox loaded incorrectly. Allow hardware acceleration. Try refreshing the page.");
                 }
 
+                var legs = saved.geometry.coordinates.length;
+                var startCoord = saved.geometry.coordinates[0];
+                var endCoord = saved.geometry.coordinates[legs - 1];
+                var points = {
+                    type: 'FeatureCollection',
+                    features: [{
+                        type: 'Feature',
+                        properties: {
+                            'title': 'origin'
+                        },
+                        geometry: {
+                            type: 'Point',
+                            coordinates: startCoord
+                        }
+                    },
+                    {
+                        type: 'Feature',
+                        properties: {
+                            'title': 'destination'
+                        },
+                        geometry: {
+                            type: 'Point',
+                            coordinates: endCoord
+                        }
+                    }]
+                };
+
+                if (this.myMap.getLayer('points-saved')) {
+                    this.myMap.getSource('points-saved').setData(points);
+                } else {
+                    this.myMap.addLayer({
+                        id: 'points-saved',
+                        type: 'circle',
+                        source: {
+                            type: 'geojson',
+                            data: {
+                                type: 'FeatureCollection',
+                                features: [{
+                                    type: 'Feature',
+                                    properties: {
+                                        'title': 'origin'
+                                    },
+                                    geometry: {
+                                        type: 'Point',
+                                        coordinates: startCoord
+                                    }
+                                },
+                                {
+                                    type: 'Feature',
+                                    properties: {
+                                        'title': 'destination'
+                                    },
+                                    geometry: {
+                                        type: 'Point',
+                                        coordinates: endCoord
+                                    }
+                                }]
+                            }
+                        },
+                        paint: {
+                            'circle-radius': 18,
+                            //mapbox conditional expression decides point color
+                            //https://docs.mapbox.com/mapbox-gl-js/style-spec/expressions/#decision
+                            'circle-color': [
+                                'case',
+                                ['==', ['get','title'], 'origin'],
+                                '#3887be',
+                                '#9400d3'
+                            ]
+                        }
+                    })
+
+                    this.myMap.addLayer({
+                        id: 'point-label',
+                        type: 'symbol',
+                        source: 'points-saved',
+                        layout: {
+                        //mapbox conditional expression decides point label
+                        'text-field': [
+                            'case',
+                            ['==', ['get','title'], 'origin'],
+                            'A',
+                            'B'
+                        ],
+                        'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                        'text-size': 12
+                        }
+                    });
+                }
             },
 
             setRoute: function(route) {
@@ -364,85 +454,6 @@
                             instructions.innerHTML = '<br><div class="mapbox-directions-route-summary"> <h1>' +
                                 Math.floor(ldRoute.distance / 1609 * 100) / 100 + 'mi </h1><span>' +
                                 Math.floor(ldRoute.duration / 60) + ' min </span></div>' + tripInstructions;
-
-                            var legs = ldRoute.geometry.coordinates.length;
-                            var startCoord = ldRoute.geometry.coordinates[0];
-                            var endCoord = ldRoute.geometry.coordinates[legs - 1];
-                            var point1 = {
-                                type: 'FeatureCollection',
-                                features: [{
-                                    type: 'Feature',
-                                    properties: {},
-                                    geometry: {
-                                        type: 'Point',
-                                        coordinates: startCoord
-                                    }
-                                }]
-                            };
-
-                            var point2 = {
-                                type: 'FeatureCollection',
-                                features: [{
-                                    type: 'Feature',
-                                    properties: {},
-                                    geometry: {
-                                        type: 'Point',
-                                        coordinates: endCoord
-                                    }
-                                }
-                                ]
-                            };
-
-                            if (controller.myMap.getLayer('start-saved')) {
-                                controller.myMap.getSource('start-saved').setData(point1);
-                            } else {
-                                controller.myMap.addLayer({
-                                    id: 'start-saved',
-                                    type: 'circle',
-                                    source: {
-                                        type: 'geojson',
-                                        data: {
-                                            type: 'FeatureCollection',
-                                            features: [{
-                                                type: 'Feature',
-                                                properties: {},
-                                                geometry: {
-                                                    type: 'Point',
-                                                    coordinates: startCoord
-                                                }
-                                            }
-                                            ]
-                                        }
-                                    },
-                                    paint: {
-                                        'circle-radius': 10,
-                                        'circle-color': '#3887be'
-                                    }
-                                });
-                            }
-
-                            if (controller.myMap.getLayer('end-saved')) {
-                                controller.myMap.getSource('end-saved').setData(point2);
-                            } else {
-                                controller.myMap.addLayer({
-                                    id: 'end-saved',
-                                    type: 'circle',
-                                    source: {
-                                        type: 'geojson',
-                                        data: {
-                                            type: 'FeatureCollection',
-                                            features: [{
-                                                type: 'Feature',
-                                                properties: {},
-                                                geometry: {
-                                                    type: 'Point',
-                                                    coordinates: endCoord
-                                                }
-                                            }]
-                                        }
-                                    }
-                                })
-                            }
                         }
                     });
                     
@@ -522,35 +533,8 @@
                                         coordinates: route
                                     }
                                 };
-                                // if the route already exists on the map, reset it using setData
-                                if (map.getSource('route')) {
-                                    map.getSource('route').setData(geojson);
-                                } else { // otherwise, make a new request
-                                    map.addLayer({
-                                        id: 'route',
-                                        type: 'line',
-                                        source: {
-                                            type: 'geojson',
-                                            data: {
-                                                type: 'Feature',
-                                                properties: {},
-                                                geometry: {
-                                                    type: 'LineString',
-                                                    coordinates: geojson
-                                                }
-                                            }
-                                        },
-                                        layout: {
-                                            'line-join': 'round',
-                                            'line-cap': 'round'
-                                        },
-                                        paint: {
-                                            'line-color': '#3887be',
-                                            'line-width': 5,
-                                            'line-opacity': 0.75
-                                        }
-                                    });
-                                }
+                                saver.getRoute(data);
+                    
                                 // add turn instructions to the map
                                 // var instructions = document.getElementById('instructions');
                                 var steps = data.legs[0].steps;
@@ -612,8 +596,8 @@
             // puts the search boxes and saves in the top left corner
             map.addControl(directions, 'top-left');
             map.addControl(saver, 'top-left');
-            saver.setup();
             map.on('load', function (e) {  // https://docs.mapbox.com/help/tutorials/building-a-store-locator/
+                saver.setup();
                 //removes need to double-click to load route
                 map.addLayer({
                     id: 'route',
@@ -802,6 +786,29 @@
                     });
                 });
             });
+
+            //https://docs.mapbox.com/mapbox-gl-js/api/events/#mapdataevent
+            map.on('sourcedata', function(e) {
+                if(e.isSourceLoaded) {
+                    //clear loaded route if directions API updates the map,
+                    //and the origin-dest points source exists
+                    //route source is guaranteed to exist; no need to check
+                    if(e.sourceId == 'directions' && e.source.data.features.length > 2 && this.getSource('points-saved')) {
+                        var emptyGeoJson = {
+                            type: 'Feature',
+                            properties: {},
+                            geometry: {
+                                type: 'LineString',
+                                coordinates: {}
+                            }
+                        };
+                        
+                        //must used empty geojson or an error occurs
+                        this.getSource('route').setData(emptyGeoJson);
+                        this.getSource('points-saved').setData(emptyGeoJson);
+                    }
+                }
+            })
         }
     </script>
 {% endblock %}
