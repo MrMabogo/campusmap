@@ -42,10 +42,6 @@ def persist_route(request):
 def save_route(request):
     try:
         map_user = request.user
-        #routeNum = 1
-        #last_rt = SavedRoute.objects.filter(owner=map_user).last()
-        #if last_rt != None:
-        #    routeNum = last_rt.routeNumber+1
         rname = request.POST['route_id']
         save_coords = request.POST['coords']
         if save_coords != '':
