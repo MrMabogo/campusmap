@@ -119,17 +119,17 @@
 
                 var inGrp = L.DomUtil.create('div', 'input-group', this.container);
                 this.loadIn = L.DomUtil.create('input', 'form-control', inGrp);
-                this.loadIn.setAttribute('placeholder', 'Route ID to load (1+)');
+                this.loadIn.setAttribute('placeholder', 'Route name to save/load/delete');
                 this.loadIn.setAttribute('name', 'route_id');
-                this.loadIn.setAttribute('type', 'number');
+                this.loadIn.setAttribute('maxlength', '100');
 
                 //popovers must be manually initialized with jQuery
                 //https://getbootstrap.com/docs/4.6/components/popovers/
                 $(function () {
                     $('[data-toggle="popover"]').popover();
 
-                    $('[data-toggle="popover"]').on('hidden.bs.popover', function(){
-                        $(this).parent().blur();
+                   $('[data-toggle="popover"]').on('hidden.bs.popover', function(){
+                        this.blur();
                     });
 
                     $('[data-toggle="popover"]').on('blur', function(){
@@ -137,7 +137,7 @@
                     });
                 });
 
-                return this.container; //according to Mapbox IControl specification
+                return this.container; //according to Leaflet IControl specification
             },
 
             onRemove: function () {
@@ -227,7 +227,7 @@
                             }
                         },
                         paint: {
-                            'circle-radius': 18,
+                            'circle-radius': 15,
                             //mapbox conditional expression decides point color
                             //https://docs.mapbox.com/mapbox-gl-js/style-spec/expressions/#decision
                             'circle-color': [
@@ -346,6 +346,7 @@
                                 formData.append(form.children[0].name, form.children[0].value); //csrf token
                                 formData.append('coords', JSON.stringify(storable));
                                 formData.append('persist_type', 'Save route');
+                                formData.append('route_id', controller.loadIn.value);
                                 fetch('{% url "maps:persist" %}', {
                                     method: 'POST',
                                     body: formData
@@ -392,6 +393,7 @@
                                     formData.append(form.children[0].name, form.children[0].value); //csrf token
                                     formData.append('coords', JSON.stringify(storable));
                                     formData.append('persist_type', 'Save route');
+                                    formData.append('route_id', controller.loadIn.value);
                                     fetch('{% url "maps:persist" %}', {
                                         method: 'POST',
                                         body: formData
@@ -409,6 +411,7 @@
                             formData.append(form.children[0].name, form.children[0].value); //csrf token
                             formData.append('coords', JSON.stringify(storable));
                             formData.append('persist_type', 'Save route');
+                            formData.append('route_id', controller.loadIn.value);
                             fetch('{% url "maps:persist" %}', {
                                 method: 'POST',
                                 body: formData
@@ -596,8 +599,8 @@
             // puts the search boxes and saves in the top left corner
             map.addControl(directions, 'top-left');
             map.addControl(saver, 'top-left');
+            saver.setup();
             map.on('load', function (e) {  // https://docs.mapbox.com/help/tutorials/building-a-store-locator/
-                saver.setup();
                 //removes need to double-click to load route
                 map.addLayer({
                     id: 'route',

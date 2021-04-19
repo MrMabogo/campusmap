@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import SavedRoute
 from django.contrib.auth.models import User
+from django.db import IntegrityError
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.urls import reverse
 
@@ -36,32 +37,33 @@ def persist_route(request):
             else:
                 return load_route(request)
     else:
-        return HttpResponse(JsonResponse({'route_status': 'failure'}))
+        return HttpResponse(JsonResponse({'route_status': 'failure', 'message': 'not authenticated'}))
 
 def save_route(request):
     try:
-        map_user = User.objects.get(is_active=True, password=request.user.password)
-        routeNum = 1
-        last_rt = SavedRoute.objects.filter(owner=map_user).last()
-        if last_rt != None:
-            routeNum = last_rt.routeNumber+1
+        map_user = request.user
+        #routeNum = 1
+        #last_rt = SavedRoute.objects.filter(owner=map_user).last()
+        #if last_rt != None:
+        #    routeNum = last_rt.routeNumber+1
+        rname = request.POST['route_id']
         save_coords = request.POST['coords']
         if save_coords != '':
-            new_route = SavedRoute(owner=map_user, coordinates=json.loads(request.POST['coords']), routeNumber=routeNum)
+            new_route = SavedRoute(owner=map_user, coordinates=json.loads(request.POST['coords']), name=rname)
             new_route.save()
         else:
-            return HttpResponse(JsonResponse({'route_status':'failure'}))
-    except(KeyError, SavedRoute.DoesNotExist):
-        return HttpResponse(JsonResponse({'route_status':'failure'}))
-    return HttpResponse(JsonResponse({'route_status': 'saved', 'message': f'saved with id {routeNum}'}))
+            return HttpResponse(JsonResponse({'route_status':'failure', 'message': 'no coordinates'}))
+    except(KeyError):
+        return HttpResponse(JsonResponse({'route_status':'failure', 'message': 'model error'}))
+    except(IntegrityError):
+        return HttpResponse(JsonResponse({'route_status':'failure', 'message': 'already exists'}))
+    return HttpResponse(JsonResponse({'route_status': 'saved', 'message': f'saved {rname}'}))
 
 def load_route(request):
     route = None
     try:
-        map_user = None
-        if request.user.is_authenticated:
-            map_user = request.user
-        route = SavedRoute.objects.filter(owner=map_user, routeNumber=request.POST['route_id']).get().coordinates
+        map_user = request.user
+        route = SavedRoute.objects.filter(owner=map_user, name=request.POST['route_id']).get().coordinates
     except(KeyError, SavedRoute.MultipleObjectsReturned, SavedRoute.DoesNotExist):
         return HttpResponse(JsonResponse({'route_status': 'failure'}))
     else:
@@ -70,7 +72,7 @@ def load_route(request):
 def delete_route(request):
     try:
         map_user = request.user
-        num = SavedRoute.objects.filter(owner=map_user, routeNumber=request.POST['route_id']).delete()[0]
+        num = SavedRoute.objects.filter(owner=map_user, name=request.POST['route_id']).delete()[0]
     except(KeyError, SavedRoute.DoesNotExist):
         return HttpResponse(JsonResponse({'route_status': 'failure'}))
     else:
