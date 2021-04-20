@@ -119,17 +119,17 @@
 
                 var inGrp = L.DomUtil.create('div', 'input-group', this.container);
                 this.loadIn = L.DomUtil.create('input', 'form-control', inGrp);
-                this.loadIn.setAttribute('placeholder', 'Route ID to load (1+)');
+                this.loadIn.setAttribute('placeholder', 'Route name to save/load/delete');
                 this.loadIn.setAttribute('name', 'route_id');
-                this.loadIn.setAttribute('type', 'number');
+                this.loadIn.setAttribute('maxlength', '100');
 
                 //popovers must be manually initialized with jQuery
                 //https://getbootstrap.com/docs/4.6/components/popovers/
                 $(function () {
                     $('[data-toggle="popover"]').popover();
 
-                    $('[data-toggle="popover"]').on('hidden.bs.popover', function(){
-                        $(this).parent().blur();
+                   $('[data-toggle="popover"]').on('hidden.bs.popover', function(){
+                        this.blur();
                     });
 
                     $('[data-toggle="popover"]').on('blur', function(){
@@ -137,7 +137,7 @@
                     });
                 });
 
-                return this.container; //according to Mapbox IControl specification
+                return this.container; //according to Leaflet IControl specification
             },
 
             onRemove: function () {
@@ -159,13 +159,103 @@
                         coordinates: saved.geometry.coordinates
                     }
                 };
-                if (this.myMap.getSource('route')) {
+
+                if (this.myMap.getSource('route')) { //if the route already exists, reset it
                     this.myMap.getSource('route').setData(geojson);
                 } else {
-                    //https://docs.mapbox.com/help/troubleshooting/mapbox-browser-support/
+                    //see setupMap and https://docs.mapbox.com/help/troubleshooting/mapbox-browser-support/
                     alert("Mapbox loaded incorrectly. Allow hardware acceleration. Try refreshing the page.");
                 }
 
+                var legs = saved.geometry.coordinates.length;
+                var startCoord = saved.geometry.coordinates[0];
+                var endCoord = saved.geometry.coordinates[legs - 1];
+                var points = {
+                    type: 'FeatureCollection',
+                    features: [{
+                        type: 'Feature',
+                        properties: {
+                            'title': 'origin'
+                        },
+                        geometry: {
+                            type: 'Point',
+                            coordinates: startCoord
+                        }
+                    },
+                    {
+                        type: 'Feature',
+                        properties: {
+                            'title': 'destination'
+                        },
+                        geometry: {
+                            type: 'Point',
+                            coordinates: endCoord
+                        }
+                    }]
+                };
+
+                if (this.myMap.getLayer('points-saved')) {
+                    this.myMap.getSource('points-saved').setData(points);
+                } else {
+                    this.myMap.addLayer({
+                        id: 'points-saved',
+                        type: 'circle',
+                        source: {
+                            type: 'geojson',
+                            data: {
+                                type: 'FeatureCollection',
+                                features: [{
+                                    type: 'Feature',
+                                    properties: {
+                                        'title': 'origin'
+                                    },
+                                    geometry: {
+                                        type: 'Point',
+                                        coordinates: startCoord
+                                    }
+                                },
+                                {
+                                    type: 'Feature',
+                                    properties: {
+                                        'title': 'destination'
+                                    },
+                                    geometry: {
+                                        type: 'Point',
+                                        coordinates: endCoord
+                                    }
+                                }]
+                            }
+                        },
+                        paint: {
+                            'circle-radius': 15,
+                            //mapbox conditional expression decides point color
+                            //https://docs.mapbox.com/mapbox-gl-js/style-spec/expressions/#decision
+                            'circle-color': [
+                                'case',
+                                ['==', ['get','title'], 'origin'],
+                                '#3887be',
+                                '#9400d3'
+                            ]
+                        }
+                    })
+
+                    this.myMap.addLayer({
+                        id: 'point-label',
+                        type: 'symbol',
+                        source: 'points-saved',
+                        layout: {
+                        //mapbox conditional expression decides point label
+                        'text-field': [
+                            'case',
+                            ['==', ['get','title'], 'origin'],
+                            'A',
+                            'B'
+                        ],
+                        'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                        'text-size': 12
+                        }
+                    });
+                }
             },
 
             setRoute: function(route) {
@@ -256,10 +346,16 @@
                                 formData.append(form.children[0].name, form.children[0].value); //csrf token
                                 formData.append('coords', JSON.stringify(storable));
                                 formData.append('persist_type', 'Save route');
+                                formData.append('route_id', controller.loadIn.value);
                                 fetch('{% url "maps:persist" %}', {
                                     method: 'POST',
                                     body: formData
-                                }).then(res => res.json()).then(res => console.log(res));
+                                }).then(res => res.json()).then(res => {
+                                    if(res.message == 'already exists')
+                                    {
+                                        alert('You already have a route with that name!');
+                                    }
+                                });
                             }
                             req.send()
                         } else if(startLatLn.length > 2 || endLatLn.length > 2) {
@@ -302,10 +398,16 @@
                                     formData.append(form.children[0].name, form.children[0].value); //csrf token
                                     formData.append('coords', JSON.stringify(storable));
                                     formData.append('persist_type', 'Save route');
+                                    formData.append('route_id', controller.loadIn.value);
                                     fetch('{% url "maps:persist" %}', {
                                         method: 'POST',
                                         body: formData
-                                    }).then(res => res.json()).then(res => console.log(res));
+                                    }).then(res => res.json()).then(res => {
+                                        if(res.message == 'already exists')
+                                        {
+                                            alert('You already have a route with that name!');
+                                        }
+                                    });
                                 }
 
                                 req.send()
@@ -319,10 +421,16 @@
                             formData.append(form.children[0].name, form.children[0].value); //csrf token
                             formData.append('coords', JSON.stringify(storable));
                             formData.append('persist_type', 'Save route');
+                            formData.append('route_id', controller.loadIn.value);
                             fetch('{% url "maps:persist" %}', {
                                 method: 'POST',
                                 body: formData
-                            }).then(res => res.json()).then(res => console.log(res));
+                            }).then(res => res.json()).then(res => {
+                                if(res.message == 'already exists')
+                                {
+                                    alert('You already have a route with that name!');
+                                }
+                            });
                         }
                     }
                 })
@@ -364,85 +472,6 @@
                             instructions.innerHTML = '<br><div class="mapbox-directions-route-summary"> <h1>' +
                                 Math.floor(ldRoute.distance / 1609 * 100) / 100 + 'mi </h1><span>' +
                                 Math.floor(ldRoute.duration / 60) + ' min </span></div>' + tripInstructions;
-
-                            var legs = ldRoute.geometry.coordinates.length;
-                            var startCoord = ldRoute.geometry.coordinates[0];
-                            var endCoord = ldRoute.geometry.coordinates[legs - 1];
-                            var point1 = {
-                                type: 'FeatureCollection',
-                                features: [{
-                                    type: 'Feature',
-                                    properties: {},
-                                    geometry: {
-                                        type: 'Point',
-                                        coordinates: startCoord
-                                    }
-                                }]
-                            };
-
-                            var point2 = {
-                                type: 'FeatureCollection',
-                                features: [{
-                                    type: 'Feature',
-                                    properties: {},
-                                    geometry: {
-                                        type: 'Point',
-                                        coordinates: endCoord
-                                    }
-                                }
-                                ]
-                            };
-
-                            if (controller.myMap.getLayer('start-saved')) {
-                                controller.myMap.getSource('start-saved').setData(point1);
-                            } else {
-                                controller.myMap.addLayer({
-                                    id: 'start-saved',
-                                    type: 'circle',
-                                    source: {
-                                        type: 'geojson',
-                                        data: {
-                                            type: 'FeatureCollection',
-                                            features: [{
-                                                type: 'Feature',
-                                                properties: {},
-                                                geometry: {
-                                                    type: 'Point',
-                                                    coordinates: startCoord
-                                                }
-                                            }
-                                            ]
-                                        }
-                                    },
-                                    paint: {
-                                        'circle-radius': 10,
-                                        'circle-color': '#3887be'
-                                    }
-                                });
-                            }
-
-                            if (controller.myMap.getLayer('end-saved')) {
-                                controller.myMap.getSource('end-saved').setData(point2);
-                            } else {
-                                controller.myMap.addLayer({
-                                    id: 'end-saved',
-                                    type: 'circle',
-                                    source: {
-                                        type: 'geojson',
-                                        data: {
-                                            type: 'FeatureCollection',
-                                            features: [{
-                                                type: 'Feature',
-                                                properties: {},
-                                                geometry: {
-                                                    type: 'Point',
-                                                    coordinates: endCoord
-                                                }
-                                            }]
-                                        }
-                                    }
-                                })
-                            }
                         }
                     });
                     
@@ -522,35 +551,8 @@
                                         coordinates: route
                                     }
                                 };
-                                // if the route already exists on the map, reset it using setData
-                                if (map.getSource('route')) {
-                                    map.getSource('route').setData(geojson);
-                                } else { // otherwise, make a new request
-                                    map.addLayer({
-                                        id: 'route',
-                                        type: 'line',
-                                        source: {
-                                            type: 'geojson',
-                                            data: {
-                                                type: 'Feature',
-                                                properties: {},
-                                                geometry: {
-                                                    type: 'LineString',
-                                                    coordinates: geojson
-                                                }
-                                            }
-                                        },
-                                        layout: {
-                                            'line-join': 'round',
-                                            'line-cap': 'round'
-                                        },
-                                        paint: {
-                                            'line-color': '#3887be',
-                                            'line-width': 5,
-                                            'line-opacity': 0.75
-                                        }
-                                    });
-                                }
+                                saver.getRoute(data);
+                    
                                 // add turn instructions to the map
                                 // var instructions = document.getElementById('instructions');
                                 var steps = data.legs[0].steps;
@@ -802,6 +804,30 @@
                     });
                 });
             });
+
+            //https://docs.mapbox.com/mapbox-gl-js/api/events/#mapdataevent
+            map.on('sourcedata', function(e) {
+                if(e.isSourceLoaded) {
+                    //clear loaded route if directions API updates the map,
+                    //and the origin-dest points source exists
+                    //route source is guaranteed to exist; no need to check
+                    if(e.sourceId == 'directions' && e.source.data.features.length > 2 && this.getSource('points-saved')) {
+                        var emptyGeoJson = {
+                            type: 'Feature',
+                            properties: {},
+                            geometry: {
+                                type: 'LineString',
+                                coordinates: {}
+                            }
+                        };
+                        
+                        //must used empty geojson or an error occurs
+                        this.getSource('route').setData(emptyGeoJson);
+                        this.getSource('points-saved').setData(emptyGeoJson);
+                        saver.loaded = false;
+                    }
+                }
+            })
         }
     </script>
 {% endblock %}
