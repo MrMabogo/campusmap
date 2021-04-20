@@ -469,6 +469,7 @@
                         body: formData
                     }).then(res => res.json()).then(res => {
                         if (res.route_status != 'failure') {
+                            directions.removeRoutes();
                             controller.loaded = true;
                             var ldRoute = res.route;
                             controller.getRoute(ldRoute);
