@@ -40,6 +40,9 @@ def persist_route(request):
         return HttpResponse(JsonResponse({'route_status': 'failure', 'message': 'not authenticated'}))
 
 def save_route(request):
+    context = {
+        'savedroutes': SavedRoute,
+    }
     try:
         map_user = request.user
         rname = request.POST['route_id']
