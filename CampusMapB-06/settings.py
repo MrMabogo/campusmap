@@ -86,7 +86,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'postgres',
-        'USER': 'groupb06',
+        'USER': 'postgres',
         'PASSWORD': 'groupb06password',
         'HOST': 'localhost',
         'PORT': '5432'
@@ -101,6 +101,8 @@ else:
     environ.Env.read_env()
     DATABASES['default']['ENGINE'] = env('DB_ENGINE')
     DATABASES['default']['NAME'] = env('DB_NAME')
+    if env('DB_PASSWORD') != '':
+        DATABASES['default']['PASSWORD'] = env('DB_PASSWORD')
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
