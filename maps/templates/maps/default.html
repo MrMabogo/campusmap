@@ -40,7 +40,7 @@
         </div>
         <div class="float-right">
             <div class='heading'>
-                <h1>Common Locations</h1>
+                <h3>Common Locations</h3>
             </div>
             <div class="btn-group">
               <button type="button" class="btn btn-primary">Common Locations</button>
@@ -54,7 +54,18 @@
         </div>
         <div class="float-bottom">
             <div class='heading'>
-                <h1>Saved Routes</h1>
+                <h3>Saved Routes</h3>
+            </div>
+            <div class='savedroutes list-group d-flex'>
+                {% if user.is_authenticated %}
+                    {% for savedroute in savedroutes %}
+                        <a href='#' class='list-group-item'>
+                            <div class="d-flex justify-content-between">
+                                {{ savedroute.name }}
+                            </div>
+                        </a>
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
     </div>
@@ -563,7 +574,6 @@
                             req.onload = function () {
                                 var json = JSON.parse(req.response);
                                 var data = json.routes[0];
-                                directions.removeRoutes();
                                 saver.setRoute(data);
                                 var route = data.geometry.coordinates;
                                 var geojson = {
@@ -621,7 +631,7 @@
             map.addControl(nav);
 
 
-            directions = new MapboxDirections({ // https://github.com/mapbox/mapbox-gl-directions
+            var directions = new MapboxDirections({ // https://github.com/mapbox/mapbox-gl-directions
                 accessToken: mapboxgl.accessToken,
                 geocoder: {            // makes the location searches more Charlottesville-centric
                     countries: 'us',
