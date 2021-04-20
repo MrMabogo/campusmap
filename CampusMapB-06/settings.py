@@ -101,6 +101,7 @@ else:
     environ.Env.read_env()
     DATABASES['default']['ENGINE'] = env('DB_ENGINE')
     DATABASES['default']['NAME'] = env('DB_NAME')
+    DATABASES['default']['PASSWORD'] = env('DB_PASSWORD')
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
