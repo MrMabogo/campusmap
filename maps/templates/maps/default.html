@@ -350,7 +350,12 @@
                                 fetch('{% url "maps:persist" %}', {
                                     method: 'POST',
                                     body: formData
-                                }).then(res => res.json()).then(res => console.log(res));
+                                }).then(res => res.json()).then(res => {
+                                    if(res.message == 'already exists')
+                                    {
+                                        alert('You already have a route with that name!');
+                                    }
+                                });
                             }
                             req.send()
                         } else if(startLatLn.length > 2 || endLatLn.length > 2) {
@@ -397,7 +402,12 @@
                                     fetch('{% url "maps:persist" %}', {
                                         method: 'POST',
                                         body: formData
-                                    }).then(res => res.json()).then(res => console.log(res));
+                                    }).then(res => res.json()).then(res => {
+                                        if(res.message == 'already exists')
+                                        {
+                                            alert('You already have a route with that name!');
+                                        }
+                                    });
                                 }
 
                                 req.send()
@@ -415,7 +425,12 @@
                             fetch('{% url "maps:persist" %}', {
                                 method: 'POST',
                                 body: formData
-                            }).then(res => res.json()).then(res => console.log(res));
+                            }).then(res => res.json()).then(res => {
+                                if(res.message == 'already exists')
+                                {
+                                    alert('You already have a route with that name!');
+                                }
+                            });
                         }
                     }
                 })
@@ -809,6 +824,7 @@
                         //must used empty geojson or an error occurs
                         this.getSource('route').setData(emptyGeoJson);
                         this.getSource('points-saved').setData(emptyGeoJson);
+                        saver.loaded = false;
                     }
                 }
             })
