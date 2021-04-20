@@ -52,9 +52,7 @@
                 {% if user.is_authenticated %}
                     <ul>
                         {% for savedroute in savedroutes %}
-                            {% for route in savedroute.link_set.all %}
-                                <li>{{ route.name }}</li>
-                            {% endfor %}
+                            <li>{{ route.name }}</li>
                         {% endfor %}
                     </ul>
                 {% endif %}
