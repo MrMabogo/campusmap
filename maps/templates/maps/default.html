@@ -554,6 +554,7 @@
                             req.onload = function () {
                                 var json = JSON.parse(req.response);
                                 var data = json.routes[0];
+                                directions.removeRoutes();
                                 saver.setRoute(data);
                                 var route = data.geometry.coordinates;
                                 var geojson = {
@@ -611,7 +612,7 @@
             map.addControl(nav);
 
 
-            var directions = new MapboxDirections({ // https://github.com/mapbox/mapbox-gl-directions
+            directions = new MapboxDirections({ // https://github.com/mapbox/mapbox-gl-directions
                 accessToken: mapboxgl.accessToken,
                 geocoder: {            // makes the location searches more Charlottesville-centric
                     countries: 'us',
