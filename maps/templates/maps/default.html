@@ -40,7 +40,7 @@
         </div>
         <div class="float-right">
             <div class='heading'>
-                <h1>Common Locations</h1>
+                <h3>Common Locations</h3>
             </div>
             <div class="btn-group">
               <button type="button" class="btn btn-primary">Common Locations</button>
@@ -54,15 +54,17 @@
         </div>
         <div class="float-bottom">
             <div class='heading'>
-                <h1>Saved Routes</h1>
+                <h3>Saved Routes</h3>
             </div>
-            <div class='savedroutes'>
+            <div class='savedroutes list-group d-flex'>
                 {% if user.is_authenticated %}
-                    <ul>
-                        {% for savedroute in savedroutes %}
-                            <li>{{ route.name }}</li>
-                        {% endfor %}
-                    </ul>
+                    {% for savedroute in savedroutes %}
+                        <a href='#' class='list-group-item'>
+                            <div class="d-flex justify-content-between">
+                                {{ savedroute.name }}
+                            </div>
+                        </a>
+                    {% endfor %}
                 {% endif %}
             </div>
         </div>
