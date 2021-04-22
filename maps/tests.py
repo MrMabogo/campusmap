@@ -26,7 +26,7 @@ class PersistenceTests(TransactionTestCase):
         }
         tUser = User.objects.get_or_create(username='test', password='secret')[0]
         self.client.force_login(tUser)
-        response = self.client.post(reverse('maps:persist'), data)
+        response = self.client.post(reverse('maps:persist'), secure=True, data)
         response = json.loads(response.content)
         self.assertEqual(response['route_status'], 'failure')
 
@@ -48,10 +48,10 @@ class PersistenceTests(TransactionTestCase):
         tUser = User.objects.get_or_create(username='test', password='secret')[0]
         self.client.force_login(tUser)
 
-        response = self.client.post(reverse('maps:persist'), data)
+        response = self.client.post(reverse('maps:persist'), secure=True, data)
         response = json.loads(response.content)
         self.assertEqual(response['route_status'], 'saved')
 
-        response = self.client.post(reverse('maps:persist'), data2)
+        response = self.client.post(reverse('maps:persist'), secure=True, data2)
         response = json.loads(response.content)
         self.assertEqual(response['route_status'], 'saved')
