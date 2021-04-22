@@ -42,7 +42,7 @@ class NavigationTests(TestCase):
         request.POST['persist_type'] = 'Save route'
         request.POST['route_id'] = 'test'
         request.POST['coords'] = ''
-        response = json.loads(self.client.get(reverse('maps:persist')).content)
+        response = json.loads(self.client.get(reverse('maps:persist'), secure=True).content)
 
         self.assertEqual(response['route_status'], 'failure')
 
