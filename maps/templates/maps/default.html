@@ -121,7 +121,7 @@
                 var btnGrp = L.DomUtil.create('div', 'btn-group d-flex', this.container);
                 btnGrp.setAttribute('role', 'group');
 
-                this.saveBtn = L.DomUtil.create('button', 'btn bg-info text-white form-control', btnGrp);
+                this.saveBtn = L.DomUtil.create('button', 'btn bg-info text-white btn-sm', btnGrp);
                 this.saveBtn.setAttribute('name', 'persist_type');
                 this.saveBtn.setAttribute('type', 'button');
                 this.saveBtn.setAttribute('value', 'Save route');
@@ -132,17 +132,17 @@
                 this.saveBtn.setAttribute('title', 'Confirm Save');
                 this.saveBtn.setAttribute('data-content', 'Click again to confirm.');
                 
-                this.loadBtn = L.DomUtil.create('button', 'btn bg-secondary text-white form-control', btnGrp);
+                this.loadBtn = L.DomUtil.create('button', 'btn bg-secondary text-white btn-sm', btnGrp);
                 this.loadBtn.setAttribute('name', 'persist_type');
                 this.loadBtn.setAttribute('type', 'button');
                 this.loadBtn.setAttribute('value', 'Load route');
-                this.loadBtn.innerHTML = 'Load';
+                this.loadBtn.innerHTML = 'Load Saved';
 
-                this.delBtn = L.DomUtil.create('button', 'btn bg-danger text-white form-control', btnGrp);
+                this.delBtn = L.DomUtil.create('button', 'btn bg-danger text-white btn-sm', btnGrp);
                 this.delBtn.setAttribute('name', 'persist_type');
                 this.delBtn.setAttribute('type', 'button');
                 this.delBtn.setAttribute('value', 'Delete route');
-                this.delBtn.innerHTML = 'Delete';
+                this.delBtn.innerHTML = 'Delete Saved';
                 //delete popover setup
                 this.delBtn.setAttribute('data-container', 'body');
                 this.delBtn.setAttribute('data-toggle', 'popover');
@@ -378,16 +378,23 @@
                                 formData.append(form.children[0].name, form.children[0].value); //csrf token
                                 formData.append('coords', JSON.stringify(storable));
                                 formData.append('persist_type', 'Save route');
-                                formData.append('route_id', controller.loadIn.value);
-                                fetch('{% url "maps:persist" %}', {
-                                    method: 'POST',
-                                    body: formData
-                                }).then(res => res.json()).then(res => {
-                                    if(res.message == 'already exists')
-                                    {
-                                        alert('You already have a route with that name!');
-                                    }
-                                });
+                                if(controller.loadIn.value != '')
+                                {
+                                    formData.append('route_id', controller.loadIn.value);
+                                    fetch('{% url "maps:persist" %}', {
+                                        method: 'POST',
+                                        body: formData
+                                    }).then(res => res.json()).then(res => {
+                                        if(res.message == 'already exists')
+                                        {
+                                            alert('You already have a route with that name!');
+                                        }
+                                    });
+                                }
+                                else
+                                {
+                                    alert('Please enter a route name...');
+                                }
                             }
                             req.send()
                         } else if(startLatLn.length > 2 || endLatLn.length > 2) {
@@ -430,16 +437,23 @@
                                     formData.append(form.children[0].name, form.children[0].value); //csrf token
                                     formData.append('coords', JSON.stringify(storable));
                                     formData.append('persist_type', 'Save route');
-                                    formData.append('route_id', controller.loadIn.value);
-                                    fetch('{% url "maps:persist" %}', {
-                                        method: 'POST',
-                                        body: formData
-                                    }).then(res => res.json()).then(res => {
-                                        if(res.message == 'already exists')
-                                        {
-                                            alert('You already have a route with that name!');
-                                        }
-                                    });
+                                    if(controller.loadIn.value != '')
+                                    {
+                                        formData.append('route_id', controller.loadIn.value);
+                                        fetch('{% url "maps:persist" %}', {
+                                            method: 'POST',
+                                            body: formData
+                                        }).then(res => res.json()).then(res => {
+                                            if(res.message == 'already exists')
+                                            {
+                                                alert('You already have a route with that name!');
+                                            }
+                                        });
+                                    }
+                                    else
+                                    {
+                                        alert('Please enter a route name...');
+                                    }
                                 }
 
                                 req.send()
@@ -453,16 +467,27 @@
                             formData.append(form.children[0].name, form.children[0].value); //csrf token
                             formData.append('coords', JSON.stringify(storable));
                             formData.append('persist_type', 'Save route');
-                            formData.append('route_id', controller.loadIn.value);
-                            fetch('{% url "maps:persist" %}', {
-                                method: 'POST',
-                                body: formData
-                            }).then(res => res.json()).then(res => {
-                                if(res.message == 'already exists')
-                                {
-                                    alert('You already have a route with that name!');
-                                }
-                            });
+                            if(controller.loadIn.value != '')
+                            {
+                                formData.append('route_id', controller.loadIn.value);
+                                fetch('{% url "maps:persist" %}', {
+                                    method: 'POST',
+                                    body: formData
+                                }).then(res => res.json()).then(res => {
+                                    if(res.message == 'already exists')
+                                    {
+                                        alert('You already have a route with that name!');
+                                    }
+                                });
+                            }
+                            else
+                            {
+                                alert('Please enter a route name...');
+                            }
+                        }
+                        else 
+                        {
+                            swal('No route!', 'There seems to be no route to save...', 'warning');
                         }
                     }
                 })
@@ -631,7 +656,7 @@
             map.addControl(nav);
 
 
-            var directions = new MapboxDirections({ // https://github.com/mapbox/mapbox-gl-directions
+            directions = new MapboxDirections({ // https://github.com/mapbox/mapbox-gl-directions
                 accessToken: mapboxgl.accessToken,
                 geocoder: {            // makes the location searches more Charlottesville-centric
                     countries: 'us',
