@@ -17,17 +17,17 @@
         }
         .float-right {
             width: 25%;
-            height: 60%;
+            height: 50%;
             float: right;
             padding: 20px;
-            border: 5px solid blue;
+            border: none;
         }
         .float-bottom {
             width: 25%;
-            height: 40%;
+            height: 50%;
             float: right;
             padding: 20px;
-            border: 5px solid red;
+            border: none;
         }
 
         </style>
@@ -37,6 +37,12 @@
         <div class="float-left">
             <div id='map' style="width: 100%; height: 100%;"></div>
             <div id="instructions"></div>
+
+<!--            Spinner Implementation-->
+<!--              <div class="spinner-border m-5" role="status">-->
+<!--                  <span class="sr-only">Loading...</span>-->
+<!--              </div>-->
+
         </div>
         <div class="float-right">
             <div class='heading'>
@@ -121,7 +127,7 @@
                 var btnGrp = L.DomUtil.create('div', 'btn-group d-flex', this.container);
                 btnGrp.setAttribute('role', 'group');
 
-                this.saveBtn = L.DomUtil.create('button', 'btn bg-info text-white form-control', btnGrp);
+                this.saveBtn = L.DomUtil.create('button', 'btn bg-info text-white btn-sm', btnGrp);
                 this.saveBtn.setAttribute('name', 'persist_type');
                 this.saveBtn.setAttribute('type', 'button');
                 this.saveBtn.setAttribute('value', 'Save route');
@@ -130,19 +136,19 @@
                 this.saveBtn.setAttribute('data-container', 'body');
                 this.saveBtn.setAttribute('data-toggle', 'popover');
                 this.saveBtn.setAttribute('title', 'Confirm Save');
-                this.saveBtn.setAttribute('data-content', 'Click again to confirm.');
+                this.saveBtn.setAttribute('data-content', 'Before you save, please ensure you have cleverly named this route in the box below so you can easily access it again later. Once you have done so, click the Save button again to confirm.');
                 
-                this.loadBtn = L.DomUtil.create('button', 'btn bg-secondary text-white form-control', btnGrp);
+                this.loadBtn = L.DomUtil.create('button', 'btn bg-secondary text-white btn-sm', btnGrp);
                 this.loadBtn.setAttribute('name', 'persist_type');
                 this.loadBtn.setAttribute('type', 'button');
                 this.loadBtn.setAttribute('value', 'Load route');
-                this.loadBtn.innerHTML = 'Load';
+                this.loadBtn.innerHTML = 'Load Saved';
 
-                this.delBtn = L.DomUtil.create('button', 'btn bg-danger text-white form-control', btnGrp);
+                this.delBtn = L.DomUtil.create('button', 'btn bg-danger text-white btn-sm', btnGrp);
                 this.delBtn.setAttribute('name', 'persist_type');
                 this.delBtn.setAttribute('type', 'button');
                 this.delBtn.setAttribute('value', 'Delete route');
-                this.delBtn.innerHTML = 'Delete';
+                this.delBtn.innerHTML = 'Delete Saved';
                 //delete popover setup
                 this.delBtn.setAttribute('data-container', 'body');
                 this.delBtn.setAttribute('data-toggle', 'popover');
@@ -151,7 +157,7 @@
 
                 var inGrp = L.DomUtil.create('div', 'input-group', this.container);
                 this.loadIn = L.DomUtil.create('input', 'form-control', inGrp);
-                this.loadIn.setAttribute('placeholder', 'Route name to save/load/delete');
+                this.loadIn.setAttribute('placeholder', 'Enter route name to save/load/delete');
                 this.loadIn.setAttribute('name', 'route_id');
                 this.loadIn.setAttribute('maxlength', '100');
 
@@ -378,16 +384,23 @@
                                 formData.append(form.children[0].name, form.children[0].value); //csrf token
                                 formData.append('coords', JSON.stringify(storable));
                                 formData.append('persist_type', 'Save route');
-                                formData.append('route_id', controller.loadIn.value);
-                                fetch('{% url "maps:persist" %}', {
-                                    method: 'POST',
-                                    body: formData
-                                }).then(res => res.json()).then(res => {
-                                    if(res.message == 'already exists')
-                                    {
-                                        alert('You already have a route with that name!');
-                                    }
-                                });
+                                if(controller.loadIn.value != '')
+                                {
+                                    formData.append('route_id', controller.loadIn.value);
+                                    fetch('{% url "maps:persist" %}', {
+                                        method: 'POST',
+                                        body: formData
+                                    }).then(res => res.json()).then(res => {
+                                        if(res.message == 'already exists')
+                                        {
+                                            alert('You already have a route with that name!');
+                                        }
+                                    });
+                                }
+                                else
+                                {
+                                    alert('Please enter a route name...');
+                                }
                             }
                             req.send()
                         } else if(startLatLn.length > 2 || endLatLn.length > 2) {
@@ -430,16 +443,23 @@
                                     formData.append(form.children[0].name, form.children[0].value); //csrf token
                                     formData.append('coords', JSON.stringify(storable));
                                     formData.append('persist_type', 'Save route');
-                                    formData.append('route_id', controller.loadIn.value);
-                                    fetch('{% url "maps:persist" %}', {
-                                        method: 'POST',
-                                        body: formData
-                                    }).then(res => res.json()).then(res => {
-                                        if(res.message == 'already exists')
-                                        {
-                                            alert('You already have a route with that name!');
-                                        }
-                                    });
+                                    if(controller.loadIn.value != '')
+                                    {
+                                        formData.append('route_id', controller.loadIn.value);
+                                        fetch('{% url "maps:persist" %}', {
+                                            method: 'POST',
+                                            body: formData
+                                        }).then(res => res.json()).then(res => {
+                                            if(res.message == 'already exists')
+                                            {
+                                                alert('You already have a route with that name!');
+                                            }
+                                        });
+                                    }
+                                    else
+                                    {
+                                        alert('Please enter a route name...');
+                                    }
                                 }
 
                                 req.send()
@@ -453,16 +473,27 @@
                             formData.append(form.children[0].name, form.children[0].value); //csrf token
                             formData.append('coords', JSON.stringify(storable));
                             formData.append('persist_type', 'Save route');
-                            formData.append('route_id', controller.loadIn.value);
-                            fetch('{% url "maps:persist" %}', {
-                                method: 'POST',
-                                body: formData
-                            }).then(res => res.json()).then(res => {
-                                if(res.message == 'already exists')
-                                {
-                                    alert('You already have a route with that name!');
-                                }
-                            });
+                            if(controller.loadIn.value != '')
+                            {
+                                formData.append('route_id', controller.loadIn.value);
+                                fetch('{% url "maps:persist" %}', {
+                                    method: 'POST',
+                                    body: formData
+                                }).then(res => res.json()).then(res => {
+                                    if(res.message == 'already exists')
+                                    {
+                                        alert('You already have a route with that name!');
+                                    }
+                                });
+                            }
+                            else
+                            {
+                                alert('Please enter a route name...');
+                            }
+                        }
+                        else 
+                        {
+                            swal('No route!', 'There seems to be no route to save...', 'warning');
                         }
                     }
                 })
