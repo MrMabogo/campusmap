@@ -11,11 +11,15 @@ import json
 #     return render(request, 'maps/index.html')
 
 def default_map(request):
+    saved = dict()
+    if request.user.is_authenticated:
+        saved = SavedRoute.objects.filter(owner=request.user)
     mapbox_access_token = 'pk.eyJ1IjoiYm1ib2dvIiwiYSI6ImNrbWUzaG9qNjJyazMyd29qMGxrbHZvd2sifQ.oG0-1XdG-OAeNRxL0Vwz6g'
     geocodio_api_key = 'c67160ed105dde990709bc077e16a76506c7956'
     return render(request, 'maps/default.html',
                   { 'mapbox_access_token': mapbox_access_token,
-                  'geocodio_api_key': geocodio_api_key })
+                  'geocodio_api_key': geocodio_api_key,
+                  'savedroutes':  saved})
 
 def map_search(request):
     pass
@@ -40,6 +44,9 @@ def persist_route(request):
         return HttpResponse(JsonResponse({'route_status': 'failure', 'message': 'not authenticated'}))
 
 def save_route(request):
+    context = {
+        'savedroutes': SavedRoute,
+    }
     try:
         map_user = request.user
         rname = request.POST['route_id']
