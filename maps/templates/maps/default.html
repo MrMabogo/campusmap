@@ -13,7 +13,7 @@
         .float-left {
             width: 75%;
             float: left;
-
+            height: 100%;
         }
         .float-right {
             width: 25%;
@@ -380,7 +380,7 @@
 
                                 //This is supposed to send the route save HTTP request to the django view
                                 var formData = new FormData();
-                                let btnParent = controller.container;
+                                var btnParent = controller.container;
                                 formData.append(form.children[0].name, form.children[0].value); //csrf token
                                 formData.append('coords', JSON.stringify(storable));
                                 formData.append('persist_type', 'Save route');
@@ -391,7 +391,11 @@
                                         method: 'POST',
                                         body: formData
                                     }).then(res => res.json()).then(res => {
-                                        if(res.message == 'already exists')
+                                        if(res.route_status == 'saved')
+                                        {
+                                            loadAll(document.getElementsByClassName('savedroutes')[0], form.children[0], '{% url "maps:get_routes" %}');
+                                        }
+                                        else if(res.message == 'already exists')
                                         {
                                             swal('Duplicate route!', 'You already have a route with that name!', 'warning');
                                         }
@@ -399,7 +403,7 @@
                                 }
                                 else
                                 {
-                                    alert('Please enter a route name...');
+                                    swal('No name!', 'Please enter a route name...', 'warning');
                                 }
                             }
                             req.send()
@@ -458,7 +462,7 @@
                                     }
                                     else
                                     {
-                                        alert('Please enter a route name...');
+                                        swal('No name!', 'Please enter a route name...', 'warning');
                                     }
                                 }
 
@@ -488,7 +492,7 @@
                             }
                             else
                             {
-                                alert('Please enter a route name...');
+                                swal('No name!', 'Please enter a route name...', 'warning');
                             }
                         }
                         else 
