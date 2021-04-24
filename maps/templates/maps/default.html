@@ -58,18 +58,18 @@
                 </div>
             </div>
         </div>
-        <div class="float-bottom">
+        <div class="float-bottom overflow-auto">
             <div class='heading'>
                 <h3>Saved Routes</h3>
             </div>
             <div class='savedroutes list-group d-flex'>
                 {% if user.is_authenticated %}
                     {% for savedroute in savedroutes %}
-                        <a href='#' class='list-group-item'>
-                            <div class="d-flex justify-content-between">
-                                {{ savedroute.name }}
-                            </div>
-                        </a>
+                    <div class="d-flex list-group-item">
+                        <span class="justify-content-between">
+                            {{ savedroute.name }}
+                        </span>
+                    </div>
                     {% endfor %}
                 {% endif %}
             </div>
@@ -202,7 +202,7 @@
                     this.myMap.getSource('route').setData(geojson);
                 } else {
                     //see setupMap and https://docs.mapbox.com/help/troubleshooting/mapbox-browser-support/
-                    alert("Mapbox loaded incorrectly. Allow hardware acceleration. Try refreshing the page.");
+                    swal("Loading problem", "Mapbox loaded incorrectly. Allow hardware acceleration. Try refreshing the page.", "info");
                 }
 
                 var legs = saved.geometry.coordinates.length;
@@ -393,7 +393,7 @@
                                     }).then(res => res.json()).then(res => {
                                         if(res.message == 'already exists')
                                         {
-                                            alert('You already have a route with that name!');
+                                            swal('Duplicate route!', 'You already have a route with that name!', 'warning');
                                         }
                                     });
                                 }
@@ -452,7 +452,7 @@
                                         }).then(res => res.json()).then(res => {
                                             if(res.message == 'already exists')
                                             {
-                                                alert('You already have a route with that name!');
+                                                swal('Duplicate route!', 'You already have a route with that name!', 'warning');
                                             }
                                         });
                                     }
@@ -482,7 +482,7 @@
                                 }).then(res => res.json()).then(res => {
                                     if(res.message == 'already exists')
                                     {
-                                        alert('You already have a route with that name!');
+                                        swal('Duplicate route!', 'You already have a route with that name!', 'warning');
                                     }
                                 });
                             }
@@ -660,7 +660,6 @@
             // zoom and compass stuff
             var nav = new mapboxgl.NavigationControl(); // https://docs.mapbox.com/mapbox-gl-js/example/navigation/
             map.addControl(nav);
-
 
             directions = new MapboxDirections({ // https://github.com/mapbox/mapbox-gl-directions
                 accessToken: mapboxgl.accessToken,
