@@ -82,7 +82,14 @@ def delete_route(request):
         return HttpResponse(JsonResponse({'route_status': 'deleted', 'message': f'deleted {num} objects'}))
 
 def get_routes(request):
-    pass
+    #can only be called after a successful save_route
+    try:
+        map_user = request.user
+        routes = SavedRoute.objects.filter(owner=map_user).values()
+    except(KeyError, SavedRoute.DoesNotExist):
+        return HttpResponse(JsonResponse({'route_status': 'failure'}))
+    else:
+        return HttpResponse(JsonResponse({'route_status': 'loaded', 'routes': list(routes)}))
 
 def display_routes(request):
     pass
