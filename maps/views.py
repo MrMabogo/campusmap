@@ -1,14 +1,14 @@
 from django.shortcuts import render
 from .models import SavedRoute
 from django.contrib.auth.models import User
+from django.contrib.postgres.search import SearchVector
+from django.db.models import TextField
+from django.db.models.functions import Cast
 from django.db import IntegrityError
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.urls import reverse
 
 import json
-
-# def index_view(request):
-#     return render(request, 'maps/index.html')
 
 def default_map(request):
     saved = dict()
@@ -21,8 +21,28 @@ def default_map(request):
                   'geocodio_api_key': geocodio_api_key,
                   'savedroutes':  saved})
 
-def map_search(request):
-    pass
+def find_uva_location(request):
+    #https://stackoverflow.com/questions/38835167/django-fulltext-search-on-json-field
+    try:
+        status = 'found'
+        keyword = request.POST['keyword']
+        last_match = UVALocation.objects.annotate(search=SearchVector(Cast('attributes', TextField())))
+        keywords = keyword.split(',')
+
+        #progressively filter for each word
+        for kw in keywords:
+            cur_match = last_match.filter(search=kw)
+
+            if cur_match.exists():
+                last_match = cur_match
+            else:
+                status = 'approximate'
+                break
+    except(KeyError):
+            return render(request, 'maps/index.html')
+    else:
+        return HttpResponse(JsonResponse({'location_status': status, 'coordinates': last_match.first().coordinates}))
+
 
 def get_eta(request):
     pass
@@ -52,7 +72,7 @@ def save_route(request):
         rname = request.POST['route_id']
         save_coords = request.POST['coords']
         if save_coords != '':
-            new_route = SavedRoute(owner=map_user, coordinates=json.loads(request.POST['coords']), name=rname)
+            new_route = SavedRoute(owner=map_user, geojson=json.loads(request.POST['coords']), name=rname)
             new_route.save()
         else:
             return HttpResponse(JsonResponse({'route_status':'failure', 'message': 'no coordinates'}))
@@ -66,7 +86,7 @@ def load_route(request):
     route = None
     try:
         map_user = request.user
-        route = SavedRoute.objects.filter(owner=map_user, name=request.POST['route_id']).get().coordinates
+        route = SavedRoute.objects.filter(owner=map_user, name=request.POST['route_id']).get().geojson
     except(KeyError, SavedRoute.MultipleObjectsReturned, SavedRoute.DoesNotExist):
         return HttpResponse(JsonResponse({'route_status': 'failure'}))
     else:
@@ -93,4 +113,3 @@ def get_routes(request):
 
 def display_routes(request):
     pass
-    
