@@ -78,13 +78,13 @@
         defaultDest = "Desired End Location";
 
         function successLocation(position) {
-            setupMap([position.coords.longitude, position.coords.latitude]);
             userLocation = [position.coords.longitude, position.coords.latitude]; // automatically global variable for the user's location
+            setupMap([position.coords.longitude, position.coords.latitude]);
         }
 
         function errorLocation() {
-            setupMap([-78.512, 38.036]);
             userLocation = [-78.512, 38.036];
+            setupMap([-78.512, 38.036]);
         }
 
         function getCoordinates(origin, dest) {
@@ -701,11 +701,6 @@
                     }
                 });
 
-                map.addSource('UVA', {
-                    type: 'geojson',
-                    data: 'https://gist.githubusercontent.com/hudsonburke/7ce0e2657f3c5e22244a10c2cc0e9c6f/raw/7a4e8eefbf0d1b10321e1b13ea254e868ec7ad22/geo_facilities.json' // 'https://jsonkeeper.com/b/0BK4'
-                }); // this doesn't currently work as it won't finish loading
-                //while(!map.isSourceLoaded('UVA')){}; // makes sure that the source finishes loading before moving on
 
                 let facilities = {
                     "type": "FeatureCollection",
@@ -808,49 +803,32 @@
                     facility.properties.id = i;
                 });
                 // add them to the map
-                map.addLayer({
+                /* map.addLayer({
                     'id': 'locations',
                     'type': 'circle',
                     'source': {
                         'type': 'geojson',
                         'data': facilities
                     }
-                });
+                }); */
 
                 buildLocationList(facilities);
 
-                /* For each feature in the GeoJSON object above: */
-                facilities.features.forEach(function (marker) {
-                    /* Create a div element for the marker. */
+                /* facilities.features.forEach(function (marker) {
                     var el = document.createElement('div');
-                    /* Assign a unique `id` to the marker. */
                     el.id = 'marker-' + marker.properties.id;
-                    /* Assign the `marker` class to each marker for styling. */
                     el.className = 'marker';
 
-                    /**
-                     * Create a marker using the div element
-                     * defined above and add it to the map.
-                     **/
                     new mapboxgl.Marker(el, {offset: [0, -23]})
                         .setLngLat(marker.geometry.coordinates)
                         .addTo(map);
 
-                    /**
-                     * Listen to the element and when it is clicked, do three things:
-                     * 1. Fly to the point
-                     * 2. Close all other popups and display popup for clicked store
-                     * 3. Highlight listing in sidebar (and remove highlight for all other listings)
-                     **/
+
                     el.addEventListener('click', function (e) {
-                        /* Fly to the point */
-                        map.flyTo({
+=                        map.flyTo({
                             center: marker.geometry.coordinates,
                             zoom: 15
                         });
-                        /* Close all other popups and display popup for clicked store */
-                        // createPopUp(marker);
-                        /* Highlight listing in sidebar */
                         var activeItem = document.getElementsByClassName('active');
                         e.stopPropagation();
                         if (activeItem[0]) {
@@ -861,7 +839,7 @@
                         );
                         listing.classList.add('active');
                     });
-                });
+                });*/
             });
 
             //https://docs.mapbox.com/mapbox-gl-js/api/events/#mapdataevent
@@ -887,6 +865,7 @@
                     }
                 }
             })
+            directions.setOrigin(userLocation);
         }
     </script>
 {% endblock %}
