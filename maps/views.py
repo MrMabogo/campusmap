@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import SavedRoute
+from .models import SavedRoute, UVALocation
 from django.contrib.auth.models import User
 from django.contrib.postgres.search import SearchVector
 from django.db.models import TextField
