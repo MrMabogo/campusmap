@@ -48,13 +48,165 @@
             <div class='heading'>
                 <h3>Common Locations</h3>
             </div>
-            <div class="btn-group">
-              <button type="button" class="btn btn-primary">Common Locations</button>
-              <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="sr-only">Toggle Dropdown</span>
-              </button>
-                <div class="dropdown-menu">
-                <a class="dropdown-item" href="#"><div id='listings' class='listings'></div></a>
+            <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
+                <div class="btn-group" role="group">
+                  <button
+                          type="button"
+                          class="btn btn-primary dropdown-toggle"
+                          data-toggle="dropdown"
+                          aria-expanded="false"
+                  >
+                      Offices
+                  </button>
+                    <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#"><div id='Office' class='listings'></div></a>
+                    </div>
+                </div>
+                <div class="btn-group" role="group">
+                  <button
+                          type="button"
+                          class="btn btn-primary dropdown-toggle"
+                          data-toggle="dropdown"
+                          aria-expanded="false"
+                  >
+                      Dining
+                  </button>
+                    <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#"><div id='Dining' class='listings'></div></a>
+                    </div>
+                </div>
+                <div class="btn-group" role="group">
+                  <button
+                          type="button"
+                          class="btn btn-primary dropdown-toggle"
+                          data-toggle="dropdown"
+                          aria-expanded="false"
+                  >
+                      Support
+                  </button>
+                    <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#"><div id='Support' class='listings'></div></a>
+                    </div>
+                </div>
+                <div class="btn-group" role="group">
+                  <button
+                          type="button"
+                          class="btn btn-primary dropdown-toggle"
+                          data-toggle="dropdown"
+                          aria-expanded="false"
+                  >
+                      Classroom
+                  </button>
+                    <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#"><div id='Classroom' class='listings'></div></a>
+                    </div>
+                </div>
+                <div class="btn-group" role="group">
+                  <button
+                          type="button"
+                          class="btn btn-primary dropdown-toggle"
+                          data-toggle="dropdown"
+                          aria-expanded="false"
+                  >
+                      Public Service
+                  </button>
+                    <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#"><div id='Public Service' class='listings'></div></a>
+                    </div>
+                </div>
+                <div class="btn-group" role="group">
+                  <button
+                          type="button"
+                          class="btn btn-primary dropdown-toggle"
+                          data-toggle="dropdown"
+                          aria-expanded="false"
+                  >
+                      Research
+                  </button>
+                    <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#"><div id='Research' class='listings'></div></a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
+                <div class="btn-group" role="group">
+                  <button
+                          type="button"
+                          class="btn btn-primary dropdown-toggle"
+                          data-toggle="dropdown"
+                          aria-expanded="false"
+                  >
+                      Libraries
+                  </button>
+                    <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#"><div id='Library' class='listings'></div></a>
+                    </div>
+                </div>
+                <div class="btn-group" role="group">
+                  <button
+                          type="button"
+                          class="btn btn-primary dropdown-toggle"
+                          data-toggle="dropdown"
+                          aria-expanded="false"
+                  >
+                      Storage
+                  </button>
+                    <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#"><div id='Storage' class='listings'></div></a>
+                    </div>
+                </div>
+                <div class="btn-group" role="group">
+                  <button
+                          type="button"
+                          class="btn btn-primary dropdown-toggle"
+                          data-toggle="dropdown"
+                          aria-expanded="false"
+                  >
+                      Parking
+                  </button>
+                    <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#"><div id='Parking Garage' class='listings'></div></a>
+                    </div>
+                </div>
+                <div class="btn-group" role="group">
+                  <button
+                          type="button"
+                          class="btn btn-primary dropdown-toggle"
+                          data-toggle="dropdown"
+                          aria-expanded="false"
+                  >
+                      Athletic
+                  </button>
+                    <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#"><div id='Athletic' class='listings'></div></a>
+                    </div>
+                </div>
+                <div class="btn-group" role="group">
+                  <button
+                          type="button"
+                          class="btn btn-primary dropdown-toggle"
+                          data-toggle="dropdown"
+                          aria-expanded="false"
+                  >
+                      Housing
+                  </button>
+                    <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#"><div id='Housing' class='listings'></div></a>
+                    </div>
+                </div>
+                <div class="btn-group" role="group">
+                  <button
+                          type="button"
+                          class="btn btn-primary dropdown-toggle"
+                          data-toggle="dropdown"
+                          aria-expanded="false"
+                  >
+                      Utilities
+                  </button>
+                    <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#"><div id='Utilities' class='listings'></div></a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -566,90 +718,95 @@
         });
 
         function buildLocationList(data) {
+            const buildingTypes = ['Office', 'Dining', 'Support', 'Classroom', 'Public Service', 'Research', 'Library',
+                            'Storage', 'Parking Garage', 'Public Service', 'Athletic', 'Housing', 'Utilities', 'Child Care'];
             data.features.forEach(function (facility, i) {
                 var prop = facility.properties;
+                buildingTypes.forEach(function(building, k) {
+                    if (prop.category == building) {
+                        /* Add a new listing section to the sidebar. */
+                        var listings = document.getElementById(buildingTypes[k]);
+                        var listing = listings.appendChild(document.createElement('div'));
+                        /* Assign a unique `id` to the listing. */
+                        listing.id = "listing-" + data.features[i].properties.id;
+                        /* Assign the `item` class to each listing for styling. */
+                        listing.className = 'item';
 
-                /* Add a new listing section to the sidebar. */
-                var listings = document.getElementById('listings');
-                var listing = listings.appendChild(document.createElement('div'));
-                /* Assign a unique `id` to the listing. */
-                listing.id = "listing-" + data.features[i].properties.id;
-                /* Assign the `item` class to each listing for styling. */
-                listing.className = 'item';
+                        /* Add the link to the individual listing created above. */
+                        var link = listing.appendChild(document.createElement('a'));
+                        link.href = '#';
+                        link.className = 'title';
+                        link.id = "link-" + prop.id;
+                        link.innerHTML = prop.name;
 
-                /* Add the link to the individual listing created above. */
-                var link = listing.appendChild(document.createElement('a'));
-                link.href = '#';
-                link.className = 'title';
-                link.id = "link-" + prop.id;
-                link.innerHTML = prop.name;
+                        /* Add details to the individual listing. */
+                        var details = listing.appendChild(document.createElement('div'));
+                        details.innerHTML = prop.address;
 
-                /* Add details to the individual listing. */
-                var details = listing.appendChild(document.createElement('div'));
-                details.innerHTML = prop.address;
+                        link.addEventListener('click', function (e) {
+                            e.preventDefault();
+                            for (var i = 0; i < data.features.length; i++) {
+                                if (this.id === "link-" + data.features[i].properties.id) {
+                                    var clickedListing = data.features[i];
+                                    map.flyTo({
+                                        center: clickedListing.geometry.coordinates,
+                                        zoom: 15
+                                    });
+                                    // pass link coordinates to directions API
+                                    // used https://docs.mapbox.com/help/tutorials/getting-started-directions-api/?size=n_10_n
+                                    var start = userLocation;
+                                    var end = clickedListing.geometry.coordinates;
+                                    var url = 'https://api.mapbox.com/directions/v5/'+saver.getDirProfile()+'/'+ start[0] + ',' + start[1] + ';' + end[0] +
+                                        ',' + end[1] + '?steps=true&geometries=geojson&access_token=' + mapboxgl.accessToken;
+                                    // make an XHR request https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest
+                                    var req = new XMLHttpRequest();
+                                    req.open('GET', url, true);
+                                    req.onload = function () {
+                                        var json = JSON.parse(req.response);
+                                        var data = json.routes[0];
+                                        directions.removeRoutes();
+                                        saver.setRoute(data);
+                                        var route = data.geometry.coordinates;
+                                        var geojson = {
+                                            type: 'Feature',
+                                            properties: {},
+                                            geometry: {
+                                                type: 'LineString',
+                                                coordinates: route
+                                            }
+                                        };
+                                        saver.getRoute(data);
 
-                link.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    for (var i = 0; i < data.features.length; i++) {
-                        if (this.id === "link-" + data.features[i].properties.id) {
-                            var clickedListing = data.features[i];
-                            map.flyTo({
-                                center: clickedListing.geometry.coordinates,
-                                zoom: 15
-                            });
-                            // pass link coordinates to directions API
-                            // used https://docs.mapbox.com/help/tutorials/getting-started-directions-api/?size=n_10_n
-                            var start = userLocation;
-                            var end = clickedListing.geometry.coordinates;
-                            var url = 'https://api.mapbox.com/directions/v5/'+saver.getDirProfile()+'/'+ start[0] + ',' + start[1] + ';' + end[0] +
-                                ',' + end[1] + '?steps=true&geometries=geojson&access_token=' + mapboxgl.accessToken;
-                            // make an XHR request https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest
-                            var req = new XMLHttpRequest();
-                            req.open('GET', url, true);
-                            req.onload = function () {
-                                var json = JSON.parse(req.response);
-                                var data = json.routes[0];
-                                directions.removeRoutes();
-                                saver.setRoute(data);
-                                var route = data.geometry.coordinates;
-                                var geojson = {
-                                    type: 'Feature',
-                                    properties: {},
-                                    geometry: {
-                                        type: 'LineString',
-                                        coordinates: route
-                                    }
-                                };
-                                saver.getRoute(data);
-                    
-                                // add turn instructions to the map
-                                // var instructions = document.getElementById('instructions');
-                                var steps = data.legs[0].steps;
+                                        // add turn instructions to the map
+                                        // var instructions = document.getElementById('instructions');
+                                        var steps = data.legs[0].steps;
 
-                                // copy-pasted from SaveControl
-                                var dirDiv = saver.myInDiv.parentNode.children[1];
-                                dirDiv.innerHTML = '';
-                                var loadDirDiv = L.DomUtil.create('div', 'directions-control mapbox-directions-instructions-wrapper directions-control-directions', dirDiv);
-                                var instructions = L.DomUtil.create('ol', 'mapbox-directions-steps', loadDirDiv);
+                                        // copy-pasted from SaveControl
+                                        var dirDiv = saver.myInDiv.parentNode.children[1];
+                                        dirDiv.innerHTML = '';
+                                        var loadDirDiv = L.DomUtil.create('div', 'directions-control mapbox-directions-instructions-wrapper directions-control-directions', dirDiv);
+                                        var instructions = L.DomUtil.create('ol', 'mapbox-directions-steps', loadDirDiv);
 
-                                var tripInstructions = [];
-                                for (var i = 0; i < steps.length; i++) {
-                                    var coord = steps[i].geometry.coordinates[0];
-                                    tripInstructions.push('<br><li class="mapbox-directions-step" data-lat="' + coord[1] + '" data-lng="' + coord[0] + '">' + steps[i].maneuver.instruction) + '</li>';
+                                        var tripInstructions = [];
+                                        for (var i = 0; i < steps.length; i++) {
+                                            var coord = steps[i].geometry.coordinates[0];
+                                            tripInstructions.push('<br><li class="mapbox-directions-step" data-lat="' + coord[1] + '" data-lng="' + coord[0] + '">' + steps[i].maneuver.instruction) + '</li>';
+                                        }
+
+                                        instructions.innerHTML = '<br><div class="mapbox-directions-route-summary"> <h1>' +
+                                            Math.floor(data.distance / 1609 * 100) / 100 + 'mi </h1><span>' +
+                                            Math.floor(data.duration / 60) + ' min </span></div>' + tripInstructions;
+                                    };
+                                    req.send();
                                 }
-
-                                instructions.innerHTML = '<br><div class="mapbox-directions-route-summary"> <h1>' +
-                                    Math.floor(data.distance / 1609 * 100) / 100 + 'mi </h1><span>' +
-                                    Math.floor(data.duration / 60) + ' min </span></div>' + tripInstructions;
-                            };
-                            req.send();
-                        }
+                            }
+                            var activeItem = document.getElementsByClassName('active');
+                            if (activeItem[0]) {
+                                activeItem[0].classList.remove('active');
+                            }
+                            this.parentNode.classList.add('active');
+                        });
                     }
-                    var activeItem = document.getElementsByClassName('active');
-                    if (activeItem[0]) {
-                        activeItem[0].classList.remove('active');
-                    }
-                    this.parentNode.classList.add('active');
                 });
             });
         }
