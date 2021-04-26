@@ -44,14 +44,17 @@ def find_uva_location(request):
         keywords = keyword.split(',')
 
         #progressively filter for each word
-        for kw in keywords:
-            cur_match = last_match.filter(search=kw)
+        for keyphrase in keywords:
+            for kw in keyphrase.split(' '):
+                stripped = kw.strip()
+                if stripped != '':
+                    cur_match = last_match.filter(search=stripped)
 
-            if cur_match.exists():
-                last_match = cur_match
-            else:
-                status = 'approximate'
-                break
+                    if cur_match.exists():
+                        last_match = cur_match
+                    else:
+                        status = 'approximate'
+                        break
     except(KeyError):
             return render(request, 'maps/index.html')
     else:
