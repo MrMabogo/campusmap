@@ -11,5 +11,9 @@ class SavedRoute(models.Model):
     geojson = models.JSONField(default=dict)
 
 class UVALocation(models.Model):
+    name = models.CharField(max_length=100, default='', unique=True)
     coordinates = models.JSONField(default=dict)
     properties = models.JSONField(default=dict)
+
+class UVALocationCollection(models.Model):
+    geojson = models.JSONField(default=dict)

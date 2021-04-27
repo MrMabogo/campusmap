@@ -1,0 +1,68 @@
+{% extends 'maps/base.html' %}
+{% load socialaccount %}
+{% block homeactive %}nav-link {% endblock %}
+{% block mapactive %}nav-link active{% endblock %}
+{% block content %}
+{% if user.is_authenticated %}
+<h1>Upload UVA location GeoJSON</h1>
+
+<form id='json-form'>
+    {% csrf_token %}
+    <input type="text" id="gettest" name="keyword">
+    <input type="button" id="getsubmit" value="Find">
+    <textarea name="geojson" id="geojsonin" rows="40" cols="100"> </textarea>
+    <input type="button" id="locationsubmit" value="Submit">
+</form>
+
+<script>
+    var textArea = document.getElementById("geojsonin");
+    var submit = document.getElementById("locationsubmit");
+    submit.addEventListener("click", function(e) {
+        e.preventDefault();
+        var obj = JSON.parse(textArea.value);
+        var csrf = document.getElementById('json-form').children[0];
+        var url = "{% url 'maps:store_uva' %}"
+
+        //add each location individually
+        obj['features'].forEach((loc) => {
+            var formData = new FormData();
+            formData.append(csrf.name, csrf.value); //csrf token
+            formData.append('type', 'single');
+            formData.append('geojson', JSON.stringify(loc));
+            fetch(url, {
+                method: 'POST',
+                body: formData
+            }).then(res => res.json()).then(res => { console.log(res); console.log(loc['properties']['name']) })
+        });
+
+        //add all locations together
+        var formData = new FormData();
+        formData.append(csrf.name, csrf.value); //csrf token
+        formData.append('type', 'full');
+        formData.append('geojson', JSON.stringify(obj));
+        fetch(url, {
+            method: 'POST',
+            body: formData
+        }).then(res => res.json()).then(res => { console.log(res); });
+    
+        
+    });
+    var rget = document.getElementById("getsubmit");
+    rget.addEventListener("click", function(e) {
+        e.preventDefault();
+        var kw = document.getElementById("gettest").value;
+        var csrf = document.getElementById('json-form').children[0];
+        var url = "{% url 'maps:find_uva' %}"
+
+        var formData = new FormData();
+        formData.append(csrf.name, csrf.value); //csrf token
+        formData.append('keyword', kw);
+        fetch(url, {
+            method: 'POST',
+            body: formData
+        }).then(res => res.json()).then(res => {textArea.innerHTML=JSON.stringify(res)})
+    });
+
+</script>
+{% endif %}
+{% endblock %}

@@ -1,11 +1,11 @@
 from django.shortcuts import render
-from .models import SavedRoute
+from .models import SavedRoute, UVALocation, UVALocationCollection
 from django.contrib.auth.models import User
 from django.contrib.postgres.search import SearchVector
 from django.db.models import TextField
 from django.db.models.functions import Cast
 from django.db import IntegrityError
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, Http404
 from django.urls import reverse
 
 import json
@@ -21,31 +21,70 @@ def default_map(request):
                   'geocodio_api_key': geocodio_api_key,
                   'savedroutes':  saved})
 
+def uva_locations(request):
+    if request.user.is_superuser:
+        return render(request, 'maps/load-uva-locations.html')
+    else:
+        return Http404
+
+def uva_location_collection(request):
+    try:
+        locations = UVALocationCollection.objects.first().goejson
+    except:
+        return Http404
+    else:
+        return HttpResponse(JsonResponse({'status':200, 'locations': locations}))
+
 def find_uva_location(request):
     #https://stackoverflow.com/questions/38835167/django-fulltext-search-on-json-field
     try:
         status = 'found'
         keyword = request.POST['keyword']
-        last_match = UVALocation.objects.annotate(search=SearchVector(Cast('attributes', TextField())))
+        last_match = UVALocation.objects.annotate(search=SearchVector(Cast('properties', TextField())))
         keywords = keyword.split(',')
 
         #progressively filter for each word
-        for kw in keywords:
-            cur_match = last_match.filter(search=kw)
+        for keyphrase in keywords:
+            for kw in keyphrase.split(' '):
+                stripped = kw.strip()
+                if stripped != '':
+                    cur_match = last_match.filter(search=stripped)
 
-            if cur_match.exists():
-                last_match = cur_match
-            else:
-                status = 'approximate'
-                break
+                    if cur_match.exists():
+                        last_match = cur_match
+                    else:
+                        status = 'approximate'
+                        break
     except(KeyError):
             return render(request, 'maps/index.html')
     else:
-        return HttpResponse(JsonResponse({'location_status': status, 'coordinates': last_match.first().coordinates}))
+        result = last_match.first()
+        return HttpResponse(JsonResponse({
+            'location_status': status, 
+            'location': {'coordinates': result.coordinates, 'properties': result.properties}
+        }))
 
 
-def get_eta(request):
-    pass
+def store_uva_location(request):
+    try:
+        if request.POST['type'] == 'single':
+            jsondict = json.loads(request.POST['geojson'])
+            new_location = UVALocation(
+                name=jsondict['properties']['name'],
+                coordinates=jsondict['geometry']['coordinates'],
+                properties=jsondict['properties'])
+            new_location.save()
+        elif request.POST['type'] == 'full':
+            jsondict = json.loads(request.POST['geojson'])
+            new_collection = UVALocationCollection(geojson=jsondict)
+            new_collection.save()
+        else:
+            return HttpResponse(JsonResponse({'status':409, 'message': 'no type'}))
+    except:
+        return HttpResponse(JsonResponse({'status':409, 'message':'database exception'}))
+    else:
+        return HttpResponse(JsonResponse({'status':200}))
+
 
 def persist_route(request):
     if request.user.is_authenticated:
