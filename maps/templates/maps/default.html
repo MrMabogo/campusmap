@@ -506,70 +506,94 @@
                             }
                             req.send()
                         } else if(startLatLn.length > 2 || endLatLn.length > 2) {
-                            //try to make address nicer for geocodio
-                            if (startLatLn.length > 4) {
-                                start.value = startLatLn.slice(startLatLn.length - 4).join(',');
-                            }
-                            if (endLatLn.length > 4) {
-                                end.value = endLatLn.slice(endLatLn.length - 4).join(',');
-                            }
+                            var startPromise = startLatLn;
+                            var endPromise = endLatLn;
+                            var startComplete = false;
+                            var endComplete = false;
 
-                            getCoordinates(start.value, end.value).then(res => res.json().then(res => {
-                                //response to first address is at res['results'][0]
-                                if (res['results'][0]['query'] == '') {
-                                    alert("Is origin/destination correct?");
-                                }
-                                let startRes = res['results'][0]['response']['results'][0];
-                                startLatLn = [startRes.location.lng, startRes.location.lat];
-
-                                //response to second address is at res.results[1]
-                                let endRes = res['results'][1]['response']['results'][0];
-                                endLatLn = [endRes.location.lng, endRes.location.lat];
-
-                                var url = 'https://api.mapbox.com/directions/v5/' + dirProfile + '/' + startLatLn[0] + ',' + startLatLn[1] + ';' + endLatLn[0] +
+                            //function to request directions from mapbox
+                            var requestFunc = function() {
+                                if(endComplete && startComplete)
+                                {
+                                    var url = 'https://api.mapbox.com/directions/v5/' + dirProfile + '/' + startLatLn[0] + ',' + startLatLn[1] + ';' + endLatLn[0] +
                                     ',' + endLatLn[1] + '?steps=true&geometries=geojson&access_token=' + mapboxgl.accessToken;
 
-                                var req = new XMLHttpRequest();
-                                req.open('GET', url, true);
-                                req.onload = function () {
-                                    var json = JSON.parse(req.response);
-                                    var data = json.routes[0];
-                                    controller.route = data;
+                                    var req = new XMLHttpRequest();
+                                    req.open('GET', url, true);
+                                    req.onload = function () {
+                                        var json = JSON.parse(req.response);
+                                        var data = json.routes[0];
+                                        controller.route = data;
 
-                                    //just to shrink it down a bit
-                                    var storable = controller.createStorable(data);
+                                        //just to shrink it down a bit
+                                        var storable = controller.createStorable(data);
 
-                                    //This is supposed to send the route save HTTP request to the django view
-                                    var formData = new FormData();
-                                    let btnParent = controller.container;
-                                    formData.append(form.children[0].name, form.children[0].value); //csrf token
-                                    formData.append('coords', JSON.stringify(storable));
-                                    formData.append('persist_type', 'Save route');
-                                    if(controller.loadIn.value != '')
-                                    {
-                                        formData.append('route_id', controller.loadIn.value);
-                                        fetch('{% url "maps:persist" %}', {
-                                            method: 'POST',
-                                            body: formData
-                                        }).then(res => res.json()).then(res => {
-                                            if(res.route_status == 'saved')
-                                            {
-                                                loadAll(document.getElementsByClassName('savedroutes')[0], form.children[0], '{% url "maps:get_routes" %}');
-                                            }
-                                            else if(res.message == 'already exists')
-                                            {
-                                                swal('Duplicate route!', 'You already have a route with that name!', 'warning');
-                                            }
-                                        });
+                                        //This is supposed to send the route save HTTP request to the django view
+                                        var formData = new FormData();
+                                        let btnParent = controller.container;
+                                        formData.append(form.children[0].name, form.children[0].value); //csrf token
+                                        formData.append('coords', JSON.stringify(storable));
+                                        formData.append('persist_type', 'Save route');
+                                        if(controller.loadIn.value != '')
+                                        {
+                                            formData.append('route_id', controller.loadIn.value);
+                                            fetch('{% url "maps:persist" %}', {
+                                                method: 'POST',
+                                                body: formData
+                                            }).then(res => res.json()).then(res => {
+                                                if(res.route_status == 'saved')
+                                                {
+                                                    loadAll(document.getElementsByClassName('savedroutes')[0], form.children[0], '{% url "maps:get_routes" %}');
+                                                }
+                                                else if(res.message == 'already exists')
+                                                {
+                                                    swal('Duplicate route!', 'You already have a route with that name!', 'warning');
+                                                }
+                                            });
+                                        }
+                                        else
+                                        {
+                                            swal('No name!', 'Please enter a route name...', 'warning');
+                                        }
                                     }
-                                    else
-                                    {
-                                        swal('No name!', 'Please enter a route name...', 'warning');
-                                    }
+
+                                    req.send()
                                 }
+                            }
 
-                                req.send()
-                            }));
+                            var uvaURL = '{% url "maps:find_uva" %}';
+                            var formData = new FormData();
+                            formData.append(form.children[0].name, form.children[0].value); //csrf token
+                            formData.append('keyword', start.value);
+
+                            if(startLatLn.length > 2) {
+                                startPromise = fetch(uvaURL, {
+                                    method: 'POST',
+                                    body: formData
+                                });
+                                startPromise.then(res => res.json()).then(res => {
+                                    startLatLn = [res['location']['coordinates'][0], res['location']['coordinates'][1]];
+                                    startComplete = true;
+                                    requestFunc();
+                                });
+                            } else {
+                                startComplete = true;
+                            }
+
+                            formData['keyword'] = end.value;
+                            if(endLatLn.length > 2) {
+                                endPromise = fetch(uvaURL, {
+                                    method: 'POST',
+                                    body: formData
+                                });
+                                endPromise.then(res => res.json()).then(res => {
+                                    endLatLn = [res['location']['coordinates'][0], res['location']['coordinates'][1]];
+                                    endComplete = true;
+                                    requestFunc();
+                                });
+                            } else {
+                                endComplete = true;
+                            }
                         } else if(controller.loaded){
                             var storable = controller.createStorable(controller.route);
 
@@ -808,11 +832,13 @@
             map.addControl(directions, 'top-left');
             map.addControl(saver, 'top-left');
             saver.setup();
+
+            //resize the map when a short time before full load
+            //prevent the small map problem
             map.on('idle', function (e) {
-                //"manually" resize the map to prevent it being stuck small
-                //idle happens before load so it looks a little cleaner
-                this.resize();
+                map.resize();
             });
+
             map.on('load', function (e) {  // https://docs.mapbox.com/help/tutorials/building-a-store-locator/
                 //removes need to double-click to load route
                 map.addLayer({
