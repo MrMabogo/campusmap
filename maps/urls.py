@@ -12,6 +12,5 @@ urlpatterns = [
     path('uva-locations-save', views.store_uva_location, name='store_uva'),
     path('uva-locations-find', views.find_uva_location, name='find_uva'),
     path('recommendations', views.RecommendationView.as_view(), name='recommendations'),
-    path('recommendations/list', views.RecommendationListView.as_view(), name='list'),
-    # path('like/<int:pk>', views.LikeView, name='like_post')
+    path('recommendations/list', views.RecommendationListView.as_view(), name='list')
 ]
