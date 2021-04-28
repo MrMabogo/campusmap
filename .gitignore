@@ -28,5 +28,8 @@ media
 .idea/**/libraries
 *.iws /out/
 
+#vscode
+.vscode/*
+
 # virtual environment
 /env/
