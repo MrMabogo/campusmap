@@ -38,18 +38,6 @@
     </div>
 </div>
 
-<!--{% if user.is_authenticated %}-->
-<!--    <small>-->
-<!--        {{ recommendation.body|safe }}-->
-<!--        By: {{ user.username }} - {{ recommendation.post_date }}-->
-<!--    </small>-->
-
-<!--    <form action="{% url 'like_post' recommendation.pk %}" method="POST">-->
-<!--        {% csrf_token %}-->
-<!--        <button type="submit" name="recommendation_id" value = "{{ recommendation.id }}" class="btn btn-primary btn-sm">Like</button>-->
-<!--    </form>-->
-<!--{% endif %}-->
-
 {% endblock %}
 </body>
 </html>
