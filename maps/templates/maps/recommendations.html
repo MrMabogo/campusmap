@@ -60,20 +60,6 @@
 {% endif %}
 
 
-
-
-<!--&lt;!&ndash;{% if user.is_authenticated %}&ndash;&gt;-->
-<!--<small>-->
-<!--    {{ recommendation.body }}-->
-<!--    By: {{ user.username }} - {{ recommendation.post_date }}-->
-<!--</small>-->
-
-<!--<form action="{% url 'like_post' recommendation.pk %}" method="POST">-->
-<!--    {% csrf_token %}-->
-<!--    <button type="submit" name="recommendation_id" value = "{{ recommendation.id }}" class="btn btn-primary btn-sm">Like</button>-->
-<!--</form>-->
-<!--&lt;!&ndash;{% endif %}&ndash;&gt;-->
-
 {% endblock %}
 </body>
 </html>
