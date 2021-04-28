@@ -3,6 +3,7 @@
 {% block homeactive %}nav-link{% endblock %}
 {% block mapactive %}nav-link active{% endblock %}
 {% block recommendationsactive %}nav-link{% endblock %}
+{% block recommendationslistactive %}nav-link{% endblock %}
 {% block content %}
 
     <head>
@@ -810,6 +811,8 @@
                 zoom: 12,
                 style: 'mapbox://styles/mapbox/streets-v11'
             })
+           
+            
 
             // zoom and compass stuff
             var nav = new mapboxgl.NavigationControl(); // https://docs.mapbox.com/mapbox-gl-js/example/navigation/
@@ -832,7 +835,6 @@
             map.addControl(directions, 'top-left');
             map.addControl(saver, 'top-left');
             saver.setup();
-
             //resize the map when a short time before full load
             //prevent the small map problem
             map.on('idle', function (e) {

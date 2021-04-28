@@ -1,0 +1,56 @@
+{% extends 'maps/base.html' %}
+{% load socialaccount %}
+{% block homeactive %}nav-link {% endblock %}
+{% block mapactive %}nav-link{% endblock %}
+{% block recommendationsactive %}nav-link{% endblock %}
+{% block recommendationslistactive %}nav-link active{% endblock %}
+{% block content %}
+
+
+
+<head>
+     <style>
+        div.small_indent
+        {
+            margin-left: 2%;
+        }
+        div.med_indent
+        {
+            margin-left: 5%;
+        }
+        div.large_indent
+        {
+            margin-left: 10%;
+        }
+        div.spacer
+        {
+          padding-top: 10px;
+          padding-bottom: 10px
+        }
+
+    </style>
+</head>
+
+<div class="spacer"></div>
+<div class="text-center">
+    <h1>Recommendations Forum</h1>
+</div>
+<br>
+
+{% if latest_recommendations_list %}
+    <ul class="list-group">
+    {% for recommendation in latest_recommendations_list %}
+        <li class="list-group-item">
+            <p class="fs-4">{{ recommendation.location_idea }}:</p>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No recommendations have been written.</p>
+{% endif %}
+
+<br><br><br><br><br>
+
+{% endblock %}
+</body>
+</html>

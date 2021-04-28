@@ -57,7 +57,10 @@
                         <a class="{% block mapactive %}{% endblock %}" href="{% url 'maps:default' %}">Map</a>
                     </li>
                     <li class="nav-item">
-                        <a class="{% block recommendationsactive %}{% endblock %}" href="{% url 'recommendations' %}">Recommendations</a>
+                        <a class="{% block recommendationsactive %}{% endblock %}" href="{% url 'maps:recommendations' %}">Recommendations</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="{% block recommendationslistactive %}{% endblock %}" href="{% url 'maps:list' %}">Recommendations List</a>
                     </li>
                     <li class="nav-item">
                         {% if user.is_authenticated %}

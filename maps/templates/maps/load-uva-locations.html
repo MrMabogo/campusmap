@@ -2,6 +2,8 @@
 {% load socialaccount %}
 {% block homeactive %}nav-link {% endblock %}
 {% block mapactive %}nav-link active{% endblock %}
+{% block recommendationsactive %}nav-link{% endblock %}
+{% block recommendationslistactive %}nav-link{% endblock %}
 {% block content %}
 {% if user.is_authenticated %}
 <h1>Upload UVA location GeoJSON</h1>
