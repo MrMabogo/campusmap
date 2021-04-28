@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import SavedRoute, UVALocation, UVALocationCollection, Recommendation
+from .models import SavedRoute, UVALocation, UVALocationCollection
 from django.contrib.auth.models import User
 from django.contrib.postgres.search import SearchVector
 from django.db.models import TextField
