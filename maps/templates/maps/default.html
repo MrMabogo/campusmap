@@ -1,7 +1,8 @@
 {% extends 'maps/base.html' %}
 {% load socialaccount %}
-{% block homeactive %}nav-link {% endblock %}
+{% block homeactive %}nav-link{% endblock %}
 {% block mapactive %}nav-link active{% endblock %}
+{% block recommendationsactive %}nav-link{% endblock %}
 {% block content %}
 
     <head>
@@ -17,14 +18,14 @@
         }
         .float-right {
             width: 25%;
-            height: 50%;
+            height: 60%;
             float: right;
             padding: 20px;
             border: none;
         }
         .float-bottom {
             width: 25%;
-            height: 50%;
+            height: 40%;
             float: right;
             padding: 20px;
             border: none;
@@ -46,23 +47,23 @@
         </div>
         <div class="float-right">
             <div class='heading'>
-                <h3>Common Locations</h3>
+                <h4>Common Locations</h4>
             </div>
             <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
-                <div class="btn-group" role="group">
+                <div class="btn-group btn-group-sm" role="group">
                   <button
                           type="button"
                           class="btn btn-primary dropdown-toggle"
                           data-toggle="dropdown"
                           aria-expanded="false"
                   >
-                      Offices
+                      College of Arts and Sciences
                   </button>
                     <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='Office' class='listings'></div></a>
+                    <a class="dropdown-item" href="#"><div id='College of Arts and Sciences' class='listings'></div></a>
                     </div>
                 </div>
-                <div class="btn-group" role="group">
+                <div class="btn-group btn-group-sm" role="group">
                   <button
                           type="button"
                           class="btn btn-primary dropdown-toggle"
@@ -75,62 +76,34 @@
                     <a class="dropdown-item" href="#"><div id='Dining' class='listings'></div></a>
                     </div>
                 </div>
-                <div class="btn-group" role="group">
+                <div class="btn-group btn-group-sm" role="group">
                   <button
                           type="button"
                           class="btn btn-primary dropdown-toggle"
                           data-toggle="dropdown"
                           aria-expanded="false"
                   >
-                      Support
+                      Engineering School
                   </button>
                     <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='Support' class='listings'></div></a>
+                    <a class="dropdown-item" href="#"><div id='Engineering School' class='listings'></div></a>
                     </div>
                 </div>
-                <div class="btn-group" role="group">
+                <div class="btn-group btn-group-sm" role="group">
                   <button
                           type="button"
                           class="btn btn-primary dropdown-toggle"
                           data-toggle="dropdown"
                           aria-expanded="false"
                   >
-                      Classroom
+                      Historical
                   </button>
                     <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='Classroom' class='listings'></div></a>
-                    </div>
-                </div>
-                <div class="btn-group" role="group">
-                  <button
-                          type="button"
-                          class="btn btn-primary dropdown-toggle"
-                          data-toggle="dropdown"
-                          aria-expanded="false"
-                  >
-                      Public Service
-                  </button>
-                    <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='Public Service' class='listings'></div></a>
-                    </div>
-                </div>
-                <div class="btn-group" role="group">
-                  <button
-                          type="button"
-                          class="btn btn-primary dropdown-toggle"
-                          data-toggle="dropdown"
-                          aria-expanded="false"
-                  >
-                      Research
-                  </button>
-                    <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='Research' class='listings'></div></a>
+                    <a class="dropdown-item" href="#"><div id='Historical' class='listings'></div></a>
                     </div>
                 </div>
 
-            </div>
-            <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
-                <div class="btn-group" role="group">
+                <div class="btn-group btn-group-sm" role="group">
                   <button
                           type="button"
                           class="btn btn-primary dropdown-toggle"
@@ -143,20 +116,7 @@
                     <a class="dropdown-item" href="#"><div id='Library' class='listings'></div></a>
                     </div>
                 </div>
-                <div class="btn-group" role="group">
-                  <button
-                          type="button"
-                          class="btn btn-primary dropdown-toggle"
-                          data-toggle="dropdown"
-                          aria-expanded="false"
-                  >
-                      Storage
-                  </button>
-                    <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='Storage' class='listings'></div></a>
-                    </div>
-                </div>
-                <div class="btn-group" role="group">
+                <div class="btn-group btn-group-sm" role="group">
                   <button
                           type="button"
                           class="btn btn-primary dropdown-toggle"
@@ -169,7 +129,7 @@
                     <a class="dropdown-item" href="#"><div id='Parking Garage' class='listings'></div></a>
                     </div>
                 </div>
-                <div class="btn-group" role="group">
+                <div class="btn-group btn-group-sm" role="group">
                   <button
                           type="button"
                           class="btn btn-primary dropdown-toggle"
@@ -182,7 +142,7 @@
                     <a class="dropdown-item" href="#"><div id='Athletic' class='listings'></div></a>
                     </div>
                 </div>
-                <div class="btn-group" role="group">
+                <div class="btn-group btn-group-sm" role="group">
                   <button
                           type="button"
                           class="btn btn-primary dropdown-toggle"
@@ -193,19 +153,6 @@
                   </button>
                     <div class="dropdown-menu">
                     <a class="dropdown-item" href="#"><div id='Housing' class='listings'></div></a>
-                    </div>
-                </div>
-                <div class="btn-group" role="group">
-                  <button
-                          type="button"
-                          class="btn btn-primary dropdown-toggle"
-                          data-toggle="dropdown"
-                          aria-expanded="false"
-                  >
-                      Utilities
-                  </button>
-                    <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='Utilities' class='listings'></div></a>
                     </div>
                 </div>
             </div>
@@ -731,8 +678,8 @@
         });
 
         function buildLocationList(data) {
-            const buildingTypes = ['Office', 'Dining', 'Support', 'Classroom', 'Public Service', 'Research', 'Library',
-                            'Storage', 'Parking Garage', 'Public Service', 'Athletic', 'Housing', 'Utilities', 'Child Care'];
+            const buildingTypes = ['College of Arts and Sciences', 'Dining', 'Engineering School', 'Library',
+                            'Parking Garage', 'Athletic', 'Housing', 'Historical'];
             data.features.forEach(function (facility, i) {
                 var prop = facility.properties;
                 buildingTypes.forEach(function(building, k) {
@@ -896,7 +843,7 @@
                             "properties": {
                                 "name": "The Rotunda",
                                 "address": "1826  University Ave",
-                                "category": "Office"
+                                "category": "Historical"
                             }
                         },
                         {
@@ -911,7 +858,7 @@
                             "properties": {
                                 "name": "Thornton Hall",
                                 "address": "351  McCormick Rd",
-                                "category": "Office"
+                                "category": "Engineering School"
                             }
                         },
                         {
@@ -926,7 +873,7 @@
                             "properties": {
                                 "name": "Rice Hall",
                                 "address": "85  Engineers Way",
-                                "category": "Research"
+                                "category": "Engineering School"
                             }
                         },
                         {
@@ -971,7 +918,7 @@
                             "properties": {
                                 "name": "New Cabell Hall",
                                 "address": "1605  Jefferson Park Ave",
-                                "category": "Office"
+                                "category": "College of Arts and Sciences"
                             }
                         }
                     ]
