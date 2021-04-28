@@ -7,6 +7,8 @@ from django.db.models.functions import Cast
 from django.db import IntegrityError
 from django.http import HttpResponse, JsonResponse, Http404, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
+from .forms import RecommendationPostingForm
+from django.views import generic
 
 import json
 
@@ -152,6 +154,23 @@ def get_routes(request):
 
 def display_routes(request):
     pass
+
+class RecommendationView(generic.CreateView):
+    model = Recommendation
+    form_class = RecommendationPostingForm
+    template_name = 'maps/recommendations.html'
+
+    def form_valid(self, form):
+        print(form.cleaned_data)
+        return super().form_valid(form)
+
+
+
+class RecommendationListView(generic.ListView):
+    model = Recommendation
+    template_name = 'maps/list.html'
+    context_object_name = 'latest_recommendations_list'
+    queryset = Recommendation.objects.all()
 
 # def LikeView(request, pk):
 #     recommendation = get_object_or_404(Recommendation, id=request.POST.get('recommendation_id'))

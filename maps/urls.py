@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from django.views.generic import TemplateView # <--
 
 app_name = 'maps'
 urlpatterns = [
@@ -10,5 +11,7 @@ urlpatterns = [
     path('uva-locations', views.uva_locations, name='uva_locations'),
     path('uva-locations-save', views.store_uva_location, name='store_uva'),
     path('uva-locations-find', views.find_uva_location, name='find_uva'),
+    path('recommendations', views.RecommendationView.as_view(), name='recommendations'),
+    path('recommendations/list', views.RecommendationListView.as_view(), name='list'),
     # path('like/<int:pk>', views.LikeView, name='like_post')
 ]
