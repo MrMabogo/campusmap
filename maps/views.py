@@ -172,7 +172,3 @@ class RecommendationListView(generic.ListView):
     context_object_name = 'latest_recommendations_list'
     queryset = Recommendation.objects.all()
 
-# def LikeView(request, pk):
-#     recommendation = get_object_or_404(Recommendation, id=request.POST.get('recommendation_id'))
-#     recommendation.likes.add(request.user)
-#     return HttpResponseRedirect(reverse('recommendations', args=[str(pk)]))
