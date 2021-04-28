@@ -17,3 +17,9 @@ class UVALocation(models.Model):
 
 class UVALocationCollection(models.Model):
     geojson = models.JSONField(default=dict)
+
+class Recommendation(models.Model):
+    body = models.TextField()
+    post_date = models.DateField(auto_now_add=True)
+    # author = models.ForeignKey(User, on_delete=models.CASCADE)
+    likes = models.ManyToManyField(User, related_name="recommendation")

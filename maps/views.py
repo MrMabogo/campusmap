@@ -1,12 +1,12 @@
-from django.shortcuts import render
-from .models import SavedRoute, UVALocation, UVALocationCollection
+from django.shortcuts import render, get_object_or_404
+from .models import SavedRoute, UVALocation, UVALocationCollection, Recommendation
 from django.contrib.auth.models import User
 from django.contrib.postgres.search import SearchVector
 from django.db.models import TextField
 from django.db.models.functions import Cast
 from django.db import IntegrityError
-from django.http import HttpResponse, JsonResponse, Http404
-from django.urls import reverse
+from django.http import HttpResponse, JsonResponse, Http404, HttpResponseRedirect
+from django.urls import reverse, reverse_lazy
 
 import json
 
@@ -152,3 +152,8 @@ def get_routes(request):
 
 def display_routes(request):
     pass
+
+# def LikeView(request, pk):
+#     recommendation = get_object_or_404(Recommendation, id=request.POST.get('recommendation_id'))
+#     recommendation.likes.add(request.user)
+#     return HttpResponseRedirect(reverse('recommendations', args=[str(pk)]))

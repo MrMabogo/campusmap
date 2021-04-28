@@ -1,0 +1,55 @@
+{% extends 'maps/base.html' %}
+{% block homeactive %}nav-link {% endblock %}
+{% block mapactive %}nav-link {% endblock %}
+{% block recommendationsactive %}nav-link active{% endblock %}
+{% load socialaccount %}
+{% block content %}
+
+<head>
+    <style>
+        div.small_indent
+        {
+            margin-left: 2%;
+        }
+        div.med_indent
+        {
+            margin-left: 5%;
+        }
+        div.large_indent
+        {
+            margin-left: 10%;
+        }
+        div.spacer
+        {
+          padding-top: 10px;
+          padding-bottom: 10px
+        }
+
+    </style>
+</head>
+ <div class="text-center">
+     <div class="spacer"></div>
+     <h1>Recommended Additions to "Common Locations"</h1>
+ </div>
+<div class="text-left">
+    <div class="spacer"></div>
+    <div class="small_indent">
+            <h5>Did we miss any places you think should be in the "Common Locations" section? Comment that location below, and if 10 other users agree with you by liking the post, your location will be added to the "Common Locations" section!</h5>
+    </div>
+</div>
+
+<!--{% if user.is_authenticated %}-->
+<!--    <small>-->
+<!--        {{ recommendation.body|safe }}-->
+<!--        By: {{ user.username }} - {{ recommendation.post_date }}-->
+<!--    </small>-->
+
+<!--    <form action="{% url 'like_post' recommendation.pk %}" method="POST">-->
+<!--        {% csrf_token %}-->
+<!--        <button type="submit" name="recommendation_id" value = "{{ recommendation.id }}" class="btn btn-primary btn-sm">Like</button>-->
+<!--    </form>-->
+<!--{% endif %}-->
+
+{% endblock %}
+</body>
+</html>

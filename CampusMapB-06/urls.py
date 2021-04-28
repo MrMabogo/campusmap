@@ -19,6 +19,7 @@ from django.views.generic import TemplateView # <--
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name='maps/index.html'), name='index'), # <--
+    path('recommendations/', TemplateView.as_view(template_name='maps/recommendations.html'), name='recommendations'),
     path('maps/', include("maps.urls")),
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')), # <--

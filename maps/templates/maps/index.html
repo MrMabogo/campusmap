@@ -1,6 +1,7 @@
 {% extends 'maps/base.html' %}
 {% block homeactive %}nav-link active{% endblock %}
 {% block mapactive %}nav-link{% endblock %}
+{% block recommendationsactive %}nav-link{% endblock %}
 {% load socialaccount %}
 {% block content %}
 
@@ -8,15 +9,15 @@
     <style>
         div.small_indent
         {
-            text-indent: 2%;
+            margin-left: 2%;
         }
         div.med_indent
         {
-            text-indent: 5%;
+            margin-left: 5%;
         }
         div.large_indent
         {
-            text-indent: 10%;
+            margin-left: 10%;
         }
         div.spacer
         {
