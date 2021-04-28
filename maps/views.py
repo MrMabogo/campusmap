@@ -33,7 +33,7 @@ def uva_location_collection(request):
     try:
         locations = UVALocationCollection.objects.first().goejson
     except:
-        return Http404
+        raise Http404
     else:
         return HttpResponse(JsonResponse({'status':200, 'locations': locations}))
 
