@@ -803,10 +803,7 @@
             map.addControl(directions, 'top-left');
             map.addControl(saver, 'top-left');
             saver.setup();
-            
-            map.on('idle', function (e) {
-                map.resize();
-            });
+           
             
             map.on('load', function (e) {  // https://docs.mapbox.com/help/tutorials/building-a-store-locator/
                 //removes need to double-click to load route
