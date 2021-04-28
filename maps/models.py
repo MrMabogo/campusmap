@@ -23,7 +23,7 @@ class Recommendation(models.Model):
     location_idea = models.TextField()
     # post_date = models.DateField(auto_now_add=True)
     # author = models.ForeignKey(User, on_delete=models.CASCADE)
-    likes = models.ManyToManyField(User, related_name="recommendation")
+#     likes = models.ManyToManyField(User, related_name="recommendation")
     objects = models.Manager()
 
     def __str__(self):
