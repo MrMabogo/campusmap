@@ -76,6 +76,7 @@ def store_uva_location(request):
             new_location.save()
         elif request.POST['type'] == 'full':
             jsondict = json.loads(request.POST['geojson'])
+            UVALocationCollection.objects.all().delete() #there should only be one
             new_collection = UVALocationCollection(geojson=jsondict)
             new_collection.save()
         else:
@@ -103,9 +104,6 @@ def persist_route(request):
         return HttpResponse(JsonResponse({'route_status': 'failure', 'message': 'not authenticated'}))
 
 def save_route(request):
-    context = {
-        'savedroutes': SavedRoute,
-    }
     try:
         map_user = request.user
         rname = request.POST['route_id']

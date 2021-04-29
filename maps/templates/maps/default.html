@@ -192,7 +192,7 @@
         }
 
         function getCoordinates(origin, dest) {
-            let asArr = [origin, dest];
+            var asArr = [origin, dest];
             var coordPromise = fetch('https://api.geocod.io/v1.6/geocode?api_key=' + geocodioApiKey, {
                 headers: {
                     'Content-Type': 'application/json'
@@ -447,6 +447,11 @@
                 var form = document.createElement('form');
                 form.innerHTML = '{% csrf_token %}';
                 form.method = 'POST';
+                //prevent enter key in load/save/delete input from reloading page
+                $(document).on("keydown", "form", function(event) { 
+                    return event.key != "Enter";
+                });
+
                 this.container.parentNode.appendChild(form);
                 form.appendChild(this.container);
                 var start = this.getTextInput(inDiv, this.originPlaceholder);
@@ -515,6 +520,7 @@
                             var requestFunc = function() {
                                 if(endComplete && startComplete)
                                 {
+                                    console.log("in req"+startLatLn+" "+endLatLn);
                                     var url = 'https://api.mapbox.com/directions/v5/' + dirProfile + '/' + startLatLn[0] + ',' + startLatLn[1] + ';' + endLatLn[0] +
                                     ',' + endLatLn[1] + '?steps=true&geometries=geojson&access_token=' + mapboxgl.accessToken;
 
@@ -558,42 +564,78 @@
                                     }
 
                                     req.send()
+
+                                    endComplete = false;
+                                    startComplete = false;
                                 }
                             }
 
                             var uvaURL = '{% url "maps:find_uva" %}';
-                            var formData = new FormData();
-                            formData.append(form.children[0].name, form.children[0].value); //csrf token
-                            formData.append('keyword', start.value);
+                            var startData = new FormData();
+                            startData.append(form.children[0].name, form.children[0].value); //csrf token
+                            startData.append('keyword', start.value);
 
-                            if(startLatLn.length > 2) {
-                                startPromise = fetch(uvaURL, {
+                            if(startLatLn.length != 2) {
+                                fetch(uvaURL, {
                                     method: 'POST',
-                                    body: formData
-                                });
-                                startPromise.then(res => res.json()).then(res => {
-                                    startLatLn = [res['location']['coordinates'][0], res['location']['coordinates'][1]];
-                                    startComplete = true;
-                                    requestFunc();
+                                    body: startData
+                                }).then(sres => sres.json()).then(sres => {
+                                    startLatLn = [sres['location']['coordinates'][0], sres['location']['coordinates'][1]];
+                                    
+                                    if(startLatLn[0] && startLatLn[1]) //neither is null
+                                    {
+                                        startComplete = true;
+                                        requestFunc();
+                                    } else {
+                                        var refined = sres['location']['properties']['address']+',Charlottesville,VA';
+                                        getCoordinates(refined, '').then(cres => cres.json()).then(res => {
+                                            if (res['results'][0]['query'] == '') {
+                                                swal("Couldn't save", "Is origin/destination correct?", "info");
+                                            }
+                                            var startRes = res['results'][0]['response']['results'][0];
+                                            endLatLn = [startRes.location.lng, startRes.location.lat];
+                                            startComplete = true;
+                                            requestFunc();
+                                        })
+                                    }
                                 });
                             } else {
                                 startComplete = true;
+                                requestFunc();
                             }
 
-                            formData['keyword'] = end.value;
-                            if(endLatLn.length > 2) {
-                                endPromise = fetch(uvaURL, {
+                            var endData = new FormData();
+                            endData.append(form.children[0].name, form.children[0].value); //csrf token
+                            endData.append('keyword', end.value);
+                            if(endLatLn.length != 2) {
+                                fetch(uvaURL, {
                                     method: 'POST',
-                                    body: formData
-                                });
-                                endPromise.then(res => res.json()).then(res => {
-                                    endLatLn = [res['location']['coordinates'][0], res['location']['coordinates'][1]];
-                                    endComplete = true;
-                                    requestFunc();
+                                    body: endData
+                                }).then(eres => eres.json()).then(eres => {
+                                    console.log(eres);
+                                    endLatLn = [eres['location']['coordinates'][0], eres['location']['coordinates'][1]];
+                                    if(endLatLn[0] && endLatLn[1])
+                                    {
+                                        endComplete = true;
+                                        requestFunc();
+                                    } else {
+                                        var refined = eres['location']['properties']['address']+',Charlottesville,VA';
+                                        getCoordinates('', refined).then(cres => cres.json()).then(res => {
+                                            if (res['results'][1]['query'] == '') {
+                                                swal("Couldn't save", "Is origin/destination correct?", "info");
+                                            }
+                                            var endRes = res['results'][1]['response']['results'][0];
+                                            endLatLn = [endRes.location.lng, endRes.location.lat];
+                                            endComplete = true;
+                                            requestFunc();
+                                        })
+                                    }
                                 });
                             } else {
                                 endComplete = true;
+                                requestFunc();
                             }
+                            
                         } else if(controller.loaded){
                             var storable = controller.createStorable(controller.route);
 
@@ -833,7 +875,7 @@
             map.addControl(saver, 'top-left');
             saver.setup();
 
-            //resize the map when a short time before full load
+            //resize the map a short time before full load
             //prevent the small map problem
             map.on('idle', function (e) {
                 map.resize();
