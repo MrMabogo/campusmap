@@ -21,9 +21,8 @@ class UVALocationCollection(models.Model):
 
 class Recommendation(models.Model):
     location_idea = models.TextField()
-    # post_date = models.DateField(auto_now_add=True)
-    # author = models.ForeignKey(User, on_delete=models.CASCADE)
-    objects = models.Manager()
+    post_date = models.DateField(auto_now_add=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.location_idea
@@ -31,3 +30,5 @@ class Recommendation(models.Model):
     def get_absolute_url(self):
         return reverse("maps:list")
 
+class RecommendationComment(models.Model):
+    pass

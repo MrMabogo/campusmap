@@ -169,4 +169,3 @@ class RecommendationListView(generic.ListView):
     template_name = 'maps/list.html'
     context_object_name = 'latest_recommendations_list'
     queryset = Recommendation.objects.all()
-
