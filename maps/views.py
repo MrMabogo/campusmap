@@ -159,7 +159,10 @@ class RecommendationView(generic.CreateView):
     template_name = 'maps/recommendations.html'
 
     def form_valid(self, form):
-        print(form.cleaned_data)
+        self.object = form.save(commit=False)
+        self.object.author = self.request.user
+        self.object.likes = 0
+        self.object.save()
         return super().form_valid(form)
 
 

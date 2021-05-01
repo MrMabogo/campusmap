@@ -38,13 +38,53 @@
 <br>
 
 {% if latest_recommendations_list %}
-    <ul class="list-group">
+    <!--<ul class="list-group">-->
+    <div class="container">
     {% for recommendation in latest_recommendations_list %}
-        <li class="list-group-item">
-            <p class="fs-4">{{ recommendation.location_idea }}:</p>
-        </li>
+        <div class="row justify-content-md-center">
+            <div class="col col-lg bg-light m-1">
+                <p> 
+                    <span class="text-capitalize font-weight-bold">{{ recommendation.location_name }}</span>
+                    <span class="text-capitalize">{{ recommendation.address }}</span>
+                </p>
+                <p> 
+                    {{ recommendation.details }}
+                </p>
+                <div class="btn-group">
+                    <button class="btn bg-info text-white btn-sm" type="button" name="like" value="Yes">
+                    like <span class="badge badge-light">{{ recommendation.likes }}</span>
+                    </button>
+                </div>
+                
+                <div class="comment-section m-1">
+                    <a class="comments-toggle"  href="#" id="dropdownMenuButton">
+                        Comments
+                    </a>
+                    <div>
+                        <textarea class="md-textarea form-control" style="resize: none" maxlength="140" placeholder="Share your thoughts! In 140 characters..."></textarea>
+                        <button class="btn btn-secondary btn-sm">Post</button>
+                    </div>
+                    <div class="comments">
+                        {% if recommendation.comment_set.all %}
+                        {% for comment in recommendation.comment_set.all %}
+                        <div> 
+                            <p>
+                                <span class="text-capitalize font-weight-bold">{{ comment.author.username }}</span>
+                                <span class="text-capitalize ">{{ comment.post_date }}</span>
+                            </p>
+                            <p class="font-weight-normal">{{ comment }}</span>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                            <p>No comments here...</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
     {% endfor %}
-    </ul>
+    </div>
+    <!--</ul>-->
 {% else %}
     <p>No recommendations have been written.</p>
 {% endif %}
