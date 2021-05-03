@@ -6,8 +6,6 @@
 {% block recommendationslistactive %}nav-link active{% endblock %}
 {% block content %}
 
-
-
 <head>
      <style>
         div.small_indent
@@ -50,21 +48,33 @@
                 <p> 
                     {{ recommendation.details }}
                 </p>
-                <div class="btn-group">
-                    <button class="btn bg-info text-white btn-sm" type="button" name="like" value="Yes">
-                    like <span class="badge badge-light">{{ recommendation.likes }}</span>
-                    </button>
-                </div>
+                <form action="{% url 'maps:update_recommendation' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="name" value="{{ recommendation.location_name }}">
+                    <input type="hidden" name="author" value="{{ recommendation.author.username }}">
+                    <div class="btn-group">
+                        <button class="btn bg-success text-white btn-sm like-btn" type="button" name="update_type" value="like">
+                        like <span class="badge badge-light">{{ recommendation.likes|length }}</span>
+                        </button>
+                    </div>
+                </form>
                 
-                <div class="comment-section m-1">
-                    <a class="comments-toggle"  href="#" id="dropdownMenuButton">
+                <div class="comments-section m-1">
+                    <div>
+                        <form> <!--action="{% url 'maps:update_recommendation' %}" method="POST">-->
+                            {% csrf_token %}
+                            <input type="hidden" name="name" value="{{ recommendation.location_name }}">
+                            <input type="hidden" name="author" value="{{ recommendation.author.username }}">
+                            <textarea class="md-textarea form-control ml-0 mb-2" name="comment" style="resize: none" maxlength="140" placeholder="Share your thoughts! In 140 characters..."></textarea>
+                            <button class="btn btn-secondary btn-sm comment-btn" type="submit" name="update_type" value="comment">
+                                Post
+                            </button>
+                        </form>
+                    </div>
+                    <a class="comments-toggle text-decoration-none" href="#" id="dropdownMenuButton">
                         Comments
                     </a>
-                    <div>
-                        <textarea class="md-textarea form-control" style="resize: none" maxlength="140" placeholder="Share your thoughts! In 140 characters..."></textarea>
-                        <button class="btn btn-secondary btn-sm">Post</button>
-                    </div>
-                    <div class="comments">
+                    <div class="comments bg-primary" style="display: none">
                         {% if recommendation.comment_set.all %}
                         {% for comment in recommendation.comment_set.all %}
                         <div> 
@@ -84,11 +94,47 @@
         </div>
     {% endfor %}
     </div>
+    <script type="text/javascript">
+        $(".like-btn").click(function (e) {
+            e.preventDefault();
+
+            var csrf = $(this.parentNode.parentNode).find('[name="csrfmiddlewaretoken"]');
+            var recName = $(this.parentNode.parentNode).find('[name="name"]');
+            var recAuthor = $(this.parentNode.parentNode).find('[name="author"]');
+
+            var formData = new FormData();
+            formData.append(csrf.prop("name"), csrf.prop("value"));
+            formData.append(recName.prop("name"), recName.prop("value"));
+            formData.append(recAuthor.prop("name"), recAuthor.prop("value"));
+            formData.append("update_type", "like");
+
+            fetch("{% url 'maps:update_recommendation' %}", {
+                method: "POST",
+                body: formData
+            }).then(res => res.json()).then(res => {
+                if(res["update_status"] == "liked") {
+                    $(this).find("span").html(res["likes"]);
+                }
+            });
+        });
+
+        $(".comments-toggle").click(function (e) {
+            e.preventDefault();
+
+            var comments = $(this.parentNode).find(".comments");
+            //toggle comment visibility
+            if(comments.css("display") == "none")
+            {
+                comments.css("display", "unset");
+            } else {
+                comments.css("display", "none");
+            }
+        })
+    </script>
     <!--</ul>-->
 {% else %}
     <p>No recommendations have been written.</p>
 {% endif %}
-
 <br><br><br><br><br>
 
 {% endblock %}

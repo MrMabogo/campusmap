@@ -33,7 +33,7 @@ class Recommendation(models.Model):
     latitude = models.DecimalField(max_digits=8, decimal_places=5, blank=True, null=True)
 
     details = models.TextField(default="No details provided", blank=True, null=True)
-    likes = models.IntegerField()
+    likes = models.JSONField(default=dict) #needs to store associated user
     post_date = models.DateField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -49,6 +49,7 @@ class Comment(models.Model):
     post_date = models.DateField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     recommendation = models.ForeignKey(Recommendation, on_delete=models.CASCADE)
+    likes = models.JSONField(default=dict) #may or may not use
 
     def __str__(self):
         return self.text

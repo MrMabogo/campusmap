@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import SavedRoute, UVALocation, UVALocationCollection, Recommendation
+from .models import SavedRoute, UVALocation, UVALocationCollection, Recommendation, Comment
 from django.contrib.auth.models import User
 from django.contrib.postgres.search import SearchVector
 from django.db.models import TextField
@@ -150,9 +150,6 @@ def get_routes(request):
     else:
         return HttpResponse(JsonResponse({'route_status': 'loaded', 'routes': list(routes)}))
 
-def display_routes(request):
-    pass
-
 class RecommendationView(generic.CreateView):
     model = Recommendation
     form_class = RecommendationPostingForm
@@ -161,14 +158,40 @@ class RecommendationView(generic.CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.author = self.request.user
-        self.object.likes = 0
+
+        new_likes = list([self.object.author.username])
+        new_likes = json.dumps(new_likes)
+        self.object.likes = json.loads(new_likes)
         self.object.save()
         return super().form_valid(form)
-
-
 
 class RecommendationListView(generic.ListView):
     model = Recommendation
     template_name = 'maps/list.html'
     context_object_name = 'latest_recommendations_list'
     queryset = Recommendation.objects.all()
+
+def update_rec(request):
+    try:
+        rec = Recommendation.objects.filter(
+                location_name=request.POST['name'],
+                author__username=request.POST['author']
+                ).get()
+
+        if request.POST['update_type'] == 'like':    
+            old_likes = rec.likes
+            if request.user.username not in old_likes:
+                old_likes.append(request.user.username)
+                rec.likes = json.loads(json.dumps(old_likes))
+                num_likes = len(old_likes)
+                rec.save()
+                return HttpResponse(JsonResponse({'update_status': 'liked', 'likes': num_likes}))
+            else:
+                return HttpResponse(JsonResponse({'update_status': 'failure', 'message': 'already liked'}))
+        elif request.POST['update_type'] == 'comment':
+            new_comment = Comment(author=request.user, recommendation=rec)
+            new_comment.text = request.POST['comment']
+            new_comment.save()
+            return HttpResponseRedirect(reverse('maps:list'))
+    except(KeyError, Recommendation.DoesNotExist):
+        return HttpResponseRedirect(reverse('maps:list'))
