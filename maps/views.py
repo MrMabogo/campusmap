@@ -9,6 +9,7 @@ from django.http import HttpResponse, JsonResponse, Http404, HttpResponseRedirec
 from django.urls import reverse, reverse_lazy
 from .forms import RecommendationPostingForm
 from django.views import generic
+from geocodio import GeocodioClient
 
 import json
 
@@ -27,11 +28,11 @@ def uva_locations(request):
     if request.user.is_superuser:
         return render(request, 'maps/load-uva-locations.html')
     else:
-        return Http404
+        raise Http404
 
 def uva_location_collection(request):
     try:
-        locations = UVALocationCollection.objects.first().goejson
+        locations = UVALocationCollection.objects.first().geojson
     except:
         raise Http404
     else:
@@ -184,10 +185,22 @@ def update_rec(request):
                 old_likes.append(request.user.username)
                 rec.likes = json.loads(json.dumps(old_likes))
                 num_likes = len(old_likes)
-                rec.save()
+
+                #arbitrary like threshold
+                if num_likes < 5:
+                    rec.save()
+                else:
+                    client = GeocodioClient("c67160ed105dde990709bc077e16a76506c7956")
+                    geojson = client.geocode(rec.address)
+                    print(geojson)
+
                 return HttpResponse(JsonResponse({'update_status': 'liked', 'likes': num_likes}))
             else:
-                return HttpResponse(JsonResponse({'update_status': 'failure', 'message': 'already liked'}))
+                old_likes.remove(request.user.username)
+                rec.likes = json.loads(json.dumps(old_likes))
+                num_likes = len(old_likes)
+                
+                return HttpResponse(JsonResponse({'update_status': 'unliked', 'likes': num_likes}))
         elif request.POST['update_type'] == 'comment':
             new_comment = Comment(author=request.user, recommendation=rec)
             new_comment.text = request.POST['comment']

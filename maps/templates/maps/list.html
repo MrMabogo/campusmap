@@ -61,7 +61,7 @@
                 
                 <div class="comments-section m-1">
                     <div>
-                        <form>
+                        <form action="{% url 'maps:update_recommendation' %}" method="POST">
                             {% csrf_token %}
                             <input type="hidden" name="name" value="{{ recommendation.location_name }}">
                             <input type="hidden" name="author" value="{{ recommendation.author.username }}">
@@ -112,7 +112,7 @@
                 method: "POST",
                 body: formData
             }).then(res => res.json()).then(res => {
-                if(res["update_status"] == "liked") {
+                if(res["likes"]) {
                     $(this).find("span").html(res["likes"]);
                 }
             });
