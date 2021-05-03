@@ -41,7 +41,7 @@
 
     <div class="spacer"></div>
     <div class="mb-3">
-        <form action="{% url 'maps:list' %}" method="POST">
+        <form action="{% url 'maps:recommendations' %}" method="POST">
             {% csrf_token %}
             {{ form.as_p }}
             <small>

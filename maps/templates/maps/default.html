@@ -235,7 +235,7 @@
                 this.saveBtn.setAttribute('data-container', 'body');
                 this.saveBtn.setAttribute('data-toggle', 'popover');
                 this.saveBtn.setAttribute('title', 'Confirm Save');
-                this.saveBtn.setAttribute('data-content', 'Before you save, please ensure you have cleverly named this route in the box below so you can easily access it again later. Once you have done so, click the Save button again to confirm.');
+                this.saveBtn.setAttribute('data-content', 'Ensure you have cleverly named this route in the box below. Click the save button again to confirm.');
                 
                 this.loadBtn = L.DomUtil.create('button', 'btn bg-secondary text-white btn-sm', btnGrp);
                 this.loadBtn.setAttribute('name', 'persist_type');
@@ -252,7 +252,7 @@
                 this.delBtn.setAttribute('data-container', 'body');
                 this.delBtn.setAttribute('data-toggle', 'popover');
                 this.delBtn.setAttribute('title', 'Confirm Delete');
-                this.delBtn.setAttribute('data-content', 'PERMANENTLY DELETE. Click again to confirm.');
+                this.delBtn.setAttribute('data-content', 'PERMANENTLY DELETE. Click the delete button again to confirm.');
 
                 var inGrp = L.DomUtil.create('div', 'input-group', this.container);
                 this.loadIn = L.DomUtil.create('input', 'form-control', inGrp);
