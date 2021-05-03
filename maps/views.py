@@ -181,7 +181,15 @@ def update_rec(request):
 
         if request.POST['update_type'] == 'like':    
             old_likes = rec.likes
-            if request.user.username not in old_likes:
+
+            if request.user.username in old_likes:
+                old_likes.remove(request.user.username)
+                rec.likes = json.loads(json.dumps(old_likes))
+                num_likes = len(old_likes)
+                rec.save()
+
+                return HttpResponse(JsonResponse({'update_status': 'unliked', 'likes': num_likes}))
+            else:
                 old_likes.append(request.user.username)
                 rec.likes = json.loads(json.dumps(old_likes))
                 num_likes = len(old_likes)
@@ -191,16 +199,28 @@ def update_rec(request):
                     rec.save()
                 else:
                     client = GeocodioClient("c67160ed105dde990709bc077e16a76506c7956")
-                    geojson = client.geocode(rec.address)
-                    print(geojson)
+                    response = client.geocode(rec.address)
+
+                    #build geojson to store
+                    #incomplete
+                    #will delete recommendation & added it to saved locations
+                    geojson = dict()
+                    geojson = {
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                                response['results'][0]['location']['lng'], 
+                                response['results'][0]['location']['lat']
+                                ]
+                        },
+
+                        "properties": {
+                            "name": rec.location_name,
+                            "address": rec.address
+                        }
+                    }
 
                 return HttpResponse(JsonResponse({'update_status': 'liked', 'likes': num_likes}))
-            else:
-                old_likes.remove(request.user.username)
-                rec.likes = json.loads(json.dumps(old_likes))
-                num_likes = len(old_likes)
-                
-                return HttpResponse(JsonResponse({'update_status': 'unliked', 'likes': num_likes}))
         elif request.POST['update_type'] == 'comment':
             new_comment = Comment(author=request.user, recommendation=rec)
             new_comment.text = request.POST['comment']
