@@ -61,7 +61,7 @@
                 
                 <div class="comments-section m-1">
                     <div>
-                        <form> <!--action="{% url 'maps:update_recommendation' %}" method="POST">-->
+                        <form>
                             {% csrf_token %}
                             <input type="hidden" name="name" value="{{ recommendation.location_name }}">
                             <input type="hidden" name="author" value="{{ recommendation.author.username }}">
