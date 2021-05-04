@@ -172,11 +172,6 @@ class RecommendationListView(generic.ListView):
     queryset = Recommendation.objects.all()
 
 
-# class UVALocationCollectionView(generic.CreateView):
-#     model = UVALocationCollection
-#     queryset = UVALocationCollection.objects.all()
-
-
 def update_rec(request):
     try:
         rec = Recommendation.objects.filter(
