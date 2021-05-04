@@ -749,7 +749,9 @@
 
         function buildLocationList(data) {
             const buildingTypes = ['College of Arts and Sciences', 'Dining', 'Engineering School', 'Library',
-                            'Parking Garage', 'Athletic', 'Housing', 'Historical'];
+                            'Parking Garage', 'Athletic', 'Housing', 'Historical', 'Batten School',
+                            'McIntire School of Commerce', 'Music', 'Office', 'Research', 'School of Education',
+                            'Architecture', 'Arts', 'Law', 'Darden School of Business'];
             data.features.forEach(function (facility, i) {
                 var prop = facility.properties;
                 buildingTypes.forEach(function(building, k) {
@@ -912,7 +914,7 @@
                 });
 
 
-                let facilities = "{% url  'find_uva'%}"
+                let facilities = "{% url  'maps:find_uva'%}"
 
                 // give each facility an id
                 facilities.features.forEach(function (facility, i) {
