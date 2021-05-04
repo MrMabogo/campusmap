@@ -5,10 +5,11 @@ from django.contrib.postgres.search import SearchVector
 from django.db.models import TextField
 from django.db.models.functions import Cast
 from django.db import IntegrityError
-from django.http import HttpResponse, JsonResponse, Http404, HttpResponseRedirect
+from django.http import HttpResponse, JsonResponse, Http404, HttpResponseRedirect, HttpRequest
 from django.urls import reverse, reverse_lazy
 from .forms import RecommendationPostingForm
 from django.views import generic
+from geocodio import GeocodioClient
 
 import json
 
@@ -27,7 +28,7 @@ def uva_locations(request):
     if request.user.is_superuser:
         return render(request, 'maps/load-uva-locations.html')
     else:
-        return Http404
+        raise Http404
 
 def uva_location_collection(request):
     try:
@@ -66,16 +67,22 @@ def find_uva_location(request):
             'location': {'coordinates': result.coordinates, 'properties': result.properties}
         }))
 
+def save_single_uva(geojson):
+    jsondict = json.loads(geojson)
+    old_location = UVALocation.objects.filter(name=jsondict['properties']['name'])
+    if old_location.exists():
+        #assume new one is an update so delete old
+        old_location.delete()
+    new_location = UVALocation(
+        name=jsondict['properties']['name'],
+        coordinates=jsondict['geometry']['coordinates'],
+        properties=jsondict['properties'])
+    new_location.save()
 
 def store_uva_location(request):
     try:
         if request.POST['type'] == 'single':
-            jsondict = json.loads(request.POST['geojson'])
-            new_location = UVALocation(
-                name=jsondict['properties']['name'],
-                coordinates=jsondict['geometry']['coordinates'],
-                properties=jsondict['properties'])
-            new_location.save()
+            save_single_uva(request.POST['geojson'])
         elif request.POST['type'] == 'full':
             jsondict = json.loads(request.POST['geojson'])
             UVALocationCollection.objects.all().delete() #there should only be one
@@ -181,18 +188,64 @@ def update_rec(request):
 
         if request.POST['update_type'] == 'like':    
             old_likes = rec.likes
-            if request.user.username not in old_likes:
-                old_likes.append(request.user.username)
+
+            if request.user.username in old_likes:
+                old_likes.remove(request.user.username)
                 rec.likes = json.loads(json.dumps(old_likes))
                 num_likes = len(old_likes)
                 rec.save()
-                return HttpResponse(JsonResponse({'update_status': 'liked', 'likes': num_likes}))
+
+                return HttpResponse(JsonResponse({'update_status': 'unliked', 'likes': num_likes}))
             else:
-                return HttpResponse(JsonResponse({'update_status': 'failure', 'message': 'already liked'}))
+                old_likes.append(request.user.username)
+                rec.likes = json.loads(json.dumps(old_likes))
+                num_likes = len(old_likes)
+
+                #arbitrary like threshold
+                if num_likes < 5:
+                    rec.save()
+                    return HttpResponse(JsonResponse({'update_status': 'liked', 'likes': num_likes}))
+                else:
+                    client = GeocodioClient('c67160ed105dde990709bc077e16a76506c7956')
+
+                    if rec.address != '':
+                        response = client.geocode(rec.address)
+                    else:
+                        response = client.geocode((rec.latitude, rec.longitude))
+
+                    #build geojson to store
+                    #incomplete
+                    #will delete recommendation & add it to saved locations
+                    geojson = dict()
+                    geojson = {
+                        'type': 'Feature',
+                        'geometry': {
+                            'type': 'Point',
+                            'coordinates': [
+                                response['results'][0]['location']['lng'], 
+                                response['results'][0]['location']['lat']
+                                ]
+                        },
+
+                        'properties': {
+                            'name': rec.location_name,
+                            'address': response['results'][0]['formatted_address']
+                        }
+                    }
+
+                    save_single_uva(json.dumps(geojson)) #exception if it already exists
+
+                    locations = UVALocationCollection.objects.all().get()
+                    loc_json = locations.geojson
+                    loc_json['features'].append(geojson)
+                    locations.geojson = loc_json
+                    locations.save()
+                    rec.delete()
+
+                    return HttpResponseRedirect(reverse('maps:list'))      
         elif request.POST['update_type'] == 'comment':
-            new_comment = Comment(author=request.user, recommendation=rec)
-            new_comment.text = request.POST['comment']
+            new_comment = Comment(author=request.user, recommendation=rec, text=request.POST['comment'])
             new_comment.save()
             return HttpResponseRedirect(reverse('maps:list'))
-    except(KeyError, Recommendation.DoesNotExist):
+    except(KeyError, Recommendation.DoesNotExist, IntegrityError):
         return HttpResponseRedirect(reverse('maps:list'))
