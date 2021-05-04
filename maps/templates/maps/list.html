@@ -40,54 +40,69 @@
     <div class="container">
     {% for recommendation in latest_recommendations_list %}
         <div class="row justify-content-md-center">
-            <div class="col col-lg bg-light m-1">
-                <p> 
-                    <span class="text-capitalize font-weight-bold">{{ recommendation.location_name }}</span>
-                    <span class="text-capitalize">{{ recommendation.address }}</span>
-                </p>
-                <p> 
-                    {{ recommendation.details }}
-                </p>
-                <form action="{% url 'maps:update_recommendation' %}" method="POST">
-                    {% csrf_token %}
-                    <input type="hidden" name="name" value="{{ recommendation.location_name }}">
-                    <input type="hidden" name="author" value="{{ recommendation.author.username }}">
-                    <div class="btn-group">
-                        <button class="btn bg-success text-white btn-sm like-btn" type="button" name="update_type" value="like">
-                        like <span class="badge badge-light">{{ recommendation.likes|length }}</span>
-                        </button>
-                    </div>
-                </form>
-                
-                <div class="comments-section m-1">
-                    <div>
-                        <form>
+            <div class="col col-lg m-1">
+                <div class="row bg-light">
+                    <div class="col col-lg">
+                        <p> 
+                            <span class="text-capitalize font-weight-bold">{{ recommendation.location_name }}</span>
+                            suggested by {{ recommendation.author.username }}
+                            <br>
+                            <span class="text-capitalize">{{ recommendation.address }}</span>
+                        </p>
+                        <p> 
+                            {{ recommendation.details }}
+                        </p>
+                        <form action="{% url 'maps:update_recommendation' %}" method="POST">
                             {% csrf_token %}
                             <input type="hidden" name="name" value="{{ recommendation.location_name }}">
                             <input type="hidden" name="author" value="{{ recommendation.author.username }}">
-                            <textarea class="md-textarea form-control ml-0 mb-2" name="comment" style="resize: none" maxlength="140" placeholder="Share your thoughts! In 140 characters..."></textarea>
-                            <button class="btn btn-secondary btn-sm comment-btn" type="submit" name="update_type" value="comment">
-                                Post
+                            <button class="btn bg-success text-white btn-sm like-btn" type="button" name="update_type" value="like">
+                                like <span class="badge badge-light">{{ recommendation.likes|length }}</span>
                             </button>
                         </form>
                     </div>
-                    <a class="comments-toggle text-decoration-none" href="#" id="dropdownMenuButton">
-                        Comments
-                    </a>
-                    <div class="comments bg-primary" style="display: none">
-                        {% if recommendation.comment_set.all %}
-                        {% for comment in recommendation.comment_set.all %}
-                        <div> 
-                            <p>
-                                <span class="text-capitalize font-weight-bold">{{ comment.author.username }}</span>
-                                <span class="text-capitalize ">{{ comment.post_date }}</span>
-                            </p>
-                            <p class="font-weight-normal">{{ comment }}</span>
+                </div>
+                <div class="row">
+                    <div class="col col-lg">
+                        <div class="comments-section">
+                            <div class="row bg-light">
+                                <div class="col col-lg">
+                                    <div>
+                                        <form action="{% url 'maps:update_recommendation' %}" method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="name" value="{{ recommendation.location_name }}">
+                                            <input type="hidden" name="author" value="{{ recommendation.author.username }}">
+                                            <textarea class="md-textarea form-control ml-0 mb-2" name="comment" style="resize: none" maxlength="140" placeholder="Share your thoughts! In 140 characters..."></textarea>
+                                            <button class="btn btn-secondary btn-sm comment-btn" type="submit" name="update_type" value="comment">
+                                                Post
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <a class="comments-toggle text-decoration-none" href="#">
+                                        Comments
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row bg-light">
+                                <div class="col col-lg">
+                                    <div class="comments bg-primary" style="display: none">
+                                        {% if recommendation.comment_set.all %}
+                                        {% for comment in recommendation.comment_set.all %}
+                                        <div class="bg-highlight"> 
+                                            <p>
+                                                <span class="text-capitalize font-weight-bold">{{ comment.author.username }}</span>
+                                                <span class="text-capitalize ">{{ comment.post_date }}</span>
+                                            </p>
+                                            <p class="font-weight-normal">{{ comment }}</span>
+                                        </div>
+                                        {% endfor %}
+                                        {% else %}
+                                            <p>No comments here...</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        {% endfor %}
-                        {% else %}
-                            <p>No comments here...</p>
-                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -98,9 +113,9 @@
         $(".like-btn").click(function (e) {
             e.preventDefault();
 
-            var csrf = $(this.parentNode.parentNode).find('[name="csrfmiddlewaretoken"]');
-            var recName = $(this.parentNode.parentNode).find('[name="name"]');
-            var recAuthor = $(this.parentNode.parentNode).find('[name="author"]');
+            var csrf = $(this.parentNode).find('[name="csrfmiddlewaretoken"]');
+            var recName = $(this.parentNode).find('[name="name"]');
+            var recAuthor = $(this.parentNode).find('[name="author"]');
 
             var formData = new FormData();
             formData.append(csrf.prop("name"), csrf.prop("value"));
@@ -108,20 +123,51 @@
             formData.append(recAuthor.prop("name"), recAuthor.prop("value"));
             formData.append("update_type", "like");
 
+            var loadOverlay = document.createElement("div");
+            $(loadOverlay).css({
+                "position": "fixed",
+                "top": "0",
+                "height": "100%",
+                "width": "100%",
+                "background-color": "rgba(255,255,255,0.7"
+            });
+            $("body").append(loadOverlay);
+            var spinner = document.createElement("div");
+            $(spinner).css({
+                "position": "absolute",
+                "top": "50%",
+                "left": "50%"
+            });
+            $(spinner).attr({
+                "class": "spinner-border",
+                "role": "status",
+            });
+            $(loadOverlay).append(spinner);
+            var sr = document.createElement("span");
+            $(sr).attr("class", "sr-only");
+            $(sr).html("Loading...");
+            $(spinner).append(sr);
+
             fetch("{% url 'maps:update_recommendation' %}", {
                 method: "POST",
                 body: formData
-            }).then(res => res.json()).then(res => {
-                if(res["update_status"] == "liked") {
+            }).then(res => { 
+                if(res.redirected) {
+                    document.location.href=res.url;
+            } else {
+                res.json().then(res => {
+                if("likes" in res) {
                     $(this).find("span").html(res["likes"]);
+                    $(loadOverlay).remove();
                 }
-            });
+            })
+            }});
         });
 
         $(".comments-toggle").click(function (e) {
             e.preventDefault();
 
-            var comments = $(this.parentNode).find(".comments");
+            var comments = $(this).closest(".row").parent().parent().find(".comments");
             //toggle comment visibility
             if(comments.css("display") == "none")
             {
