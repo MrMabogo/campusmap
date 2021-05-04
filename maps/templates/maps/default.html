@@ -913,9 +913,13 @@
                     }
                 });
 
+                var url = "{% url 'maps:geo.json' %}"
+                let facilities = "";
 
-                let facilities = "{% url  'maps:find_uva'%}"
-
+                fetch(url)
+                    .then(res => res.json())
+                    .then(res => facilities = JSON.stringify(res))
+                console.log(facilities);
                 // give each facility an id
                 facilities.features.forEach(function (facility, i) {
                     facility.properties.id = i;
