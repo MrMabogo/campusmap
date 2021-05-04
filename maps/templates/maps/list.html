@@ -122,16 +122,46 @@
             formData.append(recName.prop("name"), recName.prop("value"));
             formData.append(recAuthor.prop("name"), recAuthor.prop("value"));
             formData.append("update_type", "like");
-            console.log(formData.entries());
+
+            var loadOverlay = document.createElement("div");
+            $(loadOverlay).css({
+                "position": "fixed",
+                "top": "0",
+                "height": "100%",
+                "width": "100%",
+                "background-color": "rgba(255,255,255,0.7"
+            });
+            $("body").append(loadOverlay);
+            var spinner = document.createElement("div");
+            $(spinner).css({
+                "position": "absolute",
+                "top": "50%",
+                "left": "50%"
+            });
+            $(spinner).attr({
+                "class": "spinner-border",
+                "role": "status",
+            });
+            $(loadOverlay).append(spinner);
+            var sr = document.createElement("span");
+            $(sr).attr("class", "sr-only");
+            $(sr).html("Loading...");
+            $(spinner).append(sr);
 
             fetch("{% url 'maps:update_recommendation' %}", {
                 method: "POST",
                 body: formData
-            }).then(res => res.json()).then(res => {
-                if(res["likes"]) {
+            }).then(res => { 
+                if(res.redirected) {
+                    document.location.href=res.url;
+            } else {
+                res.json().then(res => {
+                if("likes" in res) {
                     $(this).find("span").html(res["likes"]);
+                    $(loadOverlay).remove();
                 }
-            });
+            })
+            }});
         });
 
         $(".comments-toggle").click(function (e) {
