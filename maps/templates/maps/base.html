@@ -88,14 +88,14 @@
     <!-- adding fade feature when navigating between tabs -->
     <script>
         //https://onextrapixel.com/how-to-use-jquery-to-make-slick-page-transitions
-        $("body").css("display", "none");
+        $("main").css("display", "none");
         $(document).ready(function () {    
-            $("body").fadeIn(1500);
+            $("main").fadeIn(1500);
         
             $("a:not([target='_blank']):not([href^='#'])").click(function(event){
                 event.preventDefault();
                 linkLocation = this.href;
-                $("body").fadeOut(800, redirectPage);      
+                $("main").fadeOut(800, redirectPage);      
             });
                 
             function redirectPage() {
