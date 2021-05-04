@@ -82,7 +82,7 @@
                                 <span class="text-capitalize font-weight-bold">{{ comment.author.username }}</span>
                                 <span class="text-capitalize ">{{ comment.post_date }}</span>
                             </p>
-                            <p class="font-weight-normal">{{ comment }}</span>
+                            <p class="font-weight-normal">{{ comment }}</span> <!-- this might be an issue
                         </div>
                         {% endfor %}
                         {% else %}
@@ -131,7 +131,7 @@
             }
         })
     </script>
-    <!--</ul>-->
+    </ul>-->
 {% else %}
     <p>No recommendations have been written.</p>
 {% endif %}
