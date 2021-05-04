@@ -36,7 +36,7 @@ def uva_location_collection(request):
     except:
         raise Http404
     else:
-        return HttpResponse(JsonResponse({'status':200, 'locations': locations}))
+        return JsonResponse(locations)
 
 def find_uva_location(request):
     #https://stackoverflow.com/questions/38835167/django-fulltext-search-on-json-field
@@ -63,7 +63,7 @@ def find_uva_location(request):
     else:
         result = last_match.first()
         return HttpResponse(JsonResponse({
-            'location_status': status, 
+            'location_status': status,
             'location': {'coordinates': result.coordinates, 'properties': result.properties}
         }))
 
@@ -177,6 +177,7 @@ class RecommendationListView(generic.ListView):
     template_name = 'maps/list.html'
     context_object_name = 'latest_recommendations_list'
     queryset = Recommendation.objects.all()
+
 
 def update_rec(request):
     try:

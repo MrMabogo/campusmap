@@ -155,6 +155,136 @@
                     <a class="dropdown-item" href="#"><div id='Housing' class='listings'></div></a>
                     </div>
                 </div>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button
+                            type="button"
+                            class="btn btn-primary dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        Batten School
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#"><div id='Batten School' class='listings'></div></a>
+                    </div>
+                </div>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button
+                            type="button"
+                            class="btn btn-primary dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        McIntire School of Commerce
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#"><div id='McIntire School of Commerce' class='listings'></div></a>
+                    </div>
+                </div>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button
+                            type="button"
+                            class="btn btn-primary dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        Music
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#"><div id='Music' class='listings'></div></a>
+                    </div>
+                </div>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button
+                            type="button"
+                            class="btn btn-primary dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        Office
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#"><div id='Office' class='listings'></div></a>
+                    </div>
+                </div>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button
+                            type="button"
+                            class="btn btn-primary dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        Research
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#"><div id='Research' class='listings'></div></a>
+                    </div>
+                </div>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button
+                            type="button"
+                            class="btn btn-primary dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        School of Education
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#"><div id='School of Education' class='listings'></div></a>
+                    </div>
+                </div>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button
+                            type="button"
+                            class="btn btn-primary dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        Architecture
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#"><div id='Architecture' class='listings'></div></a>
+                    </div>
+                </div>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button
+                            type="button"
+                            class="btn btn-primary dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        Arts
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#"><div id='Arts' class='listings'></div></a>
+                    </div>
+                </div>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button
+                            type="button"
+                            class="btn btn-primary dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        Law
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#"><div id='Law' class='listings'></div></a>
+                    </div>
+                </div>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button
+                            type="button"
+                            class="btn btn-primary dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        Darden School of Business
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#"><div id='Darden School of Business' class='listings'></div></a>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="float-bottom overflow-auto">
@@ -749,7 +879,9 @@
 
         function buildLocationList(data) {
             const buildingTypes = ['College of Arts and Sciences', 'Dining', 'Engineering School', 'Library',
-                            'Parking Garage', 'Athletic', 'Housing', 'Historical'];
+                            'Parking Garage', 'Athletic', 'Housing', 'Historical', 'Batten School',
+                            'McIntire School of Commerce', 'Music', 'Office', 'Research', 'School of Education',
+                            'Architecture', 'Arts', 'Law', 'Darden School of Business'];
             data.features.forEach(function (facility, i) {
                 var prop = facility.properties;
                 buildingTypes.forEach(function(building, k) {
@@ -911,107 +1043,21 @@
                     }
                 });
 
+                var url = "{% url 'maps:geo.json' %}"
+                let facilities = "hi";
 
-                let facilities = {
-                    "type": "FeatureCollection",
-                    "features": [
-                        {
-                            "type": "Feature",
-                            "geometry": {
-                                "type": "Point",
-                                "coordinates": [
-                                    -78.5034,
-                                    38.0356
-                                ]
-                            },
-                            "properties": {
-                                "name": "The Rotunda",
-                                "address": "1826  University Ave",
-                                "category": "Historical"
-                            }
-                        },
-                        {
-                            "type": "Feature",
-                            "geometry": {
-                                "type": "Point",
-                                "coordinates": [
-                                    -78.5099,
-                                    38.0329
-                                ]
-                            },
-                            "properties": {
-                                "name": "Thornton Hall",
-                                "address": "351  McCormick Rd",
-                                "category": "Engineering School"
-                            }
-                        },
-                        {
-                            "type": "Feature",
-                            "geometry": {
-                                "type": "Point",
-                                "coordinates": [
-                                    -78.5108,
-                                    38.03158
-                                ]
-                            },
-                            "properties": {
-                                "name": "Rice Hall",
-                                "address": "85  Engineers Way",
-                                "category": "Engineering School"
-                            }
-                        },
-                        {
-                            "type": "Feature",
-                            "geometry": {
-                                "type": "Point",
-                                "coordinates": [
-                                    -78.51476,
-                                    38.03307
-                                ]
-                            },
-                            "properties": {
-                                "name": "Gibbons House",
-                                "address": "425  TREE HOUSE LANE",
-                                "category": "Housing"
-                            }
-                        },
-                        {
-                            "type": "Feature",
-                            "geometry": {
-                                "type": "Point",
-                                "coordinates": [
-                                    -78.5151,
-                                    38.0348
-                                ]
-                            },
-                            "properties": {
-                                "name": "O-Hill Dining Hall",
-                                "address": "525  McCormick Rd",
-                                "category": "Dining"
-                            }
-                        },
-                        {
-                            "type": "Feature",
-                            "geometry": {
-                                "type": "Point",
-                                "coordinates": [
-                                    -78.505,
-                                    38.0326
-                                ]
-                            },
-                            "properties": {
-                                "name": "New Cabell Hall",
-                                "address": "1605  Jefferson Park Ave",
-                                "category": "College of Arts and Sciences"
-                            }
-                        }
-                    ]
-                }; // map.getSource('UVA');
-
+                fetch(url)
+                    .then(res => res.json())
+                    .then(res => {
+                        facilities = res;// JSON.stringify(res);
+                        //console.log(facilities);
+                        facilities.features.forEach(function (facility, i) {
+                            facility.properties.id = i;
+                        });
+                        buildLocationList(facilities);
+                    });
                 // give each facility an id
-                facilities.features.forEach(function (facility, i) {
-                    facility.properties.id = i;
-                });
+
                 // add them to the map
                 /* map.addLayer({
                     'id': 'locations',
@@ -1022,7 +1068,7 @@
                     }
                 }); */
 
-                buildLocationList(facilities);
+
 
                 /* facilities.features.forEach(function (marker) {
                     var el = document.createElement('div');

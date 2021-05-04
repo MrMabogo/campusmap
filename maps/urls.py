@@ -10,6 +10,7 @@ urlpatterns = [
     path('uva-locations', views.uva_locations, name='uva_locations'),
     path('uva-locations-save', views.store_uva_location, name='store_uva'),
     path('uva-locations-find', views.find_uva_location, name='find_uva'),
+    path('locations-geojson', views.uva_location_collection, name='geo.json'),
     path('recommendations', views.RecommendationView.as_view(), name='recommendations'),
     path('recommendations/list', views.RecommendationListView.as_view(), name='list'),
     path('recommendations/comment-or-like', views.update_rec, name='update_recommendation')
