@@ -155,6 +155,136 @@
                     <a class="dropdown-item" href="#"><div id='Housing' class='listings'></div></a>
                     </div>
                 </div>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button
+                            type="button"
+                            class="btn btn-primary dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        Batten School
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#"><div id='Batten School' class='listings'></div></a>
+                    </div>
+                </div>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button
+                            type="button"
+                            class="btn btn-primary dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        McIntire School of Commerce
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#"><div id='McIntire School of Commerce' class='listings'></div></a>
+                    </div>
+                </div>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button
+                            type="button"
+                            class="btn btn-primary dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        Music
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#"><div id='Music' class='listings'></div></a>
+                    </div>
+                </div>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button
+                            type="button"
+                            class="btn btn-primary dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        Office
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#"><div id='Office' class='listings'></div></a>
+                    </div>
+                </div>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button
+                            type="button"
+                            class="btn btn-primary dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        Research
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#"><div id='Research' class='listings'></div></a>
+                    </div>
+                </div>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button
+                            type="button"
+                            class="btn btn-primary dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        School of Education
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#"><div id='School of Education' class='listings'></div></a>
+                    </div>
+                </div>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button
+                            type="button"
+                            class="btn btn-primary dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        Architecture
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#"><div id='Architecture' class='listings'></div></a>
+                    </div>
+                </div>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button
+                            type="button"
+                            class="btn btn-primary dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        Arts
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#"><div id='Arts' class='listings'></div></a>
+                    </div>
+                </div>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button
+                            type="button"
+                            class="btn btn-primary dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        Law
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#"><div id='Law' class='listings'></div></a>
+                    </div>
+                </div>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button
+                            type="button"
+                            class="btn btn-primary dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        Darden School of Business
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#"><div id='Darden School of Business' class='listings'></div></a>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="float-bottom overflow-auto">
@@ -914,16 +1044,20 @@
                 });
 
                 var url = "{% url 'maps:geo.json' %}"
-                let facilities = "";
+                let facilities = "hi";
 
                 fetch(url)
                     .then(res => res.json())
-                    .then(res => facilities = JSON.stringify(res))
-                console.log(facilities);
+                    .then(res => {
+                        facilities = res;// JSON.stringify(res);
+                        console.log(facilities);
+                        facilities.features.forEach(function (facility, i) {
+                            facility.properties.id = i;
+                        });
+                        buildLocationList(facilities);
+                    });
                 // give each facility an id
-                facilities.features.forEach(function (facility, i) {
-                    facility.properties.id = i;
-                });
+
                 // add them to the map
                 /* map.addLayer({
                     'id': 'locations',
@@ -934,7 +1068,7 @@
                     }
                 }); */
 
-                buildLocationList(facilities);
+
 
                 /* facilities.features.forEach(function (marker) {
                     var el = document.createElement('div');
