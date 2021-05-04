@@ -32,12 +32,29 @@
             border: none;
         }
 
+        #menu {
+            position: absolute;
+            background: #efefef;
+            padding: 5px;
+            bottom: 20;
+            right: 0;
+            font-family: 'Open Sans', sans-serif;
+            z-index: 1;
+        }
+
         </style>
     </head>
 
     <div class="float-container">
         <div class="float-left">
-            <div id='map' style="width: 100%; height: 100%;"></div>
+            <div id='map' style="width: 100%; height: 100%;">
+                <div id='menu'>
+                    <input id="satellite-v9" type="radio" name="rtoggle" value="satellite" checked="checked">
+                    <label for="satellite-v9">Satellite View</label>
+                    <input id="streets-v11" type="radio" name="rtoggle" value="streets">
+                    <label for="streets-v11">Street View</label>
+                </div>
+            </div>
 
 <!--            Spinner Implementation-->
 <!--              <div class="spinner-border m-5" role="status">-->
@@ -182,6 +199,8 @@
         defaultOrigin = "Desired Start Location";
         defaultDest = "Desired End Location";
 
+
+
         function successLocation(position) {
             userLocation = [position.coords.longitude, position.coords.latitude]; // automatically global variable for the user's location
             setupMap([position.coords.longitude, position.coords.latitude]);
@@ -189,7 +208,7 @@
 
         function errorLocation() {
             userLocation = [-78.512, 38.036];
-            setupMap([-78.512, 38.036]);
+            setupMap([-78.503, 38.036]);
         }
 
         function getCoordinates(origin, dest) {
@@ -696,7 +715,7 @@
 
                             controller.myMap.flyTo({
                                 center: steps[steps.length-1].geometry.coordinates[0],
-                                zoom: 15
+                                zoom: 14
                             });
 
                             var dirDiv = inDiv.parentNode.children[1];
@@ -780,7 +799,7 @@
                                     var clickedListing = data.features[i];
                                     map.flyTo({
                                         center: clickedListing.geometry.coordinates,
-                                        zoom: 15
+                                        zoom: 14
                                     });
                                     // pass link coordinates to directions API
                                     // used https://docs.mapbox.com/help/tutorials/getting-started-directions-api/?size=n_10_n
@@ -850,15 +869,28 @@
             map = new mapboxgl.Map({ // automatically global
                 container: 'map',
                 center: center,
-                zoom: 12,
-                style: 'mapbox://styles/mapbox/streets-v11'
+                zoom: 14,
+                style: 'mapbox://styles/mapbox/satellite-v9',
+                clickTolerance: 1
             })
-           
-            
+
 
             // zoom and compass stuff
             var nav = new mapboxgl.NavigationControl(); // https://docs.mapbox.com/mapbox-gl-js/example/navigation/
             map.addControl(nav);
+
+            var layerList = document.getElementById('menu');
+            var inputs = layerList.getElementsByTagName('input');
+
+            function switchLayer(layer) {
+                var layerId = layer.target.id;
+                map.setStyle('mapbox://styles/mapbox/' + layerId);
+
+            }
+
+            for (var i = 0; i < inputs.length; i++) {
+                inputs[i].onclick = switchLayer;
+            }
 
             directions = new MapboxDirections({ // https://github.com/mapbox/mapbox-gl-directions
                 accessToken: mapboxgl.accessToken,
@@ -878,11 +910,13 @@
             map.addControl(saver, 'top-left');
             saver.setup();
 
+
             //resize the map a short time before full load
             //prevent the small map problem
             map.on('idle', function (e) {
                 map.resize();
             });
+
 
             map.on('load', function (e) {  // https://docs.mapbox.com/help/tutorials/building-a-store-locator/
                 //removes need to double-click to load route
@@ -1037,7 +1071,7 @@
                     el.addEventListener('click', function (e) {
 =                        map.flyTo({
                             center: marker.geometry.coordinates,
-                            zoom: 15
+                            zoom: 14
                         });
                         var activeItem = document.getElementsByClassName('active');
                         e.stopPropagation();
