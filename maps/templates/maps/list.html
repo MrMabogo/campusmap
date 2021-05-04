@@ -88,12 +88,12 @@
                                     <div class="comments bg-primary" style="display: none">
                                         {% if recommendation.comment_set.all %}
                                         {% for comment in recommendation.comment_set.all %}
-                                        <div class="card ml-3 mt-1"> 
+                                        <div class="card ml-3 mt-1 mb-2"> 
                                             <div class="card-header">
                                                 <span class="text-capitalize font-weight-bold">{{ comment.author.username }}</span>
                                                 <span class="text-capitalize small">{{ comment.post_date }}</span>
                                             </div>
-                                            <p class="font-weight-normal ml-2">{{ comment }}</span>
+                                            <p class="font-weight-normal ml-3">{{ comment }}</span>
                                         </div>
                                         {% endfor %}
                                         {% else %}
