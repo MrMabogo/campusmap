@@ -1050,7 +1050,7 @@
                     .then(res => res.json())
                     .then(res => {
                         facilities = res;// JSON.stringify(res);
-                        console.log(facilities);
+                        //console.log(facilities);
                         facilities.features.forEach(function (facility, i) {
                             facility.properties.id = i;
                         });
