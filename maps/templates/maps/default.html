@@ -312,11 +312,11 @@
             </div>
         </div>
         <div class="float-bottom overflow-auto">
+            {% if user.is_authenticated %}
             <div class='heading'>
                 <h3>Saved Routes</h3>
             </div>
             <div class='savedroutes list-group d-flex'>
-                {% if user.is_authenticated %}
                     {% for savedroute in savedroutes %}
                     <div class="d-flex list-group-item">
                         <span class="justify-content-between">
@@ -324,11 +324,10 @@
                         </span>
                     </div>
                     {% endfor %}
-                {% endif %}
             </div>
+            {% endif %}
         </div>
     </div>
-
     <script type="text/javascript">
         mapboxgl.accessToken = '{{mapbox_access_token}}'; //renders django view variable
         geocodioApiKey = '{{geocodio_api_key}}';
@@ -336,7 +335,30 @@
         defaultOrigin = "Desired Start Location";
         defaultDest = "Desired End Location";
 
-
+        function loadAll(container, csrf, url)
+        {
+            var formData = new FormData();
+            formData.append(csrf.name, csrf.value); //csrf token
+            fetch(url, {
+                method: 'POST',
+                body: formData
+            }).then(res => res.json()).then(res => {
+                if(res.route_status == 'loaded')
+                {
+                    container.innerHTML = '';
+                    
+                    res.routes.forEach((route) => {
+                        var itemDiv = document.createElement('div');
+                        itemDiv.setAttribute('class', 'd-flex list-group-item');
+                        container.appendChild(itemDiv);
+                        var nameSpan = document.createElement('span');
+                        nameSpan.setAttribute('class', 'justify-content-between');
+                        itemDiv.appendChild(nameSpan);
+                        nameSpan.innerHTML = route.name;
+                    });
+                }
+            })
+        }
 
         function successLocation(position) {
             userLocation = [position.coords.longitude, position.coords.latitude]; // automatically global variable for the user's location
@@ -430,6 +452,10 @@
                     $('[data-toggle="popover"]').on('blur', function(){
                         $(this).popover('hide');
                     });
+
+                    $(':not([data-toggle="popover"])').on('focus', function(){
+                        $('[data-toggle="popover"]').popover('hide');
+                    });
                 });
 
                 return this.container; //according to Leaflet IControl specification
@@ -458,10 +484,10 @@
                 if (this.myMap.getSource('route')) { //if the route already exists, reset it
                     this.myMap.getSource('route').setData(geojson);
                 }
-<!--                 else {-->
-<!--                    //see setupMap and https://docs.mapbox.com/help/troubleshooting/mapbox-browser-support/-->
-<!--                    swal("Loading problem", "Mapbox loaded incorrectly. Allow hardware acceleration. Try refreshing the page.", "info");-->
-<!--                 }-->
+                else {
+                    //see setupMap and https://docs.mapbox.com/help/troubleshooting/mapbox-browser-support/-->
+                    swal("Loading problem", "Mapbox loaded incorrectly. Allow hardware acceleration. Try refreshing the page.", "info");
+                }
 
                 var legs = saved.geometry.coordinates.length;
                 var startCoord = saved.geometry.coordinates[0];

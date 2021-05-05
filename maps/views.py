@@ -229,7 +229,8 @@ def update_rec(request):
 
                         'properties': {
                             'name': rec.location_name,
-                            'address': response['results'][0]['formatted_address']
+                            'address': response['results'][0]['formatted_address'],
+                            'category': 'Recommended'
                         }
                     }
 
