@@ -7,6 +7,8 @@
 {% block content %}
 
     <head>
+        
+        
         <style>
             .float-container {
         height: 94%;
@@ -389,7 +391,6 @@
             saveBtn: null,
             loadBtn: null,
             delBtn: null,
-            curLocationBtn: null,
             originPlaceholder: defaultOrigin,
             destPlaceholder: defaultDest,
             route: null,
@@ -406,10 +407,6 @@
                 this.container = L.DomUtil.create('div', 'save-control bg-white mt-1');
                 this.myMap = map;
                 startLocation = userLocation;
-
-                var btnGrp2 = L.DomUtil.create('div', 'btn-group d-flex', this.container);
-                this.curLocationBtn = L.DomUtil.create('button', 'save-control bg-white mt-1', btnGrp2);
-                this.curLocationBtn.innerHTML = 'TEST';
 
                 var btnGrp = L.DomUtil.create('div', 'btn-group d-flex', this.container);
                 btnGrp.setAttribute('role', 'group');
