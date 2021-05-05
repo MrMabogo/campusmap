@@ -589,20 +589,22 @@
 
                 this.container.parentNode.appendChild(form);
                 form.appendChild(this.container);
-                var start = directions.getOrigin();
-                var end = directions.getDestination();
+
                 var dirProfile = this.getDirProfile(); // this is duplicated in the event listener
                 var controller = this;
 
                 this.saveBtn.addEventListener('click', function (e) {
                     e.preventDefault();
+                    var start = JSON.stringify(directions.getOrigin());
+                    var end = JSON.stringify(directions.getDestination());
                     var popID = $(this).attr('aria-describedby'); //indicates popover is active; https://stackoverflow.com/questions/13442749/how-to-check-whether-a-twitter-bootstrap-popover-is-visible-or-not
-                    if(popID && start != null && end != null) {
+                    if(popID && start != '{}' && end != '{}') {
+
                         var formData = new FormData();
                         var btnParent = controller.container;
                         formData.append(form.children[0].name, form.children[0].value); //csrf token
-                        formData.append('start', JSON.stringify(start));
-                        formData.append('end', JSON.stringify(end));
+                        formData.append('start', start);
+                        formData.append('end', end);
                         formData.append('persist_type', 'Save route');
                         if(controller.loadIn.value != '')
                         {
@@ -626,7 +628,7 @@
                             swal('No name!', 'Please enter a route name...', 'warning');
                         }
                     }
-                    else if (start == null || end == null) {
+                    else if (start == '{}' || end == '{}') {
                         swal('No route!', 'There seems to be no route to save...', 'warning');
                     }
                 })
@@ -646,8 +648,8 @@
                         if (res.route_status != 'failure') {
                             directions.removeRoutes();
                             controller.loaded = true;
-                            var start = res.start;
-                            var end = res.end;
+                            var start = res.start['geometry']['coordinates'];
+                            var end = res.end['geometry']['coordinates'];
 
                             directions.setOrigin(start);
                             directions.setDestination(end);
@@ -808,7 +810,7 @@
                 fetch(url)
                     .then(res => res.json())
                     .then(res => {
-                        facilities = res;// JSON.stringify(res);
+                        facilities = res;
                         //console.log(facilities);
                         facilities.features.forEach(function (facility, i) {
                             facility.properties.id = i;
