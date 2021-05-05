@@ -589,8 +589,8 @@
 
                 this.container.parentNode.appendChild(form);
                 form.appendChild(this.container);
-                var start = this.getTextInput(inDiv, this.originPlaceholder);
-                var end = this.getTextInput(inDiv, this.destPlaceholder);
+                var start = directions.getOrigin();
+                var end = directions.getDestination();
                 var dirProfile = this.getDirProfile(); // this is duplicated in the event listener
                 var controller = this;
 
