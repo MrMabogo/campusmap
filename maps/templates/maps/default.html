@@ -39,14 +39,14 @@
             border: none;
         }
 
-        #menu {
+/*         #menu {
             position: absolute;
             background: #efefef;
             bottom: 0;
             left: 400;
             font-family: 'Open Sans', sans-serif;
             z-index: 1;
-        }
+        } */
 
         .dropdown-menu .dropdown-item:hover {
           background-image: none;
@@ -66,12 +66,12 @@
     <div class="float-container">
         <div class="float-left">
             <div id='map' style="width: 100%; height: 100%;">
-                <div id='menu'>
+<!--                 <div id='menu'>
                     <input id="satellite-v9" type="radio" name="rtoggle" value="satellite" checked="checked">
                     <label for="satellite-v9">Satellite View</label>
                     <input id="streets-v11" type="radio" name="rtoggle" value="streets">
                     <label for="streets-v11">Street View</label>
-                </div>
+                </div> -->
             </div>
 
 <!--            Spinner Implementation-->
@@ -1037,7 +1037,7 @@
                 container: 'map',
                 center: center,
                 zoom: 14,
-                style: 'mapbox://styles/mapbox/satellite-v9',
+                style: 'mapbox://styles/mapbox/satellite-streets-v11',
                 clickTolerance: 1
             })
 
@@ -1046,18 +1046,18 @@
             var nav = new mapboxgl.NavigationControl(); // https://docs.mapbox.com/mapbox-gl-js/example/navigation/
             map.addControl(nav);
 
-            var layerList = document.getElementById('menu');
-            var inputs = layerList.getElementsByTagName('input');
+//             var layerList = document.getElementById('menu');
+//             var inputs = layerList.getElementsByTagName('input');
 
-            function switchLayer(layer) {
-                var layerId = layer.target.id;
-                map.setStyle('mapbox://styles/mapbox/' + layerId);
+//             function switchLayer(layer) {
+//                 var layerId = layer.target.id;
+//                 map.setStyle('mapbox://styles/mapbox/' + layerId);
 
-            }
+//             }
 
-            for (var i = 0; i < inputs.length; i++) {
-                inputs[i].onclick = switchLayer;
-            }
+//             for (var i = 0; i < inputs.length; i++) {
+//                 inputs[i].onclick = switchLayer;
+//             }
 
             directions = new MapboxDirections({ // https://github.com/mapbox/mapbox-gl-directions
                 accessToken: mapboxgl.accessToken,
