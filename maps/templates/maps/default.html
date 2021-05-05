@@ -43,12 +43,6 @@
             overflow-y: auto;
             white-space: nowrap;
         }
-        div.scroll_no_bar {
-            height: 100%;
-            overflow-x: hidden;
-            overflow-y: hidden;
-            white-space: nowrap;
-        }
         </style>
     </head>
 
@@ -74,8 +68,7 @@
             <div class='heading'>
                 <h4>Common Locations</h4>
             </div>
-            <div class="scroll">
-                <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
+                <div class="btn-group-vertical" style="overflow-x: hidden; overflow-y: auto" role="group" aria-label="Vertical button group">
                     <div class="btn-group btn-group-sm" role="group">
                       <button
                               type="button"
@@ -314,7 +307,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
         </div>
         <div class="float-bottom overflow-auto">
             <div class='heading'>
