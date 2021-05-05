@@ -118,7 +118,7 @@ def save_route(request):
         rname = request.POST['route_id']
         start_coords = json.loads(request.POST['start'])
         end_coords = json.loads(request.POST['end'])
-        if start_coords != '' and end_coords != '':
+        if start_coords != '{}' and end_coords != '{}':
             new_route = SavedRoute(owner=map_user, start=json.loads(request.POST['start']), end=json.loads(request.POST['end']), name=rname)
             new_route.save()
         else:
