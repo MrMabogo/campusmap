@@ -87,12 +87,12 @@
         //https://onextrapixel.com/how-to-use-jquery-to-make-slick-page-transitions
         $("main").css("display", "none");
         $(document).ready(function () {    
-            $("main").fadeIn(1500);
+            $("main").fadeIn(400);
         
             $("a:not([target='_blank']):not([href^='#'])").click(function(event){
                 event.preventDefault();
                 linkLocation = this.href;
-                $("main").fadeOut(800, redirectPage);      
+                $("main").fadeOut(600, redirectPage);
             });
                 
             function redirectPage() {
