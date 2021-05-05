@@ -11,42 +11,25 @@
             .float-container {
         height: 94%;
         }
-
         .float-left {
             width: 75%;
             float: left;
             height: 100%;
         }
-        .float-top-right {
-            padding: 6px;
-            width: 25%;
-            height: 10%;
-            float: right;
-            border: none;
-        }
         .float-right {
             width: 25%;
-            height: 55%;
+            height: 50%;
             float: right;
             padding: 20px;
             border: none;
         }
         .float-bottom {
             width: 25%;
-            height: 35%;
+            height: 40%;
             float: right;
             padding: 20px;
             border: none;
         }
-
-/*         #menu {
-            position: absolute;
-            background: #efefef;
-            bottom: 0;
-            left: 400;
-            font-family: 'Open Sans', sans-serif;
-            z-index: 1;
-        } */
 
         .dropdown-menu .dropdown-item:hover {
           background-image: none;
@@ -55,9 +38,9 @@
         }
        div.scroll {
             padding: 2px;
-            width: 100%;
-            overflow-x: auto;
-            overflow-y: hidden;
+            height: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
             white-space: nowrap;
         }
         </style>
@@ -65,273 +48,262 @@
 
     <div class="float-container">
         <div class="float-left">
-            <div id='map' style="width: 100%; height: 100%;">
-<!--                 <div id='menu'>
-                    <input id="satellite-v9" type="radio" name="rtoggle" value="satellite" checked="checked">
-                    <label for="satellite-v9">Satellite View</label>
-                    <input id="streets-v11" type="radio" name="rtoggle" value="streets">
-                    <label for="streets-v11">Street View</label>
-                </div> -->
-            </div>
+            <div id='map' style="width: 100%; height: 92%;"></div>
 
 <!--            Spinner Implementation-->
 <!--              <div class="spinner-border m-5" role="status">-->
 <!--                  <span class="sr-only">Loading...</span>-->
 <!--              </div>-->
-        </div>
-        <div class="float-top-right">
-            <div class="heading">
-                <div class="scroll">
-                    <div class="d-inline-block">
-                        <p><small>Current Location Coordinates: (</small></p>
-                    </div>
-                    <div class="d-inline-block">
-                        <small><p id="insert"></p></small>
-                    </div>
-                    <div class="d-inline-block">
-                        <p><small> ); IGNORE this if "Location Services" not enabled</small></p>
-                    </div>
-                </div>
+            <div class="d-inline-block">
+                <p><small>Current Location Coordinates: (</small></p>
+            </div>
+            <div class="d-inline-block">
+                <small><p id="insert"></p></small>
+            </div>
+            <div class="d-inline-block">
+                <p><small> ); IGNORE this if "Location Services" not enabled</small></p>
             </div>
         </div>
         <div class="float-right">
             <div class='heading'>
                 <h4>Common Locations</h4>
             </div>
-            <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
-                <div class="btn-group btn-group-sm" role="group">
-                  <button
-                          type="button"
-                          class="btn btn-primary dropdown-toggle"
-                          data-toggle="dropdown"
-                          aria-expanded="false"
-                  >
-                      College of Arts and Sciences
-                  </button>
-                    <div class="dropdown-menu" style="background-color: grey">
-                        <a class="dropdown-item" style="color:white" href="#"><div id='College of Arts and Sciences' class='listings'></div></a>
+            <div class="scroll">
+                <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button
+                              type="button"
+                              class="btn btn-primary dropdown-toggle"
+                              data-toggle="dropdown"
+                              aria-expanded="false"
+                      >
+                          College of Arts and Sciences
+                      </button>
+                        <div class="dropdown-menu" style="background-color: grey">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='College of Arts and Sciences' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                  <button
-                          type="button"
-                          class="btn btn-primary dropdown-toggle"
-                          data-toggle="dropdown"
-                          aria-expanded="false"
-                  >
-                      Dining
-                  </button>
-                    <div class="dropdown-menu" style="background-color:grey">
-                        <a class="dropdown-item" style="color:white" href="#"><div id='Dining' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button
+                              type="button"
+                              class="btn btn-primary dropdown-toggle"
+                              data-toggle="dropdown"
+                              aria-expanded="false"
+                      >
+                          Dining
+                      </button>
+                        <div class="dropdown-menu" style="background-color:grey">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='Dining' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                  <button
-                          type="button"
-                          class="btn btn-primary dropdown-toggle"
-                          data-toggle="dropdown"
-                          aria-expanded="false"
-                  >
-                      Engineering School
-                  </button>
-                    <div class="dropdown-menu" style="background-color: grey">
-                    <a class="dropdown-item" style="color:white" href="#"><div id='Engineering School' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button
+                              type="button"
+                              class="btn btn-primary dropdown-toggle"
+                              data-toggle="dropdown"
+                              aria-expanded="false"
+                      >
+                          Engineering School
+                      </button>
+                        <div class="dropdown-menu" style="background-color: grey">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='Engineering School' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                  <button
-                          type="button"
-                          class="btn btn-primary dropdown-toggle"
-                          data-toggle="dropdown"
-                          aria-expanded="false"
-                  >
-                      Historical
-                  </button>
-                    <div class="dropdown-menu" style="background-color: grey">
-                    <a class="dropdown-item" style="color:white" href="#"><div id='Historical' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button
+                              type="button"
+                              class="btn btn-primary dropdown-toggle"
+                              data-toggle="dropdown"
+                              aria-expanded="false"
+                      >
+                          Historical
+                      </button>
+                        <div class="dropdown-menu" style="background-color: grey">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='Historical' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
 
-                <div class="btn-group btn-group-sm" role="group">
-                  <button
-                          type="button"
-                          class="btn btn-primary dropdown-toggle"
-                          data-toggle="dropdown"
-                          aria-expanded="false"
-                  >
-                      Libraries
-                  </button>
-                    <div class="dropdown-menu" style="background-color: grey">
-                    <a class="dropdown-item" style="color:white" href="#"><div id='Library' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button
+                              type="button"
+                              class="btn btn-primary dropdown-toggle"
+                              data-toggle="dropdown"
+                              aria-expanded="false"
+                      >
+                          Libraries
+                      </button>
+                        <div class="dropdown-menu" style="background-color: grey">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='Library' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                  <button
-                          type="button"
-                          class="btn btn-primary dropdown-toggle"
-                          data-toggle="dropdown"
-                          aria-expanded="false"
-                  >
-                      Parking
-                  </button>
-                    <div class="dropdown-menu" style="background-color: grey">
-                    <a class="dropdown-item" style="color:white" href="#"><div id='Parking Garage' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button
+                              type="button"
+                              class="btn btn-primary dropdown-toggle"
+                              data-toggle="dropdown"
+                              aria-expanded="false"
+                      >
+                          Parking
+                      </button>
+                        <div class="dropdown-menu" style="background-color: grey">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='Parking Garage' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                  <button
-                          type="button"
-                          class="btn btn-primary dropdown-toggle"
-                          data-toggle="dropdown"
-                          aria-expanded="false"
-                  >
-                      Athletic
-                  </button>
-                    <div class="dropdown-menu" style="background-color: grey">
-                    <a class="dropdown-item" style="color:white" href="#"><div id='Athletic' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button
+                              type="button"
+                              class="btn btn-primary dropdown-toggle"
+                              data-toggle="dropdown"
+                              aria-expanded="false"
+                      >
+                          Athletic
+                      </button>
+                        <div class="dropdown-menu" style="background-color: grey">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='Athletic' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                  <button
-                          type="button"
-                          class="btn btn-primary dropdown-toggle"
-                          data-toggle="dropdown"
-                          aria-expanded="false"
-                  >
-                      Housing
-                  </button>
-                    <div class="dropdown-menu" style="background-color: grey">
-                    <a class="dropdown-item" style="color:white" href="#"><div id='Housing' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button
+                              type="button"
+                              class="btn btn-primary dropdown-toggle"
+                              data-toggle="dropdown"
+                              aria-expanded="false"
+                      >
+                          Housing
+                      </button>
+                        <div class="dropdown-menu" style="background-color: grey">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='Housing' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                    <button
-                            type="button"
-                            class="btn btn-primary dropdown-toggle"
-                            data-toggle="dropdown"
-                            aria-expanded="false"
-                    >
-                        Batten School
-                    </button>
-                    <div class="dropdown-menu" style="background-color: grey">
-                        <a class="dropdown-item" style="color:white" href="#"><div id='Batten School' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            Batten School
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='Batten School' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                    <button
-                            type="button"
-                            class="btn btn-primary dropdown-toggle"
-                            data-toggle="dropdown"
-                            aria-expanded="false"
-                    >
-                        McIntire School of Commerce
-                    </button>
-                    <div class="dropdown-menu" style="background-color: grey">
-                        <a class="dropdown-item" style="color:white" href="#"><div id='McIntire School of Commerce' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            McIntire School of Commerce
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='McIntire School of Commerce' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                    <button
-                            type="button"
-                            class="btn btn-primary dropdown-toggle"
-                            data-toggle="dropdown"
-                            aria-expanded="false"
-                    >
-                        Music
-                    </button>
-                    <div class="dropdown-menu" style="background-color: grey">
-                        <a class="dropdown-item" style="color:white" href="#"><div id='Music' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            Music
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='Music' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                    <button
-                            type="button"
-                            class="btn btn-primary dropdown-toggle"
-                            data-toggle="dropdown"
-                            aria-expanded="false"
-                    >
-                        Office
-                    </button>
-                    <div class="dropdown-menu" style="background-color: grey">
-                        <a class="dropdown-item" style="color:white" href="#"><div id='Office' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            Office
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='Office' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                    <button
-                            type="button"
-                            class="btn btn-primary dropdown-toggle"
-                            data-toggle="dropdown"
-                            aria-expanded="false"
-                    >
-                        Research
-                    </button>
-                    <div class="dropdown-menu" style="background-color: grey">
-                        <a class="dropdown-item" style="color:white" href="#"><div id='Research' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            Research
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='Research' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                    <button
-                            type="button"
-                            class="btn btn-primary dropdown-toggle"
-                            data-toggle="dropdown"
-                            aria-expanded="false"
-                    >
-                        School of Education
-                    </button>
-                    <div class="dropdown-menu" style="background-color: grey">
-                        <a class="dropdown-item" style="color:white" href="#"><div id='School of Education' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            School of Education
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='School of Education' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                    <button
-                            type="button"
-                            class="btn btn-primary dropdown-toggle"
-                            data-toggle="dropdown"
-                            aria-expanded="false"
-                    >
-                        Architecture
-                    </button>
-                    <div class="dropdown-menu" style="background-color: grey">
-                        <a class="dropdown-item" style="color:white" href="#"><div id='Architecture' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            Architecture
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='Architecture' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                    <button
-                            type="button"
-                            class="btn btn-primary dropdown-toggle"
-                            data-toggle="dropdown"
-                            aria-expanded="false"
-                    >
-                        Arts
-                    </button>
-                    <div class="dropdown-menu" style="background-color: grey">
-                        <a class="dropdown-item" style="color:white" href="#"><div id='Arts' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            Arts
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='Arts' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                    <button
-                            type="button"
-                            class="btn btn-primary dropdown-toggle"
-                            data-toggle="dropdown"
-                            aria-expanded="false"
-                    >
-                        Law
-                    </button>
-                    <div class="dropdown-menu" style="background-color: grey">
-                        <a class="dropdown-item" style="color:white" href="#"><div id='Law' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            Law
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='Law' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                    <button
-                            type="button"
-                            class="btn btn-primary dropdown-toggle"
-                            data-toggle="dropdown"
-                            aria-expanded="false"
-                    >
-                        Darden School of Business
-                    </button>
-                    <div class="dropdown-menu" style="background-color: grey">
-                        <a class="dropdown-item" style="color:white" href="#"><div id='Darden School of Business' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            Darden School of Business
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='Darden School of Business' class='listings'></div></a>
+                        </div>
                     </div>
                 </div>
             </div>
