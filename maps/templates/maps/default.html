@@ -397,11 +397,15 @@
             loadIn: null,
             myInDiv: null,
             mapDirProfile: null,
+            startLocation: null,
+            endLocation: null,
 
             //>>Required mapbox functions start
             onAdd: function (map) {
                 this.container = L.DomUtil.create('div', 'save-control bg-white mt-1');
                 this.myMap = map;
+                startLocation = userLocation;
+
 
                 var btnGrp = L.DomUtil.create('div', 'btn-group d-flex', this.container);
                 btnGrp.setAttribute('role', 'group');
@@ -973,53 +977,8 @@
                                     // used https://docs.mapbox.com/help/tutorials/getting-started-directions-api/?size=n_10_n
                                     var start = userLocation;
                                     var end = clickedListing.geometry.coordinates;
-                                    var url = 'https://api.mapbox.com/directions/v5/'+saver.getDirProfile()+'/'+ start[0] + ',' + start[1] + ';' + end[0] +
-                                        ',' + end[1] + '?steps=true&geometries=geojson&access_token=' + mapboxgl.accessToken;
-                                    // make an XHR request https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest
-                                    var req = new XMLHttpRequest();
-                                    req.open('GET', url, true);
-                                    req.onload = function () {
-                                        var json = JSON.parse(req.response);
-                                        var data = json.routes[0];
-                                        directions.removeRoutes();
-                                        saver.setRoute(data);
-                                        var route = data.geometry.coordinates;
-                                        var geojson = {
-                                            type: 'Feature',
-                                            properties: {},
-                                            geometry: {
-                                                type: 'LineString',
-                                                coordinates: route
-                                            }
-                                        };
-                                        saver.getRoute(data);
-
-                                        // add turn instructions to the map
-                                        // var instructions = document.getElementById('instructions');
-                                        var steps = data.legs[0].steps;
-
-                                        // copy-pasted from SaveControl
-                                        var dirDiv = saver.myInDiv.parentNode.children[1];
-                                        dirDiv.innerHTML = '';
-                                        
-                                        var dirControl = L.DomUtil.create('div', 'directions-control directions-control-directions', dirDiv);
-
-                                        dirControl.innerHTML = '<div class="mapbox-directions-component mapbox-directions-route-summary"><h1>' +
-                                            Math.floor(data.distance / 1609 * 100) / 100 + 'mi</h1><span>' +
-                                            Math.floor(data.duration / 60) + 'min </span></div>';
-
-                                        var loadDirDiv = L.DomUtil.create('div', 'mapbox-directions-instructions-wrapper', dirControl);
-                                        var instructions = L.DomUtil.create('ol', 'mapbox-directions-steps', loadDirDiv);
-
-                                        var tripInstructions = [];
-                                        for (var i = 0; i < steps.length; i++) {
-                                            var coord = steps[i].geometry.coordinates[0];
-                                            tripInstructions.push('<br><li class="mapbox-directions-step" data-lat="' + coord[1] + '" data-lng="' + coord[0] + '">' + steps[i].maneuver.instruction) + '</li>';
-                                        }
-
-                                        instructions.innerHTML =  tripInstructions;
-                                    };
-                                    req.send();
+                                    directions.setOrigin(start);
+                                    directions.setDestination(end);
                                 }
                             }
                             var activeItem = document.getElementsByClassName('active');
