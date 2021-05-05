@@ -17,33 +17,82 @@
             float: left;
             height: 100%;
         }
+        .float-top-right {
+            padding: 6px;
+            width: 25%;
+            height: 10%;
+            float: right;
+            border: none;
+        }
         .float-right {
             width: 25%;
-            height: 60%;
+            height: 55%;
             float: right;
             padding: 20px;
             border: none;
         }
         .float-bottom {
             width: 25%;
-            height: 40%;
+            height: 35%;
             float: right;
             padding: 20px;
             border: none;
         }
 
+/*         #menu {
+            position: absolute;
+            background: #efefef;
+            bottom: 0;
+            left: 400;
+            font-family: 'Open Sans', sans-serif;
+            z-index: 1;
+        } */
+
+        .dropdown-menu .dropdown-item:hover {
+          background-image: none;
+          background-color: grey!important;
+          color: #FFFFFF
+        }
+       div.scroll {
+            padding: 2px;
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: nowrap;
+        }
         </style>
     </head>
 
     <div class="float-container">
         <div class="float-left">
-            <div id='map' style="width: 100%; height: 100%;"></div>
+            <div id='map' style="width: 100%; height: 100%;">
+<!--                 <div id='menu'>
+                    <input id="satellite-v9" type="radio" name="rtoggle" value="satellite" checked="checked">
+                    <label for="satellite-v9">Satellite View</label>
+                    <input id="streets-v11" type="radio" name="rtoggle" value="streets">
+                    <label for="streets-v11">Street View</label>
+                </div> -->
+            </div>
 
 <!--            Spinner Implementation-->
 <!--              <div class="spinner-border m-5" role="status">-->
 <!--                  <span class="sr-only">Loading...</span>-->
 <!--              </div>-->
-
+        </div>
+        <div class="float-top-right">
+            <div class="heading">
+                <div class="scroll">
+                    <div class="d-inline-block">
+                        <p><small>Current Location Coordinates: (</small></p>
+                    </div>
+                    <div class="d-inline-block">
+                        <small><p id="insert"></p></small>
+                    </div>
+                    <div class="d-inline-block">
+                        <p><small> ); IGNORE this if "Location Services" not enabled</small></p>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="float-right">
             <div class='heading'>
@@ -59,8 +108,8 @@
                   >
                       College of Arts and Sciences
                   </button>
-                    <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='College of Arts and Sciences' class='listings'></div></a>
+                    <div class="dropdown-menu" style="background-color: grey">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='College of Arts and Sciences' class='listings'></div></a>
                     </div>
                 </div>
                 <div class="btn-group btn-group-sm" role="group">
@@ -72,8 +121,8 @@
                   >
                       Dining
                   </button>
-                    <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='Dining' class='listings'></div></a>
+                    <div class="dropdown-menu" style="background-color:grey">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='Dining' class='listings'></div></a>
                     </div>
                 </div>
                 <div class="btn-group btn-group-sm" role="group">
@@ -85,8 +134,8 @@
                   >
                       Engineering School
                   </button>
-                    <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='Engineering School' class='listings'></div></a>
+                    <div class="dropdown-menu" style="background-color: grey">
+                    <a class="dropdown-item" style="color:white" href="#"><div id='Engineering School' class='listings'></div></a>
                     </div>
                 </div>
                 <div class="btn-group btn-group-sm" role="group">
@@ -98,8 +147,8 @@
                   >
                       Historical
                   </button>
-                    <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='Historical' class='listings'></div></a>
+                    <div class="dropdown-menu" style="background-color: grey">
+                    <a class="dropdown-item" style="color:white" href="#"><div id='Historical' class='listings'></div></a>
                     </div>
                 </div>
 
@@ -112,8 +161,8 @@
                   >
                       Libraries
                   </button>
-                    <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='Library' class='listings'></div></a>
+                    <div class="dropdown-menu" style="background-color: grey">
+                    <a class="dropdown-item" style="color:white" href="#"><div id='Library' class='listings'></div></a>
                     </div>
                 </div>
                 <div class="btn-group btn-group-sm" role="group">
@@ -125,8 +174,8 @@
                   >
                       Parking
                   </button>
-                    <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='Parking Garage' class='listings'></div></a>
+                    <div class="dropdown-menu" style="background-color: grey">
+                    <a class="dropdown-item" style="color:white" href="#"><div id='Parking Garage' class='listings'></div></a>
                     </div>
                 </div>
                 <div class="btn-group btn-group-sm" role="group">
@@ -138,8 +187,8 @@
                   >
                       Athletic
                   </button>
-                    <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='Athletic' class='listings'></div></a>
+                    <div class="dropdown-menu" style="background-color: grey">
+                    <a class="dropdown-item" style="color:white" href="#"><div id='Athletic' class='listings'></div></a>
                     </div>
                 </div>
                 <div class="btn-group btn-group-sm" role="group">
@@ -151,8 +200,8 @@
                   >
                       Housing
                   </button>
-                    <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='Housing' class='listings'></div></a>
+                    <div class="dropdown-menu" style="background-color: grey">
+                    <a class="dropdown-item" style="color:white" href="#"><div id='Housing' class='listings'></div></a>
                     </div>
                 </div>
                 <div class="btn-group btn-group-sm" role="group">
@@ -164,8 +213,8 @@
                     >
                         Batten School
                     </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#"><div id='Batten School' class='listings'></div></a>
+                    <div class="dropdown-menu" style="background-color: grey">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='Batten School' class='listings'></div></a>
                     </div>
                 </div>
                 <div class="btn-group btn-group-sm" role="group">
@@ -177,8 +226,8 @@
                     >
                         McIntire School of Commerce
                     </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#"><div id='McIntire School of Commerce' class='listings'></div></a>
+                    <div class="dropdown-menu" style="background-color: grey">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='McIntire School of Commerce' class='listings'></div></a>
                     </div>
                 </div>
                 <div class="btn-group btn-group-sm" role="group">
@@ -190,8 +239,8 @@
                     >
                         Music
                     </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#"><div id='Music' class='listings'></div></a>
+                    <div class="dropdown-menu" style="background-color: grey">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='Music' class='listings'></div></a>
                     </div>
                 </div>
                 <div class="btn-group btn-group-sm" role="group">
@@ -203,8 +252,8 @@
                     >
                         Office
                     </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#"><div id='Office' class='listings'></div></a>
+                    <div class="dropdown-menu" style="background-color: grey">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='Office' class='listings'></div></a>
                     </div>
                 </div>
                 <div class="btn-group btn-group-sm" role="group">
@@ -216,8 +265,8 @@
                     >
                         Research
                     </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#"><div id='Research' class='listings'></div></a>
+                    <div class="dropdown-menu" style="background-color: grey">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='Research' class='listings'></div></a>
                     </div>
                 </div>
                 <div class="btn-group btn-group-sm" role="group">
@@ -229,8 +278,8 @@
                     >
                         School of Education
                     </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#"><div id='School of Education' class='listings'></div></a>
+                    <div class="dropdown-menu" style="background-color: grey">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='School of Education' class='listings'></div></a>
                     </div>
                 </div>
                 <div class="btn-group btn-group-sm" role="group">
@@ -242,8 +291,8 @@
                     >
                         Architecture
                     </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#"><div id='Architecture' class='listings'></div></a>
+                    <div class="dropdown-menu" style="background-color: grey">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='Architecture' class='listings'></div></a>
                     </div>
                 </div>
                 <div class="btn-group btn-group-sm" role="group">
@@ -255,8 +304,8 @@
                     >
                         Arts
                     </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#"><div id='Arts' class='listings'></div></a>
+                    <div class="dropdown-menu" style="background-color: grey">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='Arts' class='listings'></div></a>
                     </div>
                 </div>
                 <div class="btn-group btn-group-sm" role="group">
@@ -268,8 +317,8 @@
                     >
                         Law
                     </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#"><div id='Law' class='listings'></div></a>
+                    <div class="dropdown-menu" style="background-color: grey">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='Law' class='listings'></div></a>
                     </div>
                 </div>
                 <div class="btn-group btn-group-sm" role="group">
@@ -281,8 +330,8 @@
                     >
                         Darden School of Business
                     </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#"><div id='Darden School of Business' class='listings'></div></a>
+                    <div class="dropdown-menu" style="background-color: grey">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='Darden School of Business' class='listings'></div></a>
                     </div>
                 </div>
             </div>
@@ -339,11 +388,13 @@
         function successLocation(position) {
             userLocation = [position.coords.longitude, position.coords.latitude]; // automatically global variable for the user's location
             setupMap([position.coords.longitude, position.coords.latitude]);
+            document.getElementById("insert").innerHTML = userLocation;
         }
 
         function errorLocation() {
             userLocation = [-78.512, 38.036];
-            setupMap([-78.512, 38.036]);
+            setupMap([-78.503, 38.036]);
+            document.getElementById("insert").innerHTML = userLocation;
         }
 
         function getCoordinates(origin, dest) {
@@ -457,8 +508,9 @@
 
                 if (this.myMap.getSource('route')) { //if the route already exists, reset it
                     this.myMap.getSource('route').setData(geojson);
-                } else {
-                    //see setupMap and https://docs.mapbox.com/help/troubleshooting/mapbox-browser-support/
+                }
+                else {
+                    //see setupMap and https://docs.mapbox.com/help/troubleshooting/mapbox-browser-support/-->
                     swal("Loading problem", "Mapbox loaded incorrectly. Allow hardware acceleration. Try refreshing the page.", "info");
                 }
 
@@ -854,7 +906,7 @@
 
                             controller.myMap.flyTo({
                                 center: steps[steps.length-1].geometry.coordinates[0],
-                                zoom: 15
+                                zoom: 14
                             });
 
                             var dirDiv = inDiv.parentNode.children[1];
@@ -940,7 +992,7 @@
                                     var clickedListing = data.features[i];
                                     map.flyTo({
                                         center: clickedListing.geometry.coordinates,
-                                        zoom: 15
+                                        zoom: 14
                                     });
                                     // pass link coordinates to directions API
                                     // used https://docs.mapbox.com/help/tutorials/getting-started-directions-api/?size=n_10_n
@@ -1010,15 +1062,28 @@
             map = new mapboxgl.Map({ // automatically global
                 container: 'map',
                 center: center,
-                zoom: 12,
-                style: 'mapbox://styles/mapbox/streets-v11'
+                zoom: 14,
+                style: 'mapbox://styles/mapbox/satellite-streets-v11',
+                clickTolerance: 1
             })
-           
-            
+
 
             // zoom and compass stuff
             var nav = new mapboxgl.NavigationControl(); // https://docs.mapbox.com/mapbox-gl-js/example/navigation/
             map.addControl(nav);
+
+//             var layerList = document.getElementById('menu');
+//             var inputs = layerList.getElementsByTagName('input');
+
+//             function switchLayer(layer) {
+//                 var layerId = layer.target.id;
+//                 map.setStyle('mapbox://styles/mapbox/' + layerId);
+
+//             }
+
+//             for (var i = 0; i < inputs.length; i++) {
+//                 inputs[i].onclick = switchLayer;
+//             }
 
             directions = new MapboxDirections({ // https://github.com/mapbox/mapbox-gl-directions
                 accessToken: mapboxgl.accessToken,
@@ -1038,11 +1103,13 @@
             map.addControl(saver, 'top-left');
             saver.setup();
 
+
             //resize the map a short time before full load
             //prevent the small map problem
             map.on('idle', function (e) {
                 map.resize();
             });
+
 
             map.on('load', function (e) {  // https://docs.mapbox.com/help/tutorials/building-a-store-locator/
                 //removes need to double-click to load route
@@ -1111,7 +1178,7 @@
                     el.addEventListener('click', function (e) {
 =                        map.flyTo({
                             center: marker.geometry.coordinates,
-                            zoom: 15
+                            zoom: 14
                         });
                         var activeItem = document.getElementsByClassName('active');
                         e.stopPropagation();
