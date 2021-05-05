@@ -17,16 +17,23 @@
             float: left;
             height: 100%;
         }
+        .float-top-right {
+            padding: 6px;
+            width: 25%;
+            height: 10%;
+            float: right;
+            border: none;
+        }
         .float-right {
             width: 25%;
-            height: 60%;
+            height: 55%;
             float: right;
             padding: 20px;
             border: none;
         }
         .float-bottom {
             width: 25%;
-            height: 40%;
+            height: 35%;
             float: right;
             padding: 20px;
             border: none;
@@ -35,13 +42,24 @@
         #menu {
             position: absolute;
             background: #efefef;
-            padding: 5px;
-            bottom: 20;
-            right: 0;
+            bottom: 0;
+            left: 400;
             font-family: 'Open Sans', sans-serif;
             z-index: 1;
         }
 
+        .dropdown-menu .dropdown-item:hover {
+          background-image: none;
+          background-color: grey!important;
+          color: #FFFFFF
+        }
+       div.scroll {
+            padding: 2px;
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: nowrap;
+        }
         </style>
     </head>
 
@@ -60,7 +78,21 @@
 <!--              <div class="spinner-border m-5" role="status">-->
 <!--                  <span class="sr-only">Loading...</span>-->
 <!--              </div>-->
-
+        </div>
+        <div class="float-top-right">
+            <div class="heading">
+                <div class="scroll">
+                    <div class="d-inline-block">
+                        <p><small>Current Location Coordinates: (</small></p>
+                    </div>
+                    <div class="d-inline-block">
+                        <small><p id="insert"></p></small>
+                    </div>
+                    <div class="d-inline-block">
+                        <p><small> ); IGNORE this if "Location Services" not enabled</small></p>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="float-right">
             <div class='heading'>
@@ -76,8 +108,8 @@
                   >
                       College of Arts and Sciences
                   </button>
-                    <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='College of Arts and Sciences' class='listings'></div></a>
+                    <div class="dropdown-menu" style="background-color: grey">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='College of Arts and Sciences' class='listings'></div></a>
                     </div>
                 </div>
                 <div class="btn-group btn-group-sm" role="group">
@@ -89,8 +121,8 @@
                   >
                       Dining
                   </button>
-                    <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='Dining' class='listings'></div></a>
+                    <div class="dropdown-menu" style="background-color:grey">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='Dining' class='listings'></div></a>
                     </div>
                 </div>
                 <div class="btn-group btn-group-sm" role="group">
@@ -102,8 +134,8 @@
                   >
                       Engineering School
                   </button>
-                    <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='Engineering School' class='listings'></div></a>
+                    <div class="dropdown-menu" style="background-color: grey">
+                    <a class="dropdown-item" style="color:white" href="#"><div id='Engineering School' class='listings'></div></a>
                     </div>
                 </div>
                 <div class="btn-group btn-group-sm" role="group">
@@ -115,8 +147,8 @@
                   >
                       Historical
                   </button>
-                    <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='Historical' class='listings'></div></a>
+                    <div class="dropdown-menu" style="background-color: grey">
+                    <a class="dropdown-item" style="color:white" href="#"><div id='Historical' class='listings'></div></a>
                     </div>
                 </div>
 
@@ -129,8 +161,8 @@
                   >
                       Libraries
                   </button>
-                    <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='Library' class='listings'></div></a>
+                    <div class="dropdown-menu" style="background-color: grey">
+                    <a class="dropdown-item" style="color:white" href="#"><div id='Library' class='listings'></div></a>
                     </div>
                 </div>
                 <div class="btn-group btn-group-sm" role="group">
@@ -142,8 +174,8 @@
                   >
                       Parking
                   </button>
-                    <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='Parking Garage' class='listings'></div></a>
+                    <div class="dropdown-menu" style="background-color: grey">
+                    <a class="dropdown-item" style="color:white" href="#"><div id='Parking Garage' class='listings'></div></a>
                     </div>
                 </div>
                 <div class="btn-group btn-group-sm" role="group">
@@ -155,8 +187,8 @@
                   >
                       Athletic
                   </button>
-                    <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='Athletic' class='listings'></div></a>
+                    <div class="dropdown-menu" style="background-color: grey">
+                    <a class="dropdown-item" style="color:white" href="#"><div id='Athletic' class='listings'></div></a>
                     </div>
                 </div>
                 <div class="btn-group btn-group-sm" role="group">
@@ -168,8 +200,8 @@
                   >
                       Housing
                   </button>
-                    <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='Housing' class='listings'></div></a>
+                    <div class="dropdown-menu" style="background-color: grey">
+                    <a class="dropdown-item" style="color:white" href="#"><div id='Housing' class='listings'></div></a>
                     </div>
                 </div>
             </div>
@@ -204,11 +236,13 @@
         function successLocation(position) {
             userLocation = [position.coords.longitude, position.coords.latitude]; // automatically global variable for the user's location
             setupMap([position.coords.longitude, position.coords.latitude]);
+            document.getElementById("insert").innerHTML = userLocation;
         }
 
         function errorLocation() {
             userLocation = [-78.512, 38.036];
             setupMap([-78.503, 38.036]);
+            document.getElementById("insert").innerHTML = userLocation;
         }
 
         function getCoordinates(origin, dest) {
@@ -318,10 +352,11 @@
 
                 if (this.myMap.getSource('route')) { //if the route already exists, reset it
                     this.myMap.getSource('route').setData(geojson);
-                } else {
-                    //see setupMap and https://docs.mapbox.com/help/troubleshooting/mapbox-browser-support/
-                    swal("Loading problem", "Mapbox loaded incorrectly. Allow hardware acceleration. Try refreshing the page.", "info");
                 }
+<!--                 else {-->
+<!--                    //see setupMap and https://docs.mapbox.com/help/troubleshooting/mapbox-browser-support/-->
+<!--                    swal("Loading problem", "Mapbox loaded incorrectly. Allow hardware acceleration. Try refreshing the page.", "info");-->
+<!--                 }-->
 
                 var legs = saved.geometry.coordinates.length;
                 var startCoord = saved.geometry.coordinates[0];
