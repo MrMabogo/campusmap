@@ -7,11 +7,12 @@
 {% block content %}
 
     <head>
+        
+        
         <style>
             .float-container {
         height: 94%;
         }
-
         .float-left {
             width: 75%;
             float: left;
@@ -19,7 +20,7 @@
         }
         .float-right {
             width: 25%;
-            height: 60%;
+            height: 50%;
             float: right;
             padding: 20px;
             border: none;
@@ -30,269 +31,294 @@
             float: right;
             padding: 20px;
             border: none;
+        }       
+        .dropdown-menu {
+           max-height: 200px;
+           overflow: scroll;
         }
-
+        .dropdown-menu .dropdown-item:hover {
+          background-image: none;
+          background-color: grey!important;
+          color: #FFFFFF
+        }
+       div.scroll {
+            padding: 2px;
+            height: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
+            white-space: nowrap;
+        }
         </style>
     </head>
 
     <div class="float-container">
         <div class="float-left">
-            <div id='map' style="width: 100%; height: 100%;"></div>
+            <div id='map' style="width: 100%; height: 92%;"></div>
 
 <!--            Spinner Implementation-->
 <!--              <div class="spinner-border m-5" role="status">-->
 <!--                  <span class="sr-only">Loading...</span>-->
 <!--              </div>-->
-
+            <div class="d-inline-block">
+                <p><small>Current Location Coordinates: (</small></p>
+            </div>
+            <div class="d-inline-block">
+                <small><p id="insert"></p></small>
+            </div>
+            <div class="d-inline-block">
+                <p><small> ); IGNORE this if "Location Services" not enabled</small></p>
+            </div>
         </div>
         <div class="float-right">
             <div class='heading'>
                 <h4>Common Locations</h4>
             </div>
-            <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
-                <div class="btn-group btn-group-sm" role="group">
-                  <button
-                          type="button"
-                          class="btn btn-primary dropdown-toggle"
-                          data-toggle="dropdown"
-                          aria-expanded="false"
-                  >
-                      College of Arts and Sciences
-                  </button>
-                    <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='College of Arts and Sciences' class='listings'></div></a>
+            <div class="scroll">
+                <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button
+                              type="button"
+                              class="btn btn-primary dropdown-toggle"
+                              data-toggle="dropdown"
+                              aria-expanded="false"
+                      >
+                          College of Arts and Sciences
+                      </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='College of Arts and Sciences' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                  <button
-                          type="button"
-                          class="btn btn-primary dropdown-toggle"
-                          data-toggle="dropdown"
-                          aria-expanded="false"
-                  >
-                      Dining
-                  </button>
-                    <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='Dining' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button
+                              type="button"
+                              class="btn btn-primary dropdown-toggle"
+                              data-toggle="dropdown"
+                              aria-expanded="false"
+                      >
+                          Dining
+                      </button>
+                        <div class="dropdown-menu" style="background-color:grey; width: 100%">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='Dining' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                  <button
-                          type="button"
-                          class="btn btn-primary dropdown-toggle"
-                          data-toggle="dropdown"
-                          aria-expanded="false"
-                  >
-                      Engineering School
-                  </button>
-                    <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='Engineering School' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button
+                              type="button"
+                              class="btn btn-primary dropdown-toggle"
+                              data-toggle="dropdown"
+                              aria-expanded="false"
+                      >
+                          Engineering School
+                      </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='Engineering School' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                  <button
-                          type="button"
-                          class="btn btn-primary dropdown-toggle"
-                          data-toggle="dropdown"
-                          aria-expanded="false"
-                  >
-                      Historical
-                  </button>
-                    <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='Historical' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button
+                              type="button"
+                              class="btn btn-primary dropdown-toggle"
+                              data-toggle="dropdown"
+                              aria-expanded="false"
+                      >
+                          Historical
+                      </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='Historical' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
 
-                <div class="btn-group btn-group-sm" role="group">
-                  <button
-                          type="button"
-                          class="btn btn-primary dropdown-toggle"
-                          data-toggle="dropdown"
-                          aria-expanded="false"
-                  >
-                      Libraries
-                  </button>
-                    <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='Library' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button
+                              type="button"
+                              class="btn btn-primary dropdown-toggle"
+                              data-toggle="dropdown"
+                              aria-expanded="false"
+                      >
+                          Libraries
+                      </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='Library' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                  <button
-                          type="button"
-                          class="btn btn-primary dropdown-toggle"
-                          data-toggle="dropdown"
-                          aria-expanded="false"
-                  >
-                      Parking
-                  </button>
-                    <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='Parking Garage' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button
+                              type="button"
+                              class="btn btn-primary dropdown-toggle"
+                              data-toggle="dropdown"
+                              aria-expanded="false"
+                      >
+                          Parking
+                      </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='Parking Garage' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                  <button
-                          type="button"
-                          class="btn btn-primary dropdown-toggle"
-                          data-toggle="dropdown"
-                          aria-expanded="false"
-                  >
-                      Athletic
-                  </button>
-                    <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='Athletic' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button
+                              type="button"
+                              class="btn btn-primary dropdown-toggle"
+                              data-toggle="dropdown"
+                              aria-expanded="false"
+                      >
+                          Athletic
+                      </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='Athletic' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                  <button
-                          type="button"
-                          class="btn btn-primary dropdown-toggle"
-                          data-toggle="dropdown"
-                          aria-expanded="false"
-                  >
-                      Housing
-                  </button>
-                    <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#"><div id='Housing' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button
+                              type="button"
+                              class="btn btn-primary dropdown-toggle"
+                              data-toggle="dropdown"
+                              aria-expanded="false"
+                      >
+                          Housing
+                      </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='Housing' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                    <button
-                            type="button"
-                            class="btn btn-primary dropdown-toggle"
-                            data-toggle="dropdown"
-                            aria-expanded="false"
-                    >
-                        Batten School
-                    </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#"><div id='Batten School' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            Batten School
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='Batten School' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                    <button
-                            type="button"
-                            class="btn btn-primary dropdown-toggle"
-                            data-toggle="dropdown"
-                            aria-expanded="false"
-                    >
-                        McIntire School of Commerce
-                    </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#"><div id='McIntire School of Commerce' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            McIntire School of Commerce
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='McIntire School of Commerce' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                    <button
-                            type="button"
-                            class="btn btn-primary dropdown-toggle"
-                            data-toggle="dropdown"
-                            aria-expanded="false"
-                    >
-                        Music
-                    </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#"><div id='Music' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            Music
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='Music' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                    <button
-                            type="button"
-                            class="btn btn-primary dropdown-toggle"
-                            data-toggle="dropdown"
-                            aria-expanded="false"
-                    >
-                        Office
-                    </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#"><div id='Office' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            Office
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='Office' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                    <button
-                            type="button"
-                            class="btn btn-primary dropdown-toggle"
-                            data-toggle="dropdown"
-                            aria-expanded="false"
-                    >
-                        Research
-                    </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#"><div id='Research' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            Research
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='Research' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                    <button
-                            type="button"
-                            class="btn btn-primary dropdown-toggle"
-                            data-toggle="dropdown"
-                            aria-expanded="false"
-                    >
-                        School of Education
-                    </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#"><div id='School of Education' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            School of Education
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='School of Education' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                    <button
-                            type="button"
-                            class="btn btn-primary dropdown-toggle"
-                            data-toggle="dropdown"
-                            aria-expanded="false"
-                    >
-                        Architecture
-                    </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#"><div id='Architecture' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            Architecture
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='Architecture' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                    <button
-                            type="button"
-                            class="btn btn-primary dropdown-toggle"
-                            data-toggle="dropdown"
-                            aria-expanded="false"
-                    >
-                        Arts
-                    </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#"><div id='Arts' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            Arts
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='Arts' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                    <button
-                            type="button"
-                            class="btn btn-primary dropdown-toggle"
-                            data-toggle="dropdown"
-                            aria-expanded="false"
-                    >
-                        Law
-                    </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#"><div id='Law' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            Law
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='Law' class='listings'></div></a>
+                        </div>
                     </div>
-                </div>
-                <div class="btn-group btn-group-sm" role="group">
-                    <button
-                            type="button"
-                            class="btn btn-primary dropdown-toggle"
-                            data-toggle="dropdown"
-                            aria-expanded="false"
-                    >
-                        Darden School of Business
-                    </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#"><div id='Darden School of Business' class='listings'></div></a>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            Darden School of Business
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='Darden School of Business' class='listings'></div></a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="float-bottom overflow-auto">
+            {% if user.is_authenticated %}
             <div class='heading'>
                 <h3>Saved Routes</h3>
             </div>
             <div class='savedroutes list-group d-flex'>
-                {% if user.is_authenticated %}
                     {% for savedroute in savedroutes %}
                     <div class="d-flex list-group-item">
                         <span class="justify-content-between">
@@ -300,11 +326,10 @@
                         </span>
                     </div>
                     {% endfor %}
-                {% endif %}
             </div>
+            {% endif %}
         </div>
     </div>
-
     <script type="text/javascript">
         mapboxgl.accessToken = '{{mapbox_access_token}}'; //renders django view variable
         geocodioApiKey = '{{geocodio_api_key}}';
@@ -312,14 +337,41 @@
         defaultOrigin = "Desired Start Location";
         defaultDest = "Desired End Location";
 
+        function loadAll(container, csrf, url)
+        {
+            var formData = new FormData();
+            formData.append(csrf.name, csrf.value); //csrf token
+            fetch(url, {
+                method: 'POST',
+                body: formData
+            }).then(res => res.json()).then(res => {
+                if(res.route_status == 'loaded')
+                {
+                    container.innerHTML = '';
+                    
+                    res.routes.forEach((route) => {
+                        var itemDiv = document.createElement('div');
+                        itemDiv.setAttribute('class', 'd-flex list-group-item');
+                        container.appendChild(itemDiv);
+                        var nameSpan = document.createElement('span');
+                        nameSpan.setAttribute('class', 'justify-content-between');
+                        itemDiv.appendChild(nameSpan);
+                        nameSpan.innerHTML = route.name;
+                    });
+                }
+            })
+        }
+
         function successLocation(position) {
             userLocation = [position.coords.longitude, position.coords.latitude]; // automatically global variable for the user's location
-            setupMap([position.coords.longitude, position.coords.latitude]);
+            setupMap(userLocation);
+            document.getElementById("insert").innerHTML = userLocation;
         }
 
         function errorLocation() {
             userLocation = [-78.512, 38.036];
-            setupMap([-78.512, 38.036]);
+            setupMap(userLocation);
+            document.getElementById("insert").innerHTML = userLocation;
         }
 
         function getCoordinates(origin, dest) {
@@ -355,7 +407,6 @@
                 this.container = L.DomUtil.create('div', 'save-control bg-white mt-1');
                 this.myMap = map;
                 startLocation = userLocation;
-
 
                 var btnGrp = L.DomUtil.create('div', 'btn-group d-flex', this.container);
                 btnGrp.setAttribute('role', 'group');
@@ -406,6 +457,10 @@
                     $('[data-toggle="popover"]').on('blur', function(){
                         $(this).popover('hide');
                     });
+
+                    $(':not([data-toggle="popover"])').on('focus', function(){
+                        $('[data-toggle="popover"]').popover('hide');
+                    });
                 });
 
                 return this.container; //according to Leaflet IControl specification
@@ -433,8 +488,9 @@
 
                 if (this.myMap.getSource('route')) { //if the route already exists, reset it
                     this.myMap.getSource('route').setData(geojson);
-                } else {
-                    //see setupMap and https://docs.mapbox.com/help/troubleshooting/mapbox-browser-support/
+                }
+                else {
+                    //see setupMap and https://docs.mapbox.com/help/troubleshooting/mapbox-browser-support/-->
                     swal("Loading problem", "Mapbox loaded incorrectly. Allow hardware acceleration. Try refreshing the page.", "info");
                 }
 
@@ -718,7 +774,7 @@
                                     var clickedListing = data.features[i];
                                     map.flyTo({
                                         center: clickedListing.geometry.coordinates,
-                                        zoom: 15
+                                        zoom: 14
                                     });
                                     // pass link coordinates to directions API
                                     // used https://docs.mapbox.com/help/tutorials/getting-started-directions-api/?size=n_10_n
@@ -743,15 +799,28 @@
             map = new mapboxgl.Map({ // automatically global
                 container: 'map',
                 center: center,
-                zoom: 12,
-                style: 'mapbox://styles/mapbox/streets-v11'
+                zoom: 14,
+                style: 'mapbox://styles/mapbox/satellite-streets-v11',
+                clickTolerance: 1
             })
-           
-            
+
 
             // zoom and compass stuff
             var nav = new mapboxgl.NavigationControl(); // https://docs.mapbox.com/mapbox-gl-js/example/navigation/
             map.addControl(nav);
+
+//             var layerList = document.getElementById('menu');
+//             var inputs = layerList.getElementsByTagName('input');
+
+//             function switchLayer(layer) {
+//                 var layerId = layer.target.id;
+//                 map.setStyle('mapbox://styles/mapbox/' + layerId);
+
+//             }
+
+//             for (var i = 0; i < inputs.length; i++) {
+//                 inputs[i].onclick = switchLayer;
+//             }
 
             directions = new MapboxDirections({ // https://github.com/mapbox/mapbox-gl-directions
                 accessToken: mapboxgl.accessToken,
@@ -771,11 +840,13 @@
             map.addControl(saver, 'top-left');
             saver.setup();
 
+
             //resize the map a short time before full load
             //prevent the small map problem
             map.on('idle', function (e) {
                 map.resize();
             });
+
 
             map.on('load', function (e) {  // https://docs.mapbox.com/help/tutorials/building-a-store-locator/
                 //removes need to double-click to load route
@@ -844,7 +915,7 @@
                     el.addEventListener('click', function (e) {
 =                        map.flyTo({
                             center: marker.geometry.coordinates,
-                            zoom: 15
+                            zoom: 14
                         });
                         var activeItem = document.getElementsByClassName('active');
                         e.stopPropagation();

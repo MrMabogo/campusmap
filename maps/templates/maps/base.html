@@ -1,5 +1,4 @@
 {% load socialaccount %}
-{% load static %}
 <!-- Load in all js from cdn and mapbox api -->
 <html lang="en">
 <head>
@@ -35,7 +34,6 @@
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css" type="text/css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <script src="{% static 'maps/js/loader.js' %}" type="text/javascript"></script>
     <title>Campus Map</title>
 </head>
 <body> 
@@ -63,7 +61,6 @@
                     </li>
                     <li class="nav-item">
                         {% if user.is_authenticated %}
-                        <!-- <p>Welcome, {{ user.username }} !</p> -->
                         <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
                         {% else %}
                         <a class="nav-link" href="{% provider_login_url 'google' %}">Login</a>
@@ -90,12 +87,12 @@
         //https://onextrapixel.com/how-to-use-jquery-to-make-slick-page-transitions
         $("main").css("display", "none");
         $(document).ready(function () {    
-            $("main").fadeIn(1500);
+            $("main").fadeIn(400);
         
             $("a:not([target='_blank']):not([href^='#'])").click(function(event){
                 event.preventDefault();
                 linkLocation = this.href;
-                $("main").fadeOut(800, redirectPage);      
+                $("main").fadeOut(600, redirectPage);
             });
                 
             function redirectPage() {
