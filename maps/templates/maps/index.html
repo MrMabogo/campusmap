@@ -1,12 +1,80 @@
 {% extends 'maps/base.html' %}
 {% block homeactive %}nav-link active{% endblock %}
 {% block mapactive %}nav-link{% endblock %}
+{% block recommendationsactive %}nav-link{% endblock %}
+{% block recommendationslistactive %}nav-link{% endblock %}
 {% load socialaccount %}
 {% block content %}
+
+<head>
+    <style>
+        div.small_indent
+        {
+            margin-left: 2%;
+        }
+        div.med_indent
+        {
+            margin-left: 5%;
+        }
+        div.large_indent
+        {
+            margin-left: 10%;
+        }
+        div.spacer
+        {
+          padding-top: 50px;
+          padding-bottom: 40px
+        }
+
+    </style>
+</head>
 {% if user.is_authenticated %}
-    <p>Welcome, {{ user.username }} !</p>
+    <div class="text-center">
+        <div class="spacer"></div>
+        <div class="d-inline-block">
+            <h1>Welcome,&nbsp</h1>
+        </div>
+        <div class="d-inline-block">
+            <div class="text-uppercase">
+                <h1>{{ user.username }}</h1>
+            </div>
+        </div>
+        <div class="d-inline-block">
+            <h1>!</h1>
+        </div>
+    </div>
+    <div class="text-left">
+        <div class="spacer"></div>
+        <div class="small_indent">
+            <h5>For new users, here are some recommendations to maximize your experience:</h5>
+        </div>
+        <div class="med_indent">
+                <li><small>If possible, turn locations services <strong>on</strong>. Some of our features make use of your current location to make navigating to your desired location easy and convenient!</small></li>
+                <li><small>Coming to Grounds and want to know how to get from one place to another? Simply conduct a search at the top left of the map, and navigation instructions (Driving, Walking, or Biking) will be displayed. </small></li>
+                <li><small>If travelling to a high foot-traffic area on Grounds, check out the <strong>Common Locations</strong> dropdown. If you see your destination, click it and a route will be displayed to take you there.</small></li>
+                <li><small>Planning to return? Use the save feature to store any routes you may want to use again the next time you visit us. To save a route, type in a name to remember it by and press the <strong>Save</strong> button.</small></li>
+        </div>
+        <div class="spacer"></div>
+        <div class="small_indent">
+            <h5>Head over to the <strong>Map</strong> tab and get to navigating!</h5>
+        </div>
+    </div>
 {% else %}
-    <a href="{% provider_login_url 'google' %}">Login with Google</a>
+    <div class="text-center">
+        <div class="jumbotron">
+          <h1 class="display-4">Log In To Get Started</h1>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <a class="btn btn-outline-dark" href="{% provider_login_url 'google' %}" role="button" style="text-transform:none">
+              <img width="40px" style="margin-bottom:3px; margin-right:5px" alt="Google sign-in" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+              Login with Google
+            </a>
+          </div>
+        </div>
+    </div>
+
+
 {% endif %}
 
 {% endblock %}

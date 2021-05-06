@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',   # <--
+    'django.contrib.postgres',
     'maps',   # <--
 
     'allauth',   # <--
@@ -136,6 +137,7 @@ USE_L10N = True
 
 USE_TZ = True
 
+
 SECURE_SSL_REDIRECT = True
 
 # Static files (CSS, JavaScript, Images)
@@ -151,6 +153,7 @@ AUTHENTICATION_BACKENDS = (
 SITE_ID = 1
 
 LOGIN_REDIRECT_URL = '/'
+ACCOUNT_LOGOUT_ON_GET = True
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {

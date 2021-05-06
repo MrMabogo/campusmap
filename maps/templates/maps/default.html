@@ -1,75 +1,339 @@
 {% extends 'maps/base.html' %}
 {% load socialaccount %}
-{% block homeactive %}nav-link {% endblock %}
+{% block homeactive %}nav-link{% endblock %}
 {% block mapactive %}nav-link active{% endblock %}
+{% block recommendationsactive %}nav-link{% endblock %}
+{% block recommendationslistactive %}nav-link{% endblock %}
 {% block content %}
 
     <head>
+        
+        
         <style>
             .float-container {
         height: 94%;
         }
-
         .float-left {
             width: 75%;
             float: left;
-
+            height: 100%;
         }
         .float-right {
             width: 25%;
-            height: 60%;
+            height: 50%;
             float: right;
             padding: 20px;
-            border: 5px solid blue;
+            border: none;
         }
         .float-bottom {
             width: 25%;
             height: 40%;
             float: right;
             padding: 20px;
-            border: 5px solid red;
+            border: none;
+        }       
+        .dropdown-menu {
+           max-height: 200px;
+           overflow: scroll;
         }
-
+        .dropdown-menu .dropdown-item:hover {
+          background-image: none;
+          background-color: grey!important;
+          color: #FFFFFF
+        }
+       div.scroll {
+            padding: 2px;
+            height: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
+            white-space: nowrap;
+        }
         </style>
     </head>
 
     <div class="float-container">
         <div class="float-left">
-            <div id='map' style="width: 100%; height: 100%;"></div>
-            <div id="instructions"></div>
+            <div id='map' style="width: 100%; height: 92%;"></div>
+
+<!--            Spinner Implementation-->
+<!--              <div class="spinner-border m-5" role="status">-->
+<!--                  <span class="sr-only">Loading...</span>-->
+<!--              </div>-->
+            <div class="d-inline-block">
+                <p><small>Current Location Coordinates: (</small></p>
+            </div>
+            <div class="d-inline-block">
+                <small><p id="insert"></p></small>
+            </div>
+            <div class="d-inline-block">
+                <p><small> ); IGNORE this if "Location Services" not enabled</small></p>
+            </div>
         </div>
         <div class="float-right">
             <div class='heading'>
-                <h3>Common Locations</h3>
+                <h4>Common Locations</h4>
             </div>
-            <div class="btn-group">
-              <button type="button" class="btn btn-primary">Common Locations</button>
-              <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="sr-only">Toggle Dropdown</span>
-              </button>
-                <div class="dropdown-menu">
-                <a class="dropdown-item" href="#"><div id='listings' class='listings'></div></a>
+            <div class="scroll">
+                <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button
+                              type="button"
+                              class="btn btn-primary dropdown-toggle"
+                              data-toggle="dropdown"
+                              aria-expanded="false"
+                      >
+                          College of Arts and Sciences
+                      </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='College of Arts and Sciences' class='listings'></div></a>
+                        </div>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button
+                              type="button"
+                              class="btn btn-primary dropdown-toggle"
+                              data-toggle="dropdown"
+                              aria-expanded="false"
+                      >
+                          Dining
+                      </button>
+                        <div class="dropdown-menu" style="background-color:grey; width: 100%">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='Dining' class='listings'></div></a>
+                        </div>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button
+                              type="button"
+                              class="btn btn-primary dropdown-toggle"
+                              data-toggle="dropdown"
+                              aria-expanded="false"
+                      >
+                          Engineering School
+                      </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='Engineering School' class='listings'></div></a>
+                        </div>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button
+                              type="button"
+                              class="btn btn-primary dropdown-toggle"
+                              data-toggle="dropdown"
+                              aria-expanded="false"
+                      >
+                          Historical
+                      </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='Historical' class='listings'></div></a>
+                        </div>
+                    </div>
+
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button
+                              type="button"
+                              class="btn btn-primary dropdown-toggle"
+                              data-toggle="dropdown"
+                              aria-expanded="false"
+                      >
+                          Libraries
+                      </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='Library' class='listings'></div></a>
+                        </div>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button
+                              type="button"
+                              class="btn btn-primary dropdown-toggle"
+                              data-toggle="dropdown"
+                              aria-expanded="false"
+                      >
+                          Parking
+                      </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='Parking Garage' class='listings'></div></a>
+                        </div>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button
+                              type="button"
+                              class="btn btn-primary dropdown-toggle"
+                              data-toggle="dropdown"
+                              aria-expanded="false"
+                      >
+                          Athletic
+                      </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='Athletic' class='listings'></div></a>
+                        </div>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button
+                              type="button"
+                              class="btn btn-primary dropdown-toggle"
+                              data-toggle="dropdown"
+                              aria-expanded="false"
+                      >
+                          Housing
+                      </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                        <a class="dropdown-item" style="color:white" href="#"><div id='Housing' class='listings'></div></a>
+                        </div>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            Batten School
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='Batten School' class='listings'></div></a>
+                        </div>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            McIntire School of Commerce
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='McIntire School of Commerce' class='listings'></div></a>
+                        </div>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            Music
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='Music' class='listings'></div></a>
+                        </div>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            Office
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='Office' class='listings'></div></a>
+                        </div>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            Research
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='Research' class='listings'></div></a>
+                        </div>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            School of Education
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='School of Education' class='listings'></div></a>
+                        </div>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            Architecture
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='Architecture' class='listings'></div></a>
+                        </div>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            Arts
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='Arts' class='listings'></div></a>
+                        </div>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            Law
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='Law' class='listings'></div></a>
+                        </div>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button
+                                type="button"
+                                class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            Darden School of Business
+                        </button>
+                        <div class="dropdown-menu" style="background-color: grey; width: 100%">
+                            <a class="dropdown-item" style="color:white" href="#"><div id='Darden School of Business' class='listings'></div></a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="float-bottom">
+        <div class="float-bottom overflow-auto">
             <div class='heading'>
                 <h3>Saved Routes</h3>
             </div>
             <div class='savedroutes list-group d-flex'>
                 {% if user.is_authenticated %}
                     {% for savedroute in savedroutes %}
-                        <a href='#' class='list-group-item'>
-                            <div class="d-flex justify-content-between">
-                                {{ savedroute.name }}
-                            </div>
-                        </a>
+                    <div class="d-flex list-group-item">
+                        <span class="justify-content-between">
+                            {{ savedroute.name }}
+                        </span>
+                    </div>
                     {% endfor %}
+                {% else %}
+                    <span class="justify-content-between">
+                        Must be logged in to save routes
+                    </span>
                 {% endif %}
             </div>
         </div>
     </div>
-
     <script type="text/javascript">
         mapboxgl.accessToken = '{{mapbox_access_token}}'; //renders django view variable
         geocodioApiKey = '{{geocodio_api_key}}';
@@ -77,18 +341,45 @@
         defaultOrigin = "Desired Start Location";
         defaultDest = "Desired End Location";
 
+        function loadAll(container, csrf, url)
+        {
+            var formData = new FormData();
+            formData.append(csrf.name, csrf.value); //csrf token
+            fetch(url, {
+                method: 'POST',
+                body: formData
+            }).then(res => res.json()).then(res => {
+                if(res.route_status == 'loaded')
+                {
+                    container.innerHTML = '';
+                    
+                    res.routes.forEach((route) => {
+                        var itemDiv = document.createElement('div');
+                        itemDiv.setAttribute('class', 'd-flex list-group-item');
+                        container.appendChild(itemDiv);
+                        var nameSpan = document.createElement('span');
+                        nameSpan.setAttribute('class', 'justify-content-between');
+                        itemDiv.appendChild(nameSpan);
+                        nameSpan.innerHTML = route.name;
+                    });
+                }
+            })
+        }
+
         function successLocation(position) {
-            setupMap([position.coords.longitude, position.coords.latitude]);
             userLocation = [position.coords.longitude, position.coords.latitude]; // automatically global variable for the user's location
+            setupMap(userLocation);
+            document.getElementById("insert").innerHTML = userLocation;
         }
 
         function errorLocation() {
-            setupMap([-78.512, 38.036]);
             userLocation = [-78.512, 38.036];
+            setupMap(userLocation);
+            document.getElementById("insert").innerHTML = userLocation;
         }
 
         function getCoordinates(origin, dest) {
-            let asArr = [origin, dest];
+            var asArr = [origin, dest];
             var coordPromise = fetch('https://api.geocod.io/v1.6/geocode?api_key=' + geocodioApiKey, {
                 headers: {
                     'Content-Type': 'application/json'
@@ -99,7 +390,8 @@
             return coordPromise;
         }
 
-        var SaveControl = L.Control.extend({ // I have no idea what this is doing
+        //https://docs.mapbox.com/mapbox.js/api/v3.3.1/l-control/
+        var SaveControl = L.Control.extend({
             container: null,
             saveBtn: null,
             loadBtn: null,
@@ -112,16 +404,19 @@
             loadIn: null,
             myInDiv: null,
             mapDirProfile: null,
+            startLocation: null,
+            endLocation: null,
 
             //>>Required mapbox functions start
             onAdd: function (map) {
                 this.container = L.DomUtil.create('div', 'save-control bg-white mt-1');
                 this.myMap = map;
+                startLocation = userLocation;
 
                 var btnGrp = L.DomUtil.create('div', 'btn-group d-flex', this.container);
                 btnGrp.setAttribute('role', 'group');
 
-                this.saveBtn = L.DomUtil.create('button', 'btn bg-info text-white form-control', btnGrp);
+                this.saveBtn = L.DomUtil.create('button', 'btn bg-info text-white btn-sm', btnGrp);
                 this.saveBtn.setAttribute('name', 'persist_type');
                 this.saveBtn.setAttribute('type', 'button');
                 this.saveBtn.setAttribute('value', 'Save route');
@@ -130,28 +425,28 @@
                 this.saveBtn.setAttribute('data-container', 'body');
                 this.saveBtn.setAttribute('data-toggle', 'popover');
                 this.saveBtn.setAttribute('title', 'Confirm Save');
-                this.saveBtn.setAttribute('data-content', 'Click again to confirm.');
+                this.saveBtn.setAttribute('data-content', 'Ensure you have cleverly named this route in the box below. Click the save button again to confirm.');
                 
-                this.loadBtn = L.DomUtil.create('button', 'btn bg-secondary text-white form-control', btnGrp);
+                this.loadBtn = L.DomUtil.create('button', 'btn bg-secondary text-white btn-sm', btnGrp);
                 this.loadBtn.setAttribute('name', 'persist_type');
                 this.loadBtn.setAttribute('type', 'button');
                 this.loadBtn.setAttribute('value', 'Load route');
-                this.loadBtn.innerHTML = 'Load';
+                this.loadBtn.innerHTML = 'Load Saved';
 
-                this.delBtn = L.DomUtil.create('button', 'btn bg-danger text-white form-control', btnGrp);
+                this.delBtn = L.DomUtil.create('button', 'btn bg-danger text-white btn-sm', btnGrp);
                 this.delBtn.setAttribute('name', 'persist_type');
                 this.delBtn.setAttribute('type', 'button');
                 this.delBtn.setAttribute('value', 'Delete route');
-                this.delBtn.innerHTML = 'Delete';
+                this.delBtn.innerHTML = 'Delete Saved';
                 //delete popover setup
                 this.delBtn.setAttribute('data-container', 'body');
                 this.delBtn.setAttribute('data-toggle', 'popover');
                 this.delBtn.setAttribute('title', 'Confirm Delete');
-                this.delBtn.setAttribute('data-content', 'PERMANENTLY DELETE. Click again to confirm.');
+                this.delBtn.setAttribute('data-content', 'PERMANENTLY DELETE. Click the delete button again to confirm.');
 
                 var inGrp = L.DomUtil.create('div', 'input-group', this.container);
                 this.loadIn = L.DomUtil.create('input', 'form-control', inGrp);
-                this.loadIn.setAttribute('placeholder', 'Route name to save/load/delete');
+                this.loadIn.setAttribute('placeholder', 'Enter route name to save/load/delete');
                 this.loadIn.setAttribute('name', 'route_id');
                 this.loadIn.setAttribute('maxlength', '100');
 
@@ -166,6 +461,10 @@
 
                     $('[data-toggle="popover"]').on('blur', function(){
                         $(this).popover('hide');
+                    });
+
+                    $(':not([data-toggle="popover"])').on('focus', function(){
+                        $('[data-toggle="popover"]').popover('hide');
                     });
                 });
 
@@ -194,9 +493,10 @@
 
                 if (this.myMap.getSource('route')) { //if the route already exists, reset it
                     this.myMap.getSource('route').setData(geojson);
-                } else {
-                    //see setupMap and https://docs.mapbox.com/help/troubleshooting/mapbox-browser-support/
-                    alert("Mapbox loaded incorrectly. Allow hardware acceleration. Try refreshing the page.");
+                }
+                else {
+                    //see setupMap and https://docs.mapbox.com/help/troubleshooting/mapbox-browser-support/-->
+                    swal("Loading problem", "Mapbox loaded incorrectly. Allow hardware acceleration. Try refreshing the page.", "info");
                 }
 
                 var legs = saved.geometry.coordinates.length;
@@ -343,127 +643,54 @@
                 var form = document.createElement('form');
                 form.innerHTML = '{% csrf_token %}';
                 form.method = 'POST';
+                //prevent enter key in load/save/delete input from reloading page
+                $(document).on("keydown", "form", function(event) { 
+                    return event.key != "Enter";
+                });
+
                 this.container.parentNode.appendChild(form);
                 form.appendChild(this.container);
-                var start = this.getTextInput(inDiv, this.originPlaceholder);
-                var end = this.getTextInput(inDiv, this.destPlaceholder);
+
                 var dirProfile = this.getDirProfile(); // this is duplicated in the event listener
                 var controller = this;
 
                 this.saveBtn.addEventListener('click', function (e) {
                     e.preventDefault();
+                    var start = JSON.stringify(directions.getOrigin());
+                    var end = JSON.stringify(directions.getDestination());
                     var popID = $(this).attr('aria-describedby'); //indicates popover is active; https://stackoverflow.com/questions/13442749/how-to-check-whether-a-twitter-bootstrap-popover-is-visible-or-not
-                    if(popID) {
-                        var startLatLn = start.value.split(',');
-                        var endLatLn = end.value.split(',');
-                        var dirProfile = controller.getDirProfile();
+                    if(popID && start != '{}' && end != '{}') {
 
-                        if (startLatLn.length == 2 && endLatLn.length == 2) {
-                            var url = 'https://api.mapbox.com/directions/v5/' + dirProfile + '/' + startLatLn[0] + ',' + startLatLn[1] + ';' + endLatLn[0] +
-                                ',' + endLatLn[1] + '?steps=true&geometries=geojson&access_token=' + mapboxgl.accessToken;
-
-                            var req = new XMLHttpRequest();
-                            req.open('GET', url, true);
-                            req.onload = function () {
-                                var json = JSON.parse(req.response);
-                                var data = json.routes[0];
-                                controller.route = data;
-
-                                //just to shrink it down a bit
-                                var storable = controller.createStorable(data);
-
-                                //This is supposed to send the route save HTTP request to the django view
-                                var formData = new FormData();
-                                let btnParent = controller.container;
-                                formData.append(form.children[0].name, form.children[0].value); //csrf token
-                                formData.append('coords', JSON.stringify(storable));
-                                formData.append('persist_type', 'Save route');
-                                formData.append('route_id', controller.loadIn.value);
-                                fetch('{% url "maps:persist" %}', {
-                                    method: 'POST',
-                                    body: formData
-                                }).then(res => res.json()).then(res => {
-                                    if(res.message == 'already exists')
-                                    {
-                                        alert('You already have a route with that name!');
-                                    }
-                                });
-                            }
-                            req.send()
-                        } else if(startLatLn.length > 2 || endLatLn.length > 2) {
-                            //try to make address nicer for geocodio
-                            if (startLatLn.length > 4) {
-                                start.value = startLatLn.slice(startLatLn.length - 4).join(',');
-                            }
-                            if (endLatLn.length > 4) {
-                                end.value = endLatLn.slice(endLatLn.length - 4).join(',');
-                            }
-
-                            getCoordinates(start.value, end.value).then(res => res.json().then(res => {
-                                //response to first address is at res['results'][0]
-                                if (res['results'][0]['query'] == '') {
-                                    alert("Is origin/destination correct?");
-                                }
-                                let startRes = res['results'][0]['response']['results'][0];
-                                startLatLn = [startRes.location.lng, startRes.location.lat];
-
-                                //response to second address is at res.results[1]
-                                let endRes = res['results'][1]['response']['results'][0];
-                                endLatLn = [endRes.location.lng, endRes.location.lat];
-
-                                var url = 'https://api.mapbox.com/directions/v5/' + dirProfile + '/' + startLatLn[0] + ',' + startLatLn[1] + ';' + endLatLn[0] +
-                                    ',' + endLatLn[1] + '?steps=true&geometries=geojson&access_token=' + mapboxgl.accessToken;
-
-                                var req = new XMLHttpRequest();
-                                req.open('GET', url, true);
-                                req.onload = function () {
-                                    var json = JSON.parse(req.response);
-                                    var data = json.routes[0];
-                                    controller.route = data;
-
-                                    //just to shrink it down a bit
-                                    var storable = controller.createStorable(data);
-
-                                    //This is supposed to send the route save HTTP request to the django view
-                                    var formData = new FormData();
-                                    let btnParent = controller.container;
-                                    formData.append(form.children[0].name, form.children[0].value); //csrf token
-                                    formData.append('coords', JSON.stringify(storable));
-                                    formData.append('persist_type', 'Save route');
-                                    formData.append('route_id', controller.loadIn.value);
-                                    fetch('{% url "maps:persist" %}', {
-                                        method: 'POST',
-                                        body: formData
-                                    }).then(res => res.json()).then(res => {
-                                        if(res.message == 'already exists')
-                                        {
-                                            alert('You already have a route with that name!');
-                                        }
-                                    });
-                                }
-
-                                req.send()
-                            }));
-                        } else if(controller.loaded){
-                            var storable = controller.createStorable(controller.route);
-
-                            //This is supposed to send the route save HTTP request to the django view
-                            var formData = new FormData();
-                            let btnParent = controller.container;
-                            formData.append(form.children[0].name, form.children[0].value); //csrf token
-                            formData.append('coords', JSON.stringify(storable));
-                            formData.append('persist_type', 'Save route');
+                        var formData = new FormData();
+                        var btnParent = controller.container;
+                        formData.append(form.children[0].name, form.children[0].value); //csrf token
+                        formData.append('start', start);
+                        formData.append('end', end);
+                        formData.append('persist_type', 'Save route');
+                        if(controller.loadIn.value != '')
+                        {
                             formData.append('route_id', controller.loadIn.value);
                             fetch('{% url "maps:persist" %}', {
                                 method: 'POST',
                                 body: formData
                             }).then(res => res.json()).then(res => {
-                                if(res.message == 'already exists')
+                                if(res.route_status == 'saved')
                                 {
-                                    alert('You already have a route with that name!');
+                                    loadAll(document.getElementsByClassName('savedroutes')[0], form.children[0], '{% url "maps:get_routes" %}');
+                                }
+                                else if(res.message == 'already exists')
+                                {
+                                    swal('Duplicate route!', 'You already have a route with that name!', 'warning');
                                 }
                             });
                         }
+                        else
+                        {
+                            swal('No name!', 'Please enter a route name...', 'warning');
+                        }
+                    }
+                    else if (start == '{}' || end == '{}') {
+                        swal('No route!', 'There seems to be no route to save...', 'warning');
                     }
                 })
 
@@ -482,29 +709,11 @@
                         if (res.route_status != 'failure') {
                             directions.removeRoutes();
                             controller.loaded = true;
-                            var ldRoute = res.route;
-                            controller.getRoute(ldRoute);
-                            var steps = ldRoute.legs[0].steps;
+                            var start = res.start['geometry']['coordinates'];
+                            var end = res.end['geometry']['coordinates'];
 
-                            controller.myMap.flyTo({
-                                center: steps[steps.length-1].geometry.coordinates[0],
-                                zoom: 15
-                            });
-
-                            var dirDiv = inDiv.parentNode.children[1];
-                            dirDiv.innerHTML = '';
-                            var loadDirDiv = L.DomUtil.create('div', 'directions-control mapbox-directions-instructions-wrapper directions-control-directions', dirDiv);
-                            var instructions = L.DomUtil.create('ol', 'mapbox-directions-steps', loadDirDiv);
-
-                            var tripInstructions = [];
-                            for (var i = 0; i < steps.length; i++) {
-                                var coord = steps[i].geometry.coordinates[0];
-                                tripInstructions.push('<br><li class="mapbox-directions-step" data-lat="' + coord[1] + '" data-lng="' + coord[0] + '">' + steps[i].maneuver.instruction) + '</li>';
-                            }
-
-                            instructions.innerHTML = '<br><div class="mapbox-directions-route-summary"> <h1>' +
-                                Math.floor(ldRoute.distance / 1609 * 100) / 100 + 'mi </h1><span>' +
-                                Math.floor(ldRoute.duration / 60) + ' min </span></div>' + tripInstructions;
+                            directions.setOrigin(start);
+                            directions.setDestination(end);
                         }
                     });
                     
@@ -524,96 +733,69 @@
                         fetch('{% url "maps:persist" %}', {
                             method: 'POST',
                             body: formData
-                        }).then(res => res.json()).then(res => console.log(res))
+                        }).then(res => res.json()).then(res => {
+                            if(res.route_status == 'deleted')
+                            {
+                                loadAll(document.getElementsByClassName('savedroutes')[0], form.children[0], '{% url "maps:get_routes" %}');
+                            }
+                        })
                     }
                 })
             }
         });
 
         function buildLocationList(data) {
+            const buildingTypes = ['College of Arts and Sciences', 'Dining', 'Engineering School', 'Library',
+                            'Parking Garage', 'Athletic', 'Housing', 'Historical', 'Batten School',
+                            'McIntire School of Commerce', 'Music', 'Office', 'Research', 'School of Education',
+                            'Architecture', 'Arts', 'Law', 'Darden School of Business'];
             data.features.forEach(function (facility, i) {
                 var prop = facility.properties;
+                buildingTypes.forEach(function(building, k) {
+                    if (prop.category == building) {
+                        /* Add a new listing section to the sidebar. */
+                        var listings = document.getElementById(buildingTypes[k]);
+                        var listing = listings.appendChild(document.createElement('div'));
+                        /* Assign a unique `id` to the listing. */
+                        listing.id = "listing-" + data.features[i].properties.id;
+                        /* Assign the `item` class to each listing for styling. */
+                        listing.className = 'item';
 
-                /* Add a new listing section to the sidebar. */
-                var listings = document.getElementById('listings');
-                var listing = listings.appendChild(document.createElement('div'));
-                /* Assign a unique `id` to the listing. */
-                listing.id = "listing-" + data.features[i].properties.id;
-                /* Assign the `item` class to each listing for styling. */
-                listing.className = 'item';
+                        /* Add the link to the individual listing created above. */
+                        var link = listing.appendChild(document.createElement('a'));
+                        link.href = '#';
+                        link.className = 'title';
+                        link.id = "link-" + prop.id;
+                        link.innerHTML = prop.name;
 
-                /* Add the link to the individual listing created above. */
-                var link = listing.appendChild(document.createElement('a'));
-                link.href = '#';
-                link.className = 'title';
-                link.id = "link-" + prop.id;
-                link.innerHTML = prop.name;
+                        /* Add details to the individual listing. */
+                        var details = listing.appendChild(document.createElement('div'));
+                        details.innerHTML = prop.address;
 
-                /* Add details to the individual listing. */
-                var details = listing.appendChild(document.createElement('div'));
-                details.innerHTML = prop.address;
-
-                link.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    for (var i = 0; i < data.features.length; i++) {
-                        if (this.id === "link-" + data.features[i].properties.id) {
-                            var clickedListing = data.features[i];
-                            map.flyTo({
-                                center: clickedListing.geometry.coordinates,
-                                zoom: 15
-                            });
-                            // pass link coordinates to directions API
-                            // used https://docs.mapbox.com/help/tutorials/getting-started-directions-api/?size=n_10_n
-                            var start = userLocation;
-                            var end = clickedListing.geometry.coordinates;
-                            var url = 'https://api.mapbox.com/directions/v5/'+saver.getDirProfile()+'/'+ start[0] + ',' + start[1] + ';' + end[0] +
-                                ',' + end[1] + '?steps=true&geometries=geojson&access_token=' + mapboxgl.accessToken;
-                            // make an XHR request https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest
-                            var req = new XMLHttpRequest();
-                            req.open('GET', url, true);
-                            req.onload = function () {
-                                var json = JSON.parse(req.response);
-                                var data = json.routes[0];
-                                saver.setRoute(data);
-                                var route = data.geometry.coordinates;
-                                var geojson = {
-                                    type: 'Feature',
-                                    properties: {},
-                                    geometry: {
-                                        type: 'LineString',
-                                        coordinates: route
-                                    }
-                                };
-                                saver.getRoute(data);
-                    
-                                // add turn instructions to the map
-                                // var instructions = document.getElementById('instructions');
-                                var steps = data.legs[0].steps;
-
-                                // copy-pasted from SaveControl
-                                var dirDiv = saver.myInDiv.parentNode.children[1];
-                                dirDiv.innerHTML = '';
-                                var loadDirDiv = L.DomUtil.create('div', 'directions-control mapbox-directions-instructions-wrapper directions-control-directions', dirDiv);
-                                var instructions = L.DomUtil.create('ol', 'mapbox-directions-steps', loadDirDiv);
-
-                                var tripInstructions = [];
-                                for (var i = 0; i < steps.length; i++) {
-                                    var coord = steps[i].geometry.coordinates[0];
-                                    tripInstructions.push('<br><li class="mapbox-directions-step" data-lat="' + coord[1] + '" data-lng="' + coord[0] + '">' + steps[i].maneuver.instruction) + '</li>';
+                        link.addEventListener('click', function (e) {
+                            e.preventDefault();
+                            for (var i = 0; i < data.features.length; i++) {
+                                if (this.id === "link-" + data.features[i].properties.id) {
+                                    var clickedListing = data.features[i];
+                                    map.flyTo({
+                                        center: clickedListing.geometry.coordinates,
+                                        zoom: 14
+                                    });
+                                    // pass link coordinates to directions API
+                                    // used https://docs.mapbox.com/help/tutorials/getting-started-directions-api/?size=n_10_n
+                                    var start = userLocation;
+                                    var end = clickedListing.geometry.coordinates;
+                                    directions.setOrigin(start);
+                                    directions.setDestination(end);
                                 }
-
-                                instructions.innerHTML = '<br><div class="mapbox-directions-route-summary"> <h1>' +
-                                    Math.floor(data.distance / 1609 * 100) / 100 + 'mi </h1><span>' +
-                                    Math.floor(data.duration / 60) + ' min </span></div>' + tripInstructions;
-                            };
-                            req.send();
-                        }
+                            }
+                            var activeItem = document.getElementsByClassName('active');
+                            if (activeItem[0]) {
+                                activeItem[0].classList.remove('active');
+                            }
+                            this.parentNode.classList.add('active');
+                        });
                     }
-                    var activeItem = document.getElementsByClassName('active');
-                    if (activeItem[0]) {
-                        activeItem[0].classList.remove('active');
-                    }
-                    this.parentNode.classList.add('active');
                 });
             });
         }
@@ -622,16 +804,30 @@
             map = new mapboxgl.Map({ // automatically global
                 container: 'map',
                 center: center,
-                zoom: 12,
-                style: 'mapbox://styles/mapbox/streets-v11'
+                zoom: 14,
+                style: 'mapbox://styles/mapbox/satellite-streets-v11',
+                clickTolerance: 1
             })
+
 
             // zoom and compass stuff
             var nav = new mapboxgl.NavigationControl(); // https://docs.mapbox.com/mapbox-gl-js/example/navigation/
             map.addControl(nav);
 
+//             var layerList = document.getElementById('menu');
+//             var inputs = layerList.getElementsByTagName('input');
 
-            var directions = new MapboxDirections({ // https://github.com/mapbox/mapbox-gl-directions
+//             function switchLayer(layer) {
+//                 var layerId = layer.target.id;
+//                 map.setStyle('mapbox://styles/mapbox/' + layerId);
+
+//             }
+
+//             for (var i = 0; i < inputs.length; i++) {
+//                 inputs[i].onclick = switchLayer;
+//             }
+
+            directions = new MapboxDirections({ // https://github.com/mapbox/mapbox-gl-directions
                 accessToken: mapboxgl.accessToken,
                 geocoder: {            // makes the location searches more Charlottesville-centric
                     countries: 'us',
@@ -648,6 +844,15 @@
             map.addControl(directions, 'top-left');
             map.addControl(saver, 'top-left');
             saver.setup();
+
+
+            //resize the map a short time before full load
+            //prevent the small map problem
+            map.on('idle', function (e) {
+                map.resize();
+            });
+
+
             map.on('load', function (e) {  // https://docs.mapbox.com/help/tutorials/building-a-store-locator/
                 //removes need to double-click to load route
                 map.addLayer({
@@ -675,156 +880,48 @@
                     }
                 });
 
-                map.addSource('UVA', {
-                    type: 'geojson',
-                    data: 'https://gist.githubusercontent.com/hudsonburke/7ce0e2657f3c5e22244a10c2cc0e9c6f/raw/7a4e8eefbf0d1b10321e1b13ea254e868ec7ad22/geo_facilities.json' // 'https://jsonkeeper.com/b/0BK4'
-                }); // this doesn't currently work as it won't finish loading
-                //while(!map.isSourceLoaded('UVA')){}; // makes sure that the source finishes loading before moving on
+                var url = "{% url 'maps:geo.json' %}"
+                let facilities = "hi";
 
-                let facilities = {
-                    "type": "FeatureCollection",
-                    "features": [
-                        {
-                            "type": "Feature",
-                            "geometry": {
-                                "type": "Point",
-                                "coordinates": [
-                                    -78.5034,
-                                    38.0356
-                                ]
-                            },
-                            "properties": {
-                                "name": "The Rotunda",
-                                "address": "1826  University Ave",
-                                "category": "Office"
-                            }
-                        },
-                        {
-                            "type": "Feature",
-                            "geometry": {
-                                "type": "Point",
-                                "coordinates": [
-                                    -78.5099,
-                                    38.0329
-                                ]
-                            },
-                            "properties": {
-                                "name": "Thornton Hall",
-                                "address": "351  McCormick Rd",
-                                "category": "Office"
-                            }
-                        },
-                        {
-                            "type": "Feature",
-                            "geometry": {
-                                "type": "Point",
-                                "coordinates": [
-                                    -78.5108,
-                                    38.03158
-                                ]
-                            },
-                            "properties": {
-                                "name": "Rice Hall",
-                                "address": "85  Engineers Way",
-                                "category": "Research"
-                            }
-                        },
-                        {
-                            "type": "Feature",
-                            "geometry": {
-                                "type": "Point",
-                                "coordinates": [
-                                    -78.51476,
-                                    38.03307
-                                ]
-                            },
-                            "properties": {
-                                "name": "Gibbons House",
-                                "address": "425  TREE HOUSE LANE",
-                                "category": "Housing"
-                            }
-                        },
-                        {
-                            "type": "Feature",
-                            "geometry": {
-                                "type": "Point",
-                                "coordinates": [
-                                    -78.5151,
-                                    38.0348
-                                ]
-                            },
-                            "properties": {
-                                "name": "O-Hill Dining Hall",
-                                "address": "525  McCormick Rd",
-                                "category": "Dining"
-                            }
-                        },
-                        {
-                            "type": "Feature",
-                            "geometry": {
-                                "type": "Point",
-                                "coordinates": [
-                                    -78.505,
-                                    38.0326
-                                ]
-                            },
-                            "properties": {
-                                "name": "New Cabell Hall",
-                                "address": "1605  Jefferson Park Ave",
-                                "category": "Office"
-                            }
-                        }
-                    ]
-                }; // map.getSource('UVA');
-
+                fetch(url)
+                    .then(res => res.json())
+                    .then(res => {
+                        facilities = res;
+                        //console.log(facilities);
+                        facilities.features.forEach(function (facility, i) {
+                            facility.properties.id = i;
+                        });
+                        buildLocationList(facilities);
+                    });
                 // give each facility an id
-                facilities.features.forEach(function (facility, i) {
-                    facility.properties.id = i;
-                });
+
                 // add them to the map
-                map.addLayer({
+                /* map.addLayer({
                     'id': 'locations',
                     'type': 'circle',
                     'source': {
                         'type': 'geojson',
                         'data': facilities
                     }
-                });
+                }); */
 
-                buildLocationList(facilities);
 
-                /* For each feature in the GeoJSON object above: */
-                facilities.features.forEach(function (marker) {
-                    /* Create a div element for the marker. */
+
+                /* facilities.features.forEach(function (marker) {
                     var el = document.createElement('div');
-                    /* Assign a unique `id` to the marker. */
                     el.id = 'marker-' + marker.properties.id;
-                    /* Assign the `marker` class to each marker for styling. */
                     el.className = 'marker';
 
-                    /**
-                     * Create a marker using the div element
-                     * defined above and add it to the map.
-                     **/
                     new mapboxgl.Marker(el, {offset: [0, -23]})
                         .setLngLat(marker.geometry.coordinates)
                         .addTo(map);
 
-                    /**
-                     * Listen to the element and when it is clicked, do three things:
-                     * 1. Fly to the point
-                     * 2. Close all other popups and display popup for clicked store
-                     * 3. Highlight listing in sidebar (and remove highlight for all other listings)
-                     **/
+
                     el.addEventListener('click', function (e) {
-                        /* Fly to the point */
-                        map.flyTo({
+=                        map.flyTo({
                             center: marker.geometry.coordinates,
-                            zoom: 15
+                            zoom: 14
                         });
-                        /* Close all other popups and display popup for clicked store */
-                        // createPopUp(marker);
-                        /* Highlight listing in sidebar */
                         var activeItem = document.getElementsByClassName('active');
                         e.stopPropagation();
                         if (activeItem[0]) {
@@ -835,7 +932,7 @@
                         );
                         listing.classList.add('active');
                     });
-                });
+                });*/
             });
 
             //https://docs.mapbox.com/mapbox-gl-js/api/events/#mapdataevent
@@ -861,6 +958,7 @@
                     }
                 }
             })
+            directions.setOrigin(userLocation);
         }
     </script>
 {% endblock %}
