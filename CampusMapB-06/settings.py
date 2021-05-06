@@ -211,6 +211,6 @@ LOGGING = {
 # Activate Django-Heroku.
 try:
     import django_heroku
-    django_heroku.settings(locals())
+    django_heroku.settings(config=locals(), staticfiles=False,logging=False)
 except ImportError:
     found = False
