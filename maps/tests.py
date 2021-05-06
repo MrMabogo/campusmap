@@ -1,3 +1,10 @@
+# /***************************************************************************************
+# *  REFERENCES
+# *  URL: https://docs.djangoproject.com/en/3.2/topics/testing/tools/
+# *  Usage: Setting up tests with Django
+# *
+# ***************************************************************************************/
+
 from django.test import TransactionTestCase
 from django.http import HttpRequest, HttpResponse
 from django.urls import reverse
