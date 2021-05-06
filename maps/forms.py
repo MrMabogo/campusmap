@@ -1,3 +1,10 @@
+# /***************************************************************************************
+# *  REFERENCES
+# *  URL: https://docs.djangoproject.com/en/3.2/topics/forms/modelforms/
+# *  Usage: Creating a form for the Recommendation model
+# *
+# ***************************************************************************************/
+
 from django import forms
 from django.core.exceptions import ValidationError
 from .models import Recommendation
