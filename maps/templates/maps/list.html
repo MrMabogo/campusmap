@@ -43,12 +43,20 @@
             <div class="col col-lg m-1">
                 <div class="row bg-light">
                     <div class="col col-lg">
-                        <p> 
-                            <span class="text-capitalize font-weight-bold">{{ recommendation.location_name }}</span>
-                            suggested by {{ recommendation.author.username }}
-                            <br>
-                            <span class="text-capitalize">{{ recommendation.address }}</span>
-                        </p>
+                        <div class="row">
+                            <div class="col">
+                            <p> 
+                                <span class="text-capitalize font-weight-bolder">{{ recommendation.location_name }}</span>
+                                suggested by {{ recommendation.author.username }}
+                                <span class="font-weight-light"> {{ recommendation.post_date }}</span>
+                                <br>
+                                <span class="text-capitalize">{{ recommendation.address }}</span>
+                            </p>
+                            </div>
+                            <div class="col justify-content-right">
+                            <p class="text-right font-weight-bold font-italic">{{ recommendation.get_category_display }}</p>
+                            </div>
+                        </div>
                         <p> 
                             {{ recommendation.details }}
                         </p>
@@ -87,10 +95,10 @@
                                 <div class="col col-lg">
                                     <div class="comments bg-primary" style="display: none">
                                         {% if recommendation.comment_set.all %}
-                                        {% for comment in recommendation.comment_set.all %}
+                                        {% for comment in recommendation.sorted_comment_set %}
                                         <div class="card ml-3 mt-1 mb-2"> 
                                             <div class="card-header">
-                                                <span class="text-capitalize font-weight-bold">{{ comment.author.username }}</span>
+                                                <span class="font-weight-bold">{{ comment.author.username }}</span>
                                                 <span class="text-capitalize small">{{ comment.post_date }}</span>
                                             </div>
                                             <p class="font-weight-normal ml-4 mt-2">{{ comment }}</span>

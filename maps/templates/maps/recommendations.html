@@ -8,46 +8,30 @@
 
 <head>
     <style>
-        div.small_indent
-        {
-            margin-left: 2%;
-        }
-        div.med_indent
-        {
-            margin-left: 5%;
-        }
-        div.large_indent
-        {
-            margin-left: 10%;
-        }
-        div.spacer
-        {
-          padding-top: 10px;
-          padding-bottom: 10px
-        }
-                form {
-  /* Center the form on the page */
-  margin: 0 auto;
-  width: 50%;
-  /* Form outline */
-  padding: 1em;
-  border: 1px solid #CCC;
-  border-radius: 1em;
+        form {
+        /* Center the form on the page */
+        margin: 0 auto;
+        width: 50%;
+        /* Form outline */
+        padding: 1em;
+        border: 1px solid #CCC;
+        border-radius: 1em;
       }
     </style>
 </head>
 {% if user.is_authenticated%}
     <div class="text-center">
-         <div class="spacer"></div>
-         <h1>Recommended Additions to "Common Locations"</h1>
+         <div class="pt-2 pb-2"></div>
+         <h1>Recommend Additions to "Common Locations"</h1>
      </div>
     <div class="text-left">
-        <div class="spacer"></div>
-        <h5>Did we miss any places you think should be in the "Common Locations" section? Comment that location below, and if 10 other users agree with you by liking the post, your location will be added to the "Common Locations" section!</h5>
+        <div class="m-3">
+            <h5>Did we miss any places you think should be in the "Common Locations" section? Fill in that location below, and if 5 other users agree with you by liking the post, your location will be added to the "Common Locations" section!</h5>
+        </div>
     </div>
 
 
-    <div class="spacer"></div>
+    <div class="pt-2 pb-2"></div>
     <div class="mb-3">
         <form action="{% url 'maps:recommendations' %}" method="POST">
             {% csrf_token %}
@@ -55,14 +39,14 @@
             <small>
                 By: {{ user.username }}
             </small>
-            <div class="spacer"></div>
+            <div class="pt-2 pb-2"></div>
             <button class="btn btn-secondary">Post</button>
             <br><br><br>
         </form>
     </div>
 {% else %}
     <div class="text-center">
-         <div class="spacer"></div>
+         <div class="pt-2 pb-2"></div>
          <h1>Must be logged in to leave a recommendation.</h1>
     </div>
 {% endif %}
