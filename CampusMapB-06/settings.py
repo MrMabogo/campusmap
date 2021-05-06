@@ -1,3 +1,27 @@
+# /***************************************************************************************
+# *  REFERENCES
+# *  URL: https://djangocentral.com/environment-variables-in-django/
+# *  Usage: Appropriately setting up environment variables
+# *
+# *  URL: https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
+# *  Usage: Quick-start development settings
+# *
+# *  URL: https://docs.djangoproject.com/en/3.1/ref/settings/#databases
+# *  Usage: Setting up the database
+# *
+# *  URL: https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
+# *  Usage: Password validation
+# *
+# *  URL: https://docs.djangoproject.com/en/3.1/topics/i18n/
+# *  Usage: Internilization information
+# *
+# *  URL: https://docs.djangoproject.com/en/3.1/howto/static-files/
+# *  Usage: Setting up static files
+# *
+# *  URL: https://stackoverflow.com/questions/51466192/server-error-500-django-deployment-on-heroku
+# *  Usage: Solving 500 error on Heroku
+# ***************************************************************************************/
+
 """
 Django settings for CampusMapB-06 project.
 
