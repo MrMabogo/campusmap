@@ -38,3 +38,9 @@
     > URL: https://jquery.com/<br/>
     > Usage: Style manipulation<br/>
     > Code version: 3.6 minified<br/>
+8. UVA Faciilities API
+    > URL: https://devhub.virginia.edu/API<br/>
+    > Usage: Common Locations Data<br/>
+9. Location Converter
+    > URL: https://github.com/hudsonburke/uva-locations<br/>
+    > Usage: Converitng Facilites Data to usable format<br/>
