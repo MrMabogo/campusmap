@@ -11,7 +11,7 @@ class RecommendationPostingForm(forms.ModelForm):
             'location_name': forms.TextInput(attrs={'class': 'form-control'}),
             'category': forms.Select(attrs={'class': 'form-control'}),
             'address': forms.TextInput(attrs={'class': 'form-control', 
-            'placeholder': '0 Rotunda Alley, Charlottesville, VA'}),
+            'placeholder': 'Example: 0 Rotunda Alley, Charlottesville, VA'}),
             'longitude': forms.NumberInput(attrs={'class': 'form-control'}),
             'latitude': forms.NumberInput(attrs={'class': 'form-control'}),
             'details': forms.Textarea(attrs={'class': 'form-control'})
