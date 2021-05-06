@@ -25,9 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '##@4w2h-oec#fdf4rxky*jy80*tl2=xo+&#s56q^koiqx1132x'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['campusmap-b-06.herokuapp.com']
+ALLOWED_HOSTS = ['campusmap-b-06.herokuapp.com'] #, '127.0.0.1']
 
 # Application definition
 

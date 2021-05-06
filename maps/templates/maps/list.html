@@ -64,9 +64,17 @@
                             {% csrf_token %}
                             <input type="hidden" name="name" value="{{ recommendation.location_name }}">
                             <input type="hidden" name="author" value="{{ recommendation.author.username }}">
+                            {% if user.is_authenticated %}
                             <button class="btn bg-success text-white btn-sm like-btn" type="button" name="update_type" value="like">
                                 like <span class="badge badge-light">{{ recommendation.likes|length }}</span>
                             </button>
+                            {% else %}
+                            <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="Log in to like">
+                            <button class="btn bg-success text-white btn-sm like-btn" type="button" style="pointer-events: none;" disabled>
+                                like <span class="badge badge-light">{{ recommendation.likes|length }}</span>
+                            </button>
+                            </span>
+                            {% endif %}
                         </form>
                     </div>
                 </div>
@@ -81,9 +89,17 @@
                                             <input type="hidden" name="name" value="{{ recommendation.location_name }}">
                                             <input type="hidden" name="author" value="{{ recommendation.author.username }}">
                                             <textarea class="md-textarea form-control ml-0 mb-2" name="comment" style="resize: none" maxlength="140" placeholder="Share your thoughts! In 140 characters..."></textarea>
+                                            {% if user.is_authenticated %}
                                             <button class="btn btn-secondary btn-sm comment-btn" type="submit" name="update_type" value="comment">
                                                 Post
                                             </button>
+                                            {% else %}
+                                            <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="Log in to comment">
+                                            <button class="btn btn-secondary btn-sm comment-btn" type="submit" style="pointer-events: none;" disabled>
+                                                Post
+                                            </button>
+                                            </span>
+                                            {% endif %}
                                         </form>
                                     </div>
                                     <a class="comments-toggle text-decoration-none" href="#">
@@ -118,6 +134,14 @@
     {% endfor %}
     </div>
     <script type="text/javascript">
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+
+            $('[data-toggle="tooltip"]').on('blur', function (e) {
+                $(this).tooltip('hide');
+            })
+        })
+
         $(".like-btn").click(function (e) {
             e.preventDefault();
 
@@ -185,7 +209,7 @@
             }
         })
     </script>
-    </ul>-->
+    </ul>
 {% else %}
     <p>No recommendations have been written.</p>
 {% endif %}
