@@ -88,9 +88,9 @@
                                             {% csrf_token %}
                                             <input type="hidden" name="name" value="{{ recommendation.location_name }}">
                                             <input type="hidden" name="author" value="{{ recommendation.author.username }}">
-                                            <textarea class="md-textarea form-control ml-0 mb-2" name="comment" style="resize: none" maxlength="140" placeholder="Share any thoughts here! In 140 characters or less..."></textarea>
+                                            <textarea class="md-textarea form-control ml-0 mb-2" name="comment" style="resize: none" maxlength="140" placeholder="Share any thoughts here! In 140 characters or less..." required></textarea>
                                             {% if user.is_authenticated %}
-                                            <button class="btn btn-secondary btn-sm comment-btn" type="submit" name="update_type" value="comment" required>
+                                            <button class="btn btn-secondary btn-sm comment-btn" type="submit" name="update_type" value="comment">
                                                 Post
                                             </button>
                                             {% else %}
