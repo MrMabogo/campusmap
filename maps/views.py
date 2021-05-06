@@ -116,9 +116,10 @@ def save_route(request):
     try:
         map_user = request.user
         rname = request.POST['route_id']
-        save_coords = request.POST['coords']
-        if save_coords != '':
-            new_route = SavedRoute(owner=map_user, geojson=json.loads(request.POST['coords']), name=rname)
+        start_coords = json.loads(request.POST['start'])
+        end_coords = json.loads(request.POST['end'])
+        if start_coords != '{}' and end_coords != '{}':
+            new_route = SavedRoute(owner=map_user, start=json.loads(request.POST['start']), end=json.loads(request.POST['end']), name=rname)
             new_route.save()
         else:
             return HttpResponse(JsonResponse({'route_status':'failure', 'message': 'no coordinates'}))
@@ -132,11 +133,12 @@ def load_route(request):
     route = None
     try:
         map_user = request.user
-        route = SavedRoute.objects.filter(owner=map_user, name=request.POST['route_id']).get().geojson
+        start = SavedRoute.objects.filter(owner=map_user, name=request.POST['route_id']).get().start
+        end = SavedRoute.objects.filter(owner=map_user, name=request.POST['route_id']).get().end
     except(KeyError, SavedRoute.MultipleObjectsReturned, SavedRoute.DoesNotExist):
         return HttpResponse(JsonResponse({'route_status': 'failure'}))
     else:
-        return HttpResponse(JsonResponse({'route_status': 'loaded', 'route':route}))
+        return HttpResponse(JsonResponse({'route_status': 'loaded', 'start': start, 'end': end}))
     
 def delete_route(request):
     try:
