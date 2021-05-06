@@ -14,16 +14,21 @@
         }
         div.med_indent
         {
-            margin-left: 5%;
+            margin-left: 3%;
         }
         div.large_indent
         {
-            margin-left: 10%;
+            margin-left: 4%;
         }
         div.spacer
         {
-          padding-top: 50px;
-          padding-bottom: 40px
+          padding-top: 25px;
+          padding-bottom: 15px;
+        }
+        div.smaller_spacer
+        {
+          padding-top: 10px;
+          padding-bottom: 10px;
         }
 
     </style>
@@ -32,33 +37,78 @@
     <div class="text-center">
         <div class="spacer"></div>
         <div class="d-inline-block">
-            <h1>Welcome,&nbsp</h1>
+            <h2>Welcome,&nbsp</h2>
         </div>
         <div class="d-inline-block">
             <div class="text-uppercase">
-                <h1>{{ user.username }}</h1>
+                <h2>{{ user.username }}</h2>
             </div>
         </div>
         <div class="d-inline-block">
-            <h1>!</h1>
+            <h2>!</h2>
         </div>
     </div>
     <div class="text-left">
         <div class="spacer"></div>
         <div class="small_indent">
-            <h5>For new users, here are some recommendations to maximize your experience:</h5>
+            <h6>If you're new around here, below are a collection of brief summaries detailing what you can expect to see in each tab at the top of the screen:</h6>
+        </div> 
+        <div class="smaller_spacer"></div>
+        <div class="small_indent">
+            <h6><strong>Map</strong></h6>
         </div>
         <div class="med_indent">
-                <li><small>If possible, turn locations services <strong>on</strong>. Some of our features make use of your current location to make navigating to your desired location easy and convenient!</small></li>
-                <li><small>Coming to Grounds and want to know how to get from one place to another? Simply conduct a search at the top left of the map, and navigation instructions (Driving, Walking, or Biking) will be displayed. </small></li>
-                <li><small>If travelling to a high foot-traffic area on Grounds, check out the <strong>Common Locations</strong> dropdown. If you see your destination, click it and a route will be displayed to take you there.</small></li>
-                <li><small>Planning to return? Use the save feature to store any routes you may want to use again the next time you visit us. To save a route, type in a name to remember it by and press the <strong>Save</strong> button.</small></li>
+            <h6>Searching</h6>
         </div>
-        <div class="spacer"></div>
+        <ul class="list-unstyled">
+            <div class="large_indent"> 
+                <li><h6><small>You will see two search bars at the top left of the screen. The top one will have coordinates in it. <strong>IMPORTANT: </strong>These coordinates will correspond to your current location IF AND ONLY IF you have "Location Services" turned <strong>ON</strong>. Otherwise, ignore these coordiantes as they will not be useful to you.</small></h6></li>
+                <li><h6><small>At your leisure, type any building names, addresses, or coordinates you so desire into the search bars, and so long as there is a start and end destination, a route will appear on the map taking you where you want to go.</small></h6></li>
+                <li><h6><small>You should be able to move the map around and zoom in/out at your convenicne. <strong>IMPORTANT: </strong>Should you be trying to drag the map around and it doesn't appear to be moving, BEFORE realeasing the mouse, drag it off to the side away from the map! If you don't, the map may accidentally change your route.</small></h6></li>
+                <li><h6><small>Just below the map, you can find your current location coordinates (<strong>should your "Location Services" be turned on</strong>). Also, a simple refresh of the page will put your current location back in the top search bar.</small></h6></li>
+            </div>
+        </ul>
+        <div class="med_indent">
+           <h6>Common Locations</h6>
+        </div>
+        <ul class="list-unstyled">
+            <div class="large_indent"> 
+                <li><h6><small>Just to the right of the map, you should see a section named "Common Locations". In this section you will see a series of dropdown menus containing many high-traffic areas at UVA. Clicking any of the links in the dropdowns will display a route from your current location to the location described by the link.</small></h6></li>
+                <li><h6><small><strong>Since this feature makes use of your current location when displaying routes, please ensure your "Location Services" are on if you plan to use it.</strong></small></h6></li>
+            </div>
+        </ul>  
+        <div class="med_indent">
+           <h6>Saved Route</h6>
+        </div>
+        <ul class="list-unstyled">
+            <div class="large_indent"> 
+                <li><h6><small>If you find yourself searching for the same route repeatedly, you can save that route so that you can load it up again any time you want with this feature.</small></h6></li>
+                <li><h6><small>Any route you save will appear at the bottom right of the screen under the "Saved Routes" header. These routes are associated with your account, so they will not disappear when you leave the webiste. However, you must be <strong>logged in</strong> to use this feature.</small></h6></li>
+                <li><h6><small>You will have to name any route you save. We recommend you think of a clever name before saving any route so that it will be easy for you to determine what each saved route corresponds to.</small></h6></li>
+            </div>
+        </ul> 
         <div class="small_indent">
-            <h5>Head over to the <strong>Map</strong> tab and get to navigating!</h5>
+            <h6><strong>Recommendations</strong></h6>
+        </div>
+        <div class="med_indent">
+            <h6><small>We're pretty seasoned UVA experts here. However, sometimes we miss things. If you are using our "Common Locations" feature, and find yourself asking, "This place has to be here. Where is it?", you can write a recommendation to add a new location to the feature in this tab.</small></h6>
+        </div>
+        <div class="small_indent">
+            <h6><strong>Recommendations List</strong></h6>
+        </div>
+        <div class="med_indent">
+            <ul class="list-unstyled">
+            <li><h6><small>If you've posted a recommendation, this tab is where you will see it. In all likelihood, you will see a series of recommendations here.</small></h6></li>
+            <li><h6><small>Each recommendation post has a like button associated with it should you agree with a post. If any post gets enough likes, it is automatically added to the "Common Locations" feature to be used by any user who desires to do so.</small></h6></li>
+            <li><h6><small>Each post also has a comments section. If you feel any particular way about a recommendation, feel free to share how you feel.<small></h6></li>
+            </ul>
         </div>
     </div>
+    <div class="text-center">
+        <div class="spacer"></div>
+        <h1><span class="badge bg-primary">Now get to exploring!</span></h1>
+        <div class="spacer"></div>
+    </div>  
 {% else %}
     <div class="text-center">
         <div class="jumbotron">
