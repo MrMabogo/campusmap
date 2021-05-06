@@ -1,3 +1,14 @@
+# /***************************************************************************************
+# *  REFERENCES
+# *  URL: https://stackoverflow.com/questions/6540032/sorting-related-items-in-a-django-template
+# *  Usage: Setting up functions in Recommendation model
+# *
+# *  URL: https://docs.djangoproject.com/en/3.2/topics/db/models/
+# *  Usage: Creating the appropriate fields for models
+# *
+# ***************************************************************************************/
+ 
+
 from django.db import models
 from django.contrib.auth.models import User, AnonymousUser
 from django.urls import reverse, reverse_lazy
