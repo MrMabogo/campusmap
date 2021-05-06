@@ -6,8 +6,8 @@
 # *  URL: https://docs.djangoproject.com/en/3.2/topics/db/models/
 # *  Usage: Creating the appropriate fields for models
 # *
-# *  URL: https://docs.djangoproject.com/en/3.2/topics/db/models/
-# *  Usage: Creating the appropriate fields for models
+# *  URL: https://stackoverflow.com/questions/54056593/how-to-use-two-unique-constraints-in-django-model
+# *  Usage: Further model setup help
 # ***************************************************************************************/
  
 
