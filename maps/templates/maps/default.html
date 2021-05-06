@@ -312,11 +312,11 @@
             </div>
         </div>
         <div class="float-bottom overflow-auto">
-            {% if user.is_authenticated %}
             <div class='heading'>
                 <h3>Saved Routes</h3>
             </div>
             <div class='savedroutes list-group d-flex'>
+                {% if user.is_authenticated %}
                     {% for savedroute in savedroutes %}
                     <div class="d-flex list-group-item">
                         <span class="justify-content-between">
@@ -324,8 +324,12 @@
                         </span>
                     </div>
                     {% endfor %}
+                {% else %}
+                    <span class="justify-content-between">
+                        Must be logged in to save routes
+                    </span>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
     </div>
     <script type="text/javascript">
@@ -384,7 +388,8 @@
             return coordPromise;
         }
 
-        var SaveControl = L.Control.extend({ // I have no idea what this is doing
+        //https://docs.mapbox.com/mapbox.js/api/v3.3.1/l-control/
+        var SaveControl = L.Control.extend({
             container: null,
             saveBtn: null,
             loadBtn: null,
@@ -405,7 +410,6 @@
                 this.container = L.DomUtil.create('div', 'save-control bg-white mt-1');
                 this.myMap = map;
                 startLocation = userLocation;
-
 
                 var btnGrp = L.DomUtil.create('div', 'btn-group d-flex', this.container);
                 btnGrp.setAttribute('role', 'group');

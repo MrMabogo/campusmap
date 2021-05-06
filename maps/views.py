@@ -176,7 +176,7 @@ class RecommendationListView(generic.ListView):
     model = Recommendation
     template_name = 'maps/list.html'
     context_object_name = 'latest_recommendations_list'
-    queryset = Recommendation.objects.all()
+    queryset = Recommendation.objects.order_by('-post_date')
 
 
 def update_rec(request):
@@ -230,7 +230,7 @@ def update_rec(request):
                         'properties': {
                             'name': rec.location_name,
                             'address': response['results'][0]['formatted_address'],
-                            'category': 'Recommended'
+                            'category': rec.category
                         }
                     }
 
