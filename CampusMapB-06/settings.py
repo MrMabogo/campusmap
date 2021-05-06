@@ -144,7 +144,6 @@ SECURE_SSL_REDIRECT = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
 STATIC_ROOT  = os.path.join(BASE_DIR, 'staticfiles')
 
 AUTHENTICATION_BACKENDS = (
@@ -169,9 +168,50 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
+# to deal with 500 error on heroku
+# khashashin https://stackoverflow.com/questions/51466192/server-error-500-django-deployment-on-heroku
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': ('%(asctime)s [%(process)d] [%(levelname)s] '
+                       'pathname=%(pathname)s lineno=%(lineno)s '
+                       'funcname=%(funcName)s %(message)s'),
+            'datefmt': '%Y-%m-%d %H:%M:%S'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        }
+    },
+    'handlers': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'logging.NullHandler',
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    }
+}
+
 # Activate Django-Heroku.
 try:
     import django_heroku
-    django_heroku.settings(locals())
+    django_heroku.settings(config=locals(), staticfiles=False, logging=False)
 except ImportError:
     found = False
