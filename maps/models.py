@@ -10,8 +10,9 @@ class SavedRoute(models.Model):
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=40, default='')
-    geojson = models.JSONField(default=dict)
-    
+    start = models.JSONField(default=dict)
+    end = models.JSONField(default=dict)
+
     def __str__(self):
         return self.name
 

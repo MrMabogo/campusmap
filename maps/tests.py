@@ -13,6 +13,20 @@ def create_test_route(time, dist):
         'legs': dict(),
         'geometry': dict()}
     return troute
+def create_test_location(lat, lng, end): # end is either 'A' or 'B'
+    location = {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [lat, lng]
+        },
+        "properties": {
+            "id": "origin",
+            "marker-symbol": end
+        }
+    }
+    return location
+
 
 class PersistenceTests(TransactionTestCase):
     def test_save_empty_route(self):
@@ -37,12 +51,16 @@ class PersistenceTests(TransactionTestCase):
         data = {
             'persist_type': 'Save route',
             'route_id': 'test',
-            'coords': json.dumps(create_test_route('10', '5'))
+            'start': json.dumps(create_test_location(-78.508696, 38.035841, 'A')),
+            'end': json.dumps(create_test_location(-78.51911, 38.028773, 'B'))
+            # 'coords': json.dumps(create_test_route('10', '5'))
         }
         data2 = {
             'persist_type': 'Save route',
             'route_id': 'test2',
-            'coords': json.dumps(create_test_route('10', '30'))
+            'start': json.dumps(create_test_location(-78.51911, 38.028773, 'A')),
+            'end': json.dumps(create_test_location(-78.508696, 38.035841, 'B'))
+            #'coords': json.dumps(create_test_route('10', '30'))
         }
 
         tUser = User.objects.get_or_create(username='test', password='secret')[0]

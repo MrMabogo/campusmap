@@ -7,6 +7,8 @@
 {% block content %}
 
     <head>
+        
+        
         <style>
             .float-container {
         height: 94%;
@@ -366,13 +368,13 @@
 
         function successLocation(position) {
             userLocation = [position.coords.longitude, position.coords.latitude]; // automatically global variable for the user's location
-            setupMap([position.coords.longitude, position.coords.latitude]);
+            setupMap(userLocation);
             document.getElementById("insert").innerHTML = userLocation;
         }
 
         function errorLocation() {
             userLocation = [-78.512, 38.036];
-            setupMap([-78.503, 38.036]);
+            setupMap(userLocation);
             document.getElementById("insert").innerHTML = userLocation;
         }
 
@@ -648,223 +650,47 @@
 
                 this.container.parentNode.appendChild(form);
                 form.appendChild(this.container);
-                var start = this.getTextInput(inDiv, this.originPlaceholder);
-                var end = this.getTextInput(inDiv, this.destPlaceholder);
+
                 var dirProfile = this.getDirProfile(); // this is duplicated in the event listener
                 var controller = this;
 
                 this.saveBtn.addEventListener('click', function (e) {
                     e.preventDefault();
+                    var start = JSON.stringify(directions.getOrigin());
+                    var end = JSON.stringify(directions.getDestination());
                     var popID = $(this).attr('aria-describedby'); //indicates popover is active; https://stackoverflow.com/questions/13442749/how-to-check-whether-a-twitter-bootstrap-popover-is-visible-or-not
-                    if(popID) {
-                        var startLatLn = start.value.split(',');
-                        var endLatLn = end.value.split(',');
-                        var dirProfile = controller.getDirProfile();
+                    if(popID && start != '{}' && end != '{}') {
 
-                        if (startLatLn.length == 2 && endLatLn.length == 2) {
-                            var url = 'https://api.mapbox.com/directions/v5/' + dirProfile + '/' + startLatLn[0] + ',' + startLatLn[1] + ';' + endLatLn[0] +
-                                ',' + endLatLn[1] + '?steps=true&geometries=geojson&access_token=' + mapboxgl.accessToken;
-
-                            var req = new XMLHttpRequest();
-                            req.open('GET', url, true);
-                            req.onload = function () {
-                                var json = JSON.parse(req.response);
-                                var data = json.routes[0];
-                                controller.route = data;
-
-                                //just to shrink it down a bit
-                                var storable = controller.createStorable(data);
-
-                                //This is supposed to send the route save HTTP request to the django view
-                                var formData = new FormData();
-                                var btnParent = controller.container;
-                                formData.append(form.children[0].name, form.children[0].value); //csrf token
-                                formData.append('coords', JSON.stringify(storable));
-                                formData.append('persist_type', 'Save route');
-                                if(controller.loadIn.value != '')
-                                {
-                                    formData.append('route_id', controller.loadIn.value);
-                                    fetch('{% url "maps:persist" %}', {
-                                        method: 'POST',
-                                        body: formData
-                                    }).then(res => res.json()).then(res => {
-                                        if(res.route_status == 'saved')
-                                        {
-                                            loadAll(document.getElementsByClassName('savedroutes')[0], form.children[0], '{% url "maps:get_routes" %}');
-                                        }
-                                        else if(res.message == 'already exists')
-                                        {
-                                            swal('Duplicate route!', 'You already have a route with that name!', 'warning');
-                                        }
-                                    });
-                                }
-                                else
-                                {
-                                    swal('No name!', 'Please enter a route name...', 'warning');
-                                }
-                            }
-                            req.send()
-                        } else if(startLatLn.length > 2 || endLatLn.length > 2) {
-                            var startPromise = startLatLn;
-                            var endPromise = endLatLn;
-                            var startComplete = false;
-                            var endComplete = false;
-
-                            //function to request directions from mapbox
-                            var requestFunc = function() {
-                                if(endComplete && startComplete)
-                                {
-                                    console.log("in req"+startLatLn+" "+endLatLn);
-                                    var url = 'https://api.mapbox.com/directions/v5/' + dirProfile + '/' + startLatLn[0] + ',' + startLatLn[1] + ';' + endLatLn[0] +
-                                    ',' + endLatLn[1] + '?steps=true&geometries=geojson&access_token=' + mapboxgl.accessToken;
-
-                                    var req = new XMLHttpRequest();
-                                    req.open('GET', url, true);
-                                    req.onload = function () {
-                                        var json = JSON.parse(req.response);
-                                        var data = json.routes[0];
-                                        controller.route = data;
-
-                                        //just to shrink it down a bit
-                                        var storable = controller.createStorable(data);
-
-                                        //This is supposed to send the route save HTTP request to the django view
-                                        var formData = new FormData();
-                                        let btnParent = controller.container;
-                                        formData.append(form.children[0].name, form.children[0].value); //csrf token
-                                        formData.append('coords', JSON.stringify(storable));
-                                        formData.append('persist_type', 'Save route');
-                                        if(controller.loadIn.value != '')
-                                        {
-                                            formData.append('route_id', controller.loadIn.value);
-                                            fetch('{% url "maps:persist" %}', {
-                                                method: 'POST',
-                                                body: formData
-                                            }).then(res => res.json()).then(res => {
-                                                if(res.route_status == 'saved')
-                                                {
-                                                    loadAll(document.getElementsByClassName('savedroutes')[0], form.children[0], '{% url "maps:get_routes" %}');
-                                                }
-                                                else if(res.message == 'already exists')
-                                                {
-                                                    swal('Duplicate route!', 'You already have a route with that name!', 'warning');
-                                                }
-                                            });
-                                        }
-                                        else
-                                        {
-                                            swal('No name!', 'Please enter a route name...', 'warning');
-                                        }
-                                    }
-
-                                    req.send()
-
-                                    endComplete = false;
-                                    startComplete = false;
-                                }
-                            }
-
-                            var uvaURL = '{% url "maps:find_uva" %}';
-                            var startData = new FormData();
-                            startData.append(form.children[0].name, form.children[0].value); //csrf token
-                            startData.append('keyword', start.value);
-
-                            if(startLatLn.length != 2) {
-                                fetch(uvaURL, {
-                                    method: 'POST',
-                                    body: startData
-                                }).then(sres => sres.json()).then(sres => {
-                                    startLatLn = [sres['location']['coordinates'][0], sres['location']['coordinates'][1]];
-                                    
-                                    if(startLatLn[0] && startLatLn[1]) //neither is null
-                                    {
-                                        startComplete = true;
-                                        requestFunc();
-                                    } else {
-                                        var refined = sres['location']['properties']['address']+',Charlottesville,VA';
-                                        getCoordinates(refined, '').then(cres => cres.json()).then(res => {
-                                            if (res['results'][0]['query'] == '') {
-                                                swal("Couldn't save", "Is origin/destination correct?", "info");
-                                            }
-                                            var startRes = res['results'][0]['response']['results'][0];
-                                            endLatLn = [startRes.location.lng, startRes.location.lat];
-                                            startComplete = true;
-                                            requestFunc();
-                                        })
-                                    }
-                                });
-                            } else {
-                                startComplete = true;
-                                requestFunc();
-                            }
-
-                            var endData = new FormData();
-                            endData.append(form.children[0].name, form.children[0].value); //csrf token
-                            endData.append('keyword', end.value);
-                            if(endLatLn.length != 2) {
-                                fetch(uvaURL, {
-                                    method: 'POST',
-                                    body: endData
-                                }).then(eres => eres.json()).then(eres => {
-                                    console.log(eres);
-                                    endLatLn = [eres['location']['coordinates'][0], eres['location']['coordinates'][1]];
-                                    if(endLatLn[0] && endLatLn[1])
-                                    {
-                                        endComplete = true;
-                                        requestFunc();
-                                    } else {
-                                        var refined = eres['location']['properties']['address']+',Charlottesville,VA';
-                                        getCoordinates('', refined).then(cres => cres.json()).then(res => {
-                                            if (res['results'][1]['query'] == '') {
-                                                swal("Couldn't save", "Is origin/destination correct?", "info");
-                                            }
-                                            var endRes = res['results'][1]['response']['results'][0];
-                                            endLatLn = [endRes.location.lng, endRes.location.lat];
-                                            endComplete = true;
-                                            requestFunc();
-                                        })
-                                    }
-                                });
-                            } else {
-                                endComplete = true;
-                                requestFunc();
-                            }
-                            
-                        } else if(controller.loaded){
-                            var storable = controller.createStorable(controller.route);
-
-                            //This is supposed to send the route save HTTP request to the django view
-                            var formData = new FormData();
-                            let btnParent = controller.container;
-                            formData.append(form.children[0].name, form.children[0].value); //csrf token
-                            formData.append('coords', JSON.stringify(storable));
-                            formData.append('persist_type', 'Save route');
-                            if(controller.loadIn.value != '')
-                            {
-                                formData.append('route_id', controller.loadIn.value);
-                                fetch('{% url "maps:persist" %}', {
-                                    method: 'POST',
-                                    body: formData
-                                }).then(res => res.json()).then(res => {
-                                    if(res.route_status == 'saved')
-                                    {
-                                        loadAll(document.getElementsByClassName('savedroutes')[0], form.children[0], '{% url "maps:get_routes" %}');
-                                    }
-                                    else if(res.message == 'already exists')
-                                    {
-                                        swal('Duplicate route!', 'You already have a route with that name!', 'warning');
-                                    }
-                                });
-                            }
-                            else
-                            {
-                                swal('No name!', 'Please enter a route name...', 'warning');
-                            }
-                        }
-                        else 
+                        var formData = new FormData();
+                        var btnParent = controller.container;
+                        formData.append(form.children[0].name, form.children[0].value); //csrf token
+                        formData.append('start', start);
+                        formData.append('end', end);
+                        formData.append('persist_type', 'Save route');
+                        if(controller.loadIn.value != '')
                         {
-                            swal('No route!', 'There seems to be no route to save...', 'warning');
+                            formData.append('route_id', controller.loadIn.value);
+                            fetch('{% url "maps:persist" %}', {
+                                method: 'POST',
+                                body: formData
+                            }).then(res => res.json()).then(res => {
+                                if(res.route_status == 'saved')
+                                {
+                                    loadAll(document.getElementsByClassName('savedroutes')[0], form.children[0], '{% url "maps:get_routes" %}');
+                                }
+                                else if(res.message == 'already exists')
+                                {
+                                    swal('Duplicate route!', 'You already have a route with that name!', 'warning');
+                                }
+                            });
                         }
+                        else
+                        {
+                            swal('No name!', 'Please enter a route name...', 'warning');
+                        }
+                    }
+                    else if (start == '{}' || end == '{}') {
+                        swal('No route!', 'There seems to be no route to save...', 'warning');
                     }
                 })
 
@@ -883,33 +709,11 @@
                         if (res.route_status != 'failure') {
                             directions.removeRoutes();
                             controller.loaded = true;
-                            var ldRoute = res.route;
-                            controller.getRoute(ldRoute);
-                            var steps = ldRoute.legs[0].steps;
+                            var start = res.start['geometry']['coordinates'];
+                            var end = res.end['geometry']['coordinates'];
 
-                            controller.myMap.flyTo({
-                                center: steps[steps.length-1].geometry.coordinates[0],
-                                zoom: 14
-                            });
-
-                            var dirDiv = inDiv.parentNode.children[1];
-                            dirDiv.innerHTML = '';
-                            var dirControl = L.DomUtil.create('div', 'directions-control directions-control-directions', dirDiv);
-
-                            dirControl.innerHTML = '<div class="mapbox-directions-component mapbox-directions-route-summary"><h1>' +
-                                Math.floor(ldRoute.distance / 1609 * 100) / 100 + 'mi</h1><span>' +
-                                Math.floor(ldRoute.duration / 60) + 'min </span></div>';
-
-                            var loadDirDiv = L.DomUtil.create('div', 'mapbox-directions-instructions-wrapper', dirControl);
-                            var instructions = L.DomUtil.create('ol', 'mapbox-directions-steps', loadDirDiv);
-
-                            var tripInstructions = [];
-                            for (var i = 0; i < steps.length; i++) {
-                                var coord = steps[i].geometry.coordinates[0];
-                                tripInstructions.push('<br><li class="mapbox-directions-step" data-lat="' + coord[1] + '" data-lng="' + coord[0] + '">' + steps[i].maneuver.instruction) + '</li>';
-                            }
-
-                            instructions.innerHTML =  tripInstructions;
+                            directions.setOrigin(start);
+                            directions.setDestination(end);
                         }
                     });
                     
@@ -1082,7 +886,7 @@
                 fetch(url)
                     .then(res => res.json())
                     .then(res => {
-                        facilities = res;// JSON.stringify(res);
+                        facilities = res;
                         //console.log(facilities);
                         facilities.features.forEach(function (facility, i) {
                             facility.properties.id = i;
