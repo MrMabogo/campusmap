@@ -168,6 +168,8 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
+# to deal with 500 error on heroku
+# khashashin https://stackoverflow.com/questions/51466192/server-error-500-django-deployment-on-heroku
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -210,6 +212,6 @@ LOGGING = {
 # Activate Django-Heroku.
 try:
     import django_heroku
-    django_heroku.settings(config=locals(), staticfiles=False,logging=False)
+    django_heroku.settings(config=locals(), staticfiles=False, logging=False)
 except ImportError:
     found = False
