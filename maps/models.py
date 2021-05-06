@@ -6,6 +6,8 @@
 # *  URL: https://docs.djangoproject.com/en/3.2/topics/db/models/
 # *  Usage: Creating the appropriate fields for models
 # *
+# *  URL: https://docs.djangoproject.com/en/3.2/topics/db/models/
+# *  Usage: Creating the appropriate fields for models
 # ***************************************************************************************/
  
 
