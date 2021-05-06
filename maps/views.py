@@ -1,3 +1,13 @@
+# /***************************************************************************************
+# *  REFERENCES
+# *  URL: https://stackoverflow.com/questions/38835167/django-fulltext-search-on-json-field
+# *  Usage: Help with the function that finds locations
+# *
+# *  URL: https://stackoverflow.com/questions/54056593/how-to-use-two-unique-constraints-in-django-model
+# *  Usage: Further model setup help
+# *
+# ***************************************************************************************/
+
 from django.shortcuts import render, get_object_or_404
 from .models import SavedRoute, UVALocation, UVALocationCollection, Recommendation, Comment
 from django.contrib.auth.models import User
